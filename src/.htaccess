@@ -1,0 +1,10 @@
+RewriteEngine on
+RewriteBase /
+
+# These rules exclude real files and directories from
+# the rewriting and lets them pass through unaffected
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Direct all requests to index.php, except specified file types
+RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ index.php
