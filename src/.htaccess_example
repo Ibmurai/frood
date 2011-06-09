@@ -1,5 +1,7 @@
 RewriteEngine on
-RewriteBase /
+
+# You need to change this to the correct module name
+RewriteBase /modules/baglandet/admin/
 
 # These rules exclude real files and directories from
 # the rewriting and lets them pass through unaffected
