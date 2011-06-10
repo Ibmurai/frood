@@ -1,17 +1,24 @@
 <?php
 /**
- * Frood
+ * The base class for The Frood.
  *
  * PHP version 5
  *
- * @author Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category Library
+ * @package  Frood
+ * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @since    2011-06-09
  */
+
 /**
- * Frood
+ * Frood - you just call dispatch!
  *
- * @author Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category   Library
+ * @package    Frood
+ * @subpackage Class
+ * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class Frood {
+abstract class Frood {
 	/** @var string The module we're working with. */
 	private static $_module = null;
 
@@ -26,10 +33,10 @@ class Frood {
 	 * @param string $action     The action to invoke.
 	 * @param array  $parameters The parameters for the action.
 	 *
-	 * @return null
+	 * @return void
 	 */
 	public static function dispatch($controller = null, $action = null, $parameters = null) {
-		self::_boot();
+		self::_init();
 
 		if ($controller === null) {
 			$controller = self::_guessController();
@@ -51,8 +58,42 @@ class Frood {
 		}
 	}
 
-	private static function _boot() {
-		var_dump($_SERVER['SCRIPT_FILENAME']);
-		exit;
+	/**
+	 * Do initialization stuff unless it's already done.
+	 *
+	 * @return void
+	 */
+	private static function _init() {
+		if (self::$_isBooted) {
+			return;
+		}
+
+		$matches = array();
+		if (preg_match('/
+			\/([a-z]*)
+			\/([a-z]*)
+			\/index\.php
+		$/x', $_SERVER['SCRIPT_FILENAME'], $matches)) {
+			if ($matches[2] == 'admin') {
+				self::$_module  = $matches[1];
+				self::$_isAdmin = true;
+			} else {
+				self::$_module  = $matches[2];
+				self::$_isAdmin = false;
+			}
+		}
+
+		self::$_isBooted = true;
 	}
+	/*
+	if (false === spl_autoload_functions()) {
+	if (function_exists('__autoload')) {
+		spl_autoload_register('__autoload', false);
+	}
+}
+require_once dirname(__FILE__).'/../src/Frood.php';
+spl_autoload_register(array('Frood', 'autoload'));
+*/
+	
+	
 }

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="frood" default="build" basedir=".">
+	<property name="modulename" value="Frood" />
+
+	<!-- Comma separate-->
+	<property name="phpdoc.include.dir" value="./src/,./docs/" />
+	<property name="phpdoc.include.file" value="" />
+	<property name="phpdoc.exclude" value="docs/examples" />
+	<property name="phpdoc.examples" value="docs/examples" />
+	<!-- Comma separate-->
+	<property name="phpmd.include" value="src,tests" />
+	<property name="phpmd.exclude" value="" />
+	<!-- Space separate: NOT comma separate-->
+	<property name="phpcs.include" value="src tests" />
+	<!-- Comma separate-->
+	<property name="phpcs.exclude" value="" />
+
+	<!-- Php files to syntax check -->
+	<path id="checkphp.fileset">
+		<fileset dir="${basedir}">
+			<include name="**/*.php" />
+		</fileset>
+	</path>
+
+	<!-- Don't modify anything below unless you know what you are doing. -->
+	<property name="build" value="build" />
+
+	<!-- ================================= target: checkphp ============================== -->
+	<target name="checkphp" description="Check php syntax">
+		<apply executable="php" failonerror="true">
+			<arg value="-l" />
+			<path refid="checkphp.fileset" />
+		</apply>
+	</target>
+
+	<!-- ================================= target: init ================================== -->
+	<target name="init" description="Create requried folders for build">
+		<mkdir dir="${build}/logs" />
+		<mkdir dir="${build}/api" />
+		<mkdir dir="${build}/coverage" />
+		<mkdir dir="${build}/php-code-browser" />
+	</target>
+
+	<!-- ================================= target: cleanup =============================== -->
+	<target name="clean" depends="" description="Clean up in build folder">
+		<delete dir="${build}" />
+	</target>
+
+	<!-- ================================= target: phpunit =============================== -->
+	<target name="phpunit" description="Run phpunit tests">
+		<delete dir="${basedir}/${build}/logs" />
+		<mkdir dir="${basedir}/${build}/logs" />
+		<exec executable="phpunit" dir="${basedir}/tests" failonerror="true">
+			<arg line="--configuration phpunit.xml" />
+		</exec>
+	</target>
+
+	<!-- ================================= target: basebuild ============================= -->
+	<target name="basebuild" depends="checkphp, clean, init, phpunit, phpcs, phpmd" description="Base build">
+
+	</target>
+	<!-- ================================= target: build ================================= -->
+	<target name="build" depends="basebuild" description="Build">
+		<antcall target="phpdoc" />
+	</target>
+
+	<!-- ================================= target: ccbuild =============================== -->
+	<target name="ccbuild" depends="basebuild" description="Build on CC">
+		<antcall target="phpdocCC" />
+	</target>
+
+	<!-- ================================= target: phpmd ================================= -->
+	<target name="phpmd" description="Php mess detector">
+		<exec executable="phpmd" dir="${basedir}">
+			<arg line="${phpmd.include} html codesize,unusedcode,naming" />
+			<arg line="--reportfile ${basedir}/${build}/logs/pmd.html" />
+			<arg line="--suffixes php" />
+			<arg line="--exclude ${phpmd.exclude}" />
+		</exec>
+	</target>
+
+	<!-- ================================= target: phpdoc ================================ -->
+	<target name="phpdoc" description="Phpdoc utility">
+		<delete dir="${basedir}/${build}/api" />
+		<mkdir dir="${basedir}/${build}/api" />
+		<exec dir="${basedir}" executable="phpdoc" failonerror="true">
+			<arg line="--directory ${phpdoc.include.dir}
+				       --filename ${phpdoc.include.file}
+			           --examplesdir ${phpdoc.examples}
+				       --ignore ${phpdoc.exclude}
+				       --ignoresymlinks on
+				       --quiet on
+				       --undocumentedelements on
+				       --readmeinstallchangelog README CHANGELOG INSTALL
+				       --sourcecode on
+				       --target ${basedir}/${build}/api
+			           --title 'Phpdoc for ${ant.project.name}'
+			           --defaultpackagename ${modulename}
+			           --defaultcategoryname ${modulename}" />
+		</exec>
+	</target>
+
+	<!-- ================================= target: phpdocCC ============================= -->
+	<target name="phpdocCC" description="Phpdoc utility with CC settings">
+		<delete dir="${basedir}/${build}/api" />
+		<mkdir dir="${basedir}/${build}/api" />
+		<exec dir="${basedir}" executable="phpdoc" failonerror="true">
+			<arg line="--directory ${phpdoc.include.dir}
+					           --filename ${phpdoc.include.file}
+				               --examplesdir ${basedir}/exampels
+					           --ignore ${phpdoc.exclude}
+			                   --ignoresymlinks on
+			                   --quiet on
+			                   --output 'HTML:Phpuc:phpuc'
+			                   --undocumentedelements on
+			                   --readmeinstallchangelog CHANGELOG INSTALL
+			                   --sourcecode on
+			                   --templatebase '/usr/share/php/data/phpUnderControl/data/phpdoc'
+			                   --target ${basedir}/${build}/api
+			                   --title 'Phpdoc for ${ant.project.name}'
+			                   --defaultpackagename ${modulename}
+			                   --defaultcategoryname ${modulename}" />
+		</exec>
+	</target>
+
+	<!-- ================================= target: phpcs ================================ -->
+	<target name="phpcs" description="Php codesniffer utility">
+		<exec dir="${basedir}" executable="phpcs" output="${basedir}/${build}/logs/checkstyle.xml" failonerror="false">
+			<arg line="--report=checkstyle" />
+			<arg line="--standard=PEAR" />
+			<arg line="--extensions=php" />
+			<arg line="--ignore=${phpcs.exclude}" />
+			<arg line="--tab-width=4" />
+			<arg line="-n" />
+			<arg line="${phpcs.include}" />
+		</exec>
+		<xslt in="${basedir}/${build}/logs/checkstyle.xml" out="${basedir}/${build}/logs/checkstyle.html" style="tools/CheckStyleReport/codestyle.xsl">
+		</xslt>
+		<copy file="${basedir}/tools/CheckStyleReport/cs.css" tofile="${basedir}/${build}/logs/cs.css" />
+	</target>
+</project>

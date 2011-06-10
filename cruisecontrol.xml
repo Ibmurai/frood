@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cruisecontrol>
+	<project name="frood" buildafterfailed="false">
+		<listeners>
+			<currentbuildstatuslistener file="${status.file}" />
+		</listeners>
+		<bootstrappers>
+			<svnbootstrapper localWorkingCopy="${project.dir}"
+				username="${svn.user}" password="${svn.pass}" />
+		</bootstrappers>
+		<modificationset quietperiod="${cruise.quietperiod}">
+			<svn localWorkingCopy="${project.dir}" username="${svn.user}"
+				password="${svn.pass}" />
+		</modificationset>
+		<schedule interval="${cruise.interval}">
+			<ant antscript="${ant.script}" buildfile="${project.dir}/build.xml"
+				target="ccbuild" />
+		</schedule>
+		<log dir="${log.dir}">
+			<merge dir="${project.dir}/build/logs/" />
+		</log>
+		<publishers>
+			<artifactspublisher dir="${project.dir}/build/api"
+				dest="${artifact.dir}" subdirectory="api" />
+			<artifactspublisher dir="${project.dir}/build/coverage"
+				dest="${artifact.dir}" subdirectory="coverage" />
+			<execute
+				command="phpcb --log ${project.dir}/build/logs --output ${project.dir}/build/php-code-browser" />
+			<artifactspublisher dir="${project.dir}/build/php-code-browser"
+				dest="${artifact.dir}" subdirectory="php-code-browser" />
+			<execute command="phpuc graph logs/${project.name} ${artifact.dir}" />
+			<execute
+				command="/usr/bin/php ./pduc.php --logs=${cruise.logs.dir} --artifacts=${cruise.artifacts.dir} --project=${project.name}  --path=./ --ignore=tests,doc/examples,tools" />
+			<execute
+				command="/usr/bin/php ./pdoxy.php --logs=${cruise.logs.dir} --artifacts=${cruise.artifacts.dir} --project=${project.name}" />
+		</publishers>
+	</project>
+</cruisecontrol>
