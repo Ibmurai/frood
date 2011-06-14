@@ -9,7 +9,7 @@
 	<property name="phpdoc.examples" value="docs/examples" />
 	<!-- Comma separate-->
 	<property name="phpmd.include" value="src,tests" />
-	<property name="phpmd.exclude" value="" />
+	<property name="phpmd.exclude" value="tools" />
 	<!-- Space separate: NOT comma separate-->
 	<property name="phpcs.include" value="src tests" />
 	<!-- Comma separate-->
