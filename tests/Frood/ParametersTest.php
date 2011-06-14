@@ -55,7 +55,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testConvertPhpNameToHtmlName($input, $output) {
-		$this->assertEquals(FroodParametersOfDeath::convertPhpNameToHtmlName($input), $output);
+		$this->assertEquals(FroodParameters::convertPhpNameToHtmlName($input), $output);
 	}
 
 }

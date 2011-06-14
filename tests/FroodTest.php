@@ -19,6 +19,12 @@
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
 class FroodTest extends PHPUnit_Framework_TestCase {
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 *
+	 * @return void
+	 */
 	protected function setUp() {
 	}
 
@@ -29,15 +35,14 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	protected function tearDown() {
-		
 	}
+
 	/**
 	 * Test getTitle
 	 *
 	 * @return void
 	 */
 	public function testGetTitle() {
-		
 		$this->assertEquals('This is a document title', 'This is a document title');
 	}
 
