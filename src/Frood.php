@@ -18,15 +18,22 @@
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-abstract class Frood {
+class Frood {
 	/** @var string The module we're working with. */
-	private static $_module = null;
+	private $_module = null;
 
 	/** @var boolean Are we handling admin pages? */
-	private static $_isAdmin = null;
+	private $_isAdmin = null;
 
-	/** @var boolean Has The Frood been initialized yet? */
-	private static $_isInitialized = false;
+	/**
+	 * Do initialization stuff.
+	 *
+	 * @return void
+	 */
+	public function __construct() {
+		$this->_setupAutoloader();
+		$this->_setupModuleAndIsAdmin();
+	}
 
 	/**
 	 * Dispatch an action to a controller.
@@ -38,19 +45,17 @@ abstract class Frood {
 	 *
 	 * @return void
 	 */
-	public static function dispatch($controller = null, $action = null, $parameters = null) {
-		self::initialize();
-
+	public function dispatch($controller = null, $action = null, $parameters = null) {
 		if ($controller === null) {
-			$controller = self::_guessController();
+			$controller = $this->_guessController();
 		}
 
 		if ($action === null) {
-			$action = self::_guessAction();
+			$action = $this->_guessAction();
 		}
 
 		if ($parameters === null) {
-			$parameters = self::_guessParameters();
+			$parameters = $this->_guessParameters();
 		}
 
 		if (method_exists($controller, $action)) {
@@ -68,29 +73,10 @@ abstract class Frood {
 	 *
 	 * @return void
 	 */
-	public static function autoload($name) {
-		$matches = array();
-
-		if ($filePath = self::classNameToPath($name)) {
+	public function autoload($name) {
+		if ($filePath = $this->_classNameToPath($name)) {
 			require_once $filePath;
 		}
-	}
-
-	/**
-	 * Do initialization stuff unless it's already done.
-	 * This is automatically called when you dispatch.
-	 *
-	 * @return void
-	 */
-	public static function initialize() {
-		if (self::$_isInitialized) {
-			return;
-		}
-
-		self::_setupAutoloader();
-		self::_setupModuleAndIsAdmin();
-
-		self::$_isInitialized = true;
 	}
 
 	/**
@@ -98,14 +84,14 @@ abstract class Frood {
 	 *
 	 * @return void
 	 */
-	private static function _setupAutoloader() {
+	private function _setupAutoloader() {
 		if (false === spl_autoload_functions()) {
 			if (function_exists('__autoload')) {
 				spl_autoload_register('__autoload', false);
 			}
 		}
 
-		spl_autoload_register(array('Frood', 'autoload'));
+		spl_autoload_register(array($this, 'autoload'));
 	}
 
 	/**
@@ -113,7 +99,7 @@ abstract class Frood {
 	 *
 	 * @return void
 	 */
-	private static function _setupModuleAndIsAdmin() {
+	private function _setupModuleAndIsAdmin() {
 		$matches = array();
 		if (preg_match('/
 			\/([a-z]*)
@@ -121,11 +107,11 @@ abstract class Frood {
 			\/index\.php
 		$/ix', $_SERVER['SCRIPT_FILENAME'], $matches)) {
 			if ($matches[2] == 'admin') {
-				self::$_module  = $matches[1];
-				self::$_isAdmin = true;
+				$this->_module  = $matches[1];
+				$this->_isAdmin = true;
 			} else {
-				self::$_module  = $matches[2];
-				self::$_isAdmin = false;
+				$this->_module  = $matches[2];
+				$this->_isAdmin = false;
 			}
 		}
 	}
@@ -139,15 +125,15 @@ abstract class Frood {
 	 *
 	 * @return null|string A full path or null if no suitable file could be found.
 	 */
-	public static function classNameToPath($name) {
+	private function _classNameToPath($name) {
 		// Search for classes in Frood...
 		$searchLocations = array(
 			dirname(__FILE__),
 		);
 
 		// ...And in the module
-		if (self::$_module !== null) {
-			$searchLocations[] = realpath(dirname(__FILE__) . '/../../../' . self::$_module);
+		if ($this->_module !== null) {
+			$searchLocations[] = realpath(dirname(__FILE__) . '/../../../' . $this->_module);
 		}
 
 		if (preg_match('/^((?:[A-Z][a-z]+)+)$/', $name)) {
@@ -158,9 +144,28 @@ abstract class Frood {
 			$iterator = new RecursiveIteratorIterator($directory);
 			foreach ($iterator as $finfo) {
 				if (preg_match($regex, $finfo->getPathname())) {
-					require_once $finfo->getPathname();
+					return $finfo->getPathname();
 				}
 			}
 		}
+
+		return null;
 	}
+
+	/**
+	 * Converts a camelCased string to a lowercased_with_underscores string.
+	 *
+	 * @param $name The camelCased string to convert.
+	 *
+	 * @return A lowercased_with_underscores version of $name.
+	 */
+	public static function convertPhpNameToHtmlName($name) {
+		// First lowercase the first letter.
+		$name = strtolower(substr($name, 0, 1)) . substr($name, 1);
+
+		// Second replace capital letters with _ followed by the letter, lowercased.
+		return preg_replace('/([A-Z])/e', "'_'.strtolower('\\1')", $name);
+	}
+
+
 }

@@ -26,7 +26,6 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	protected function setUp() {
-		Frood::initialize();
 	}
 
 	/**
@@ -39,12 +38,28 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Test getTitle
+	 * Provides test data for ->testConvertPhpNameToHtmlName
+	 *
+	 * @return array Some test data.
+	 */
+	public static function providerConvertPhpNameToHtmlName() {
+		return array(
+			array('TheNewWalrus', 'the_new_walrus'),
+			array('IAm42Years', 'i_am42_years'),
+			array('Param983', 'param983'),
+			array('BJobs4All', 'b_jobs4_all'),
+			array('AmIRite', 'am_i_rite'),
+		);
+	}
+
+	/**
+	 * Test FroodParameters::convertPhpNameToHtmlName()
+	 *
+	 * @dataProvider providerConvertPhpNameToHtmlName
 	 *
 	 * @return void
 	 */
-	public function testGetTitle() {
-		$this->assertEquals('This is a document title', 'This is a document title');
+	public function testConvertPhpNameToHtmlName($input, $output) {
+		$this->assertEquals(Frood::convertPhpNameToHtmlName($input), $output);
 	}
-
 }

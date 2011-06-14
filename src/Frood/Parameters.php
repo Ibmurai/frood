@@ -60,21 +60,6 @@ class FroodParameters {
 	}
 
 	/**
-	 * Converts a camelCased string to a lowercased_with_underscores string.
-	 *
-	 * @param $name The camelCased string to convert.
-	 *
-	 * @return A lowercased_with_underscores version of $name.
-	 */
-	public static function convertPhpNameToHtmlName($name) {
-		// First lowercase the first letter.
-		$name = strtolower(substr($name, 0, 1)) . substr($name, 1);
-
-		// Second replace capital letters with _ followed by the letter, lowercased.
-		return preg_replace('/([A-Z])/e', "'_'.strtolower('\\1')", $name);
-	}
-
-	/**
 	 * Get the named parameter.
 	 *
 	 * @param string $name The name of the parameter to get.
@@ -84,7 +69,7 @@ class FroodParameters {
 	 * @throws RuntimeException For non-existing parameters.
 	 */
 	private function _getParameter($name) {
-		$name = self::convertPhpNameToHtmlName($name);
+		$name = Frood::convertPhpNameToHtmlName($name);
 
 
 	}

@@ -19,6 +19,9 @@
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
 class FroodParametersTest extends PHPUnit_Framework_TestCase {
+	/** @var Frood The Frood instance used for these tests. */
+	private $_frood = null;
+
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
@@ -26,7 +29,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	protected function setUp() {
-		Frood::initialize();
+		$this->_frood = new Frood();
 	}
 
 	/**
@@ -38,25 +41,11 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	protected function tearDown() {
 	}
 
-	public static function providerConvertPhpNameToHtmlName() {
-		return array(
-			array('TheNewWalrus', 'the_new_walrus'),
-			array('IAm42Years', 'i_am42_years'),
-			array('Param983', 'param983'),
-			array('BJobs4All', 'b_jobs4_all'),
-			array('AmIRite', 'am_i_rite'),
-		);
-	}
-
 	/**
-	 * Test FroodParameters::convertPhpNameToHtmlName()
-	 *
-	 * @dataProvider providerConvertPhpNameToHtmlName
+	 * Test various $_GET and $_POST combinations.
 	 *
 	 * @return void
 	 */
-	public function testConvertPhpNameToHtmlName($input, $output) {
-		$this->assertEquals(FroodParameters::convertPhpNameToHtmlName($input), $output);
+	public function testParameterCombinations() {
 	}
-
 }
