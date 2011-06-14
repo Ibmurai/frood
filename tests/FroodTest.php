@@ -26,6 +26,7 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	protected function setUp() {
+		Frood::initialize();
 	}
 
 	/**
