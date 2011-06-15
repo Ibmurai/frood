@@ -60,6 +60,17 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testConvertPhpNameToHtmlName($input, $output) {
-		$this->assertEquals(Frood::convertPhpNameToHtmlName($input), $output);
+		$this->assertEquals($output, Frood::convertPhpNameToHtmlName($input));
+	}
+
+	/**
+	 * Test FroodParameters::convertHtmlNameToPhpName()
+	 *
+	 * @dataProvider providerConvertPhpNameToHtmlName
+	 *
+	 * @return void
+	 */
+	public function testConvertHtmlNameToPhpName($output, $input) {
+		$this->assertEquals($output, Frood::convertHtmlNameToPhpName($input));
 	}
 }

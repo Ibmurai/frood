@@ -229,7 +229,7 @@ class Frood {
 	/**
 	 * Converts a camelCased string to a lowercased_with_underscores string.
 	 *
-	 * @param $name The camelCased string to convert.
+	 * @param $name The CamelCased string to convert.
 	 *
 	 * @return string A lowercased_with_underscores version of $name.
 	 */
@@ -239,5 +239,20 @@ class Frood {
 
 		// Second replace capital letters with _ followed by the letter, lowercased.
 		return preg_replace('/([A-Z])/e', "'_'.strtolower('\\1')", $name);
+	}
+
+	/**
+	 * Converts a lowercased_with_underscores string to a CamelCased string.
+	 *
+	 * @param $name The lowercased_with_underscores string to convert.
+	 *
+	 * @return string A CamelCased version of $name.
+	 */
+	public static function convertHtmlNameToPhpName($name) {
+		// First uppercase the first letter.
+		$name = strtoupper(substr($name, 0, 1)) . substr($name, 1);
+
+		// Second replace _ followed by a letter with capital letters.
+		return preg_replace('/(_[a-z0-9])/e', "substr(strtoupper('\\1'),1)", $name);
 	}
 }
