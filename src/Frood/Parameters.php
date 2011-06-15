@@ -31,13 +31,12 @@ class FroodParameters {
 	 * Pass an associative array to override this behaviour.
 	 *
 	 * @param array   $from         An associative array to generate parameters from.
-	 * @param boolean $convertNames Set to true to convert parameter names from lowercased_with_underscores to CamelCased.
 	 *
 	 * @throws FroodParameterException If an invalid parameter is encountered.
 	 *
 	 * @return void
 	 */
-	public function __construct(array $from = null, $convertNames = false) {
+	public function __construct(array $from = null) {
 		if ($from === null) {
 			$from = array_merge($_GET, $_POST);
 		}
