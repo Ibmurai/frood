@@ -30,17 +30,20 @@ class FroodParameters {
 	 * If the same parameter(s) exist in both, POST "wins".
 	 * Pass an associative array to override this behaviour.
 	 *
-	 * @param array $from An associative array to generate parameters from.
+	 * @param array   $from         An associative array to generate parameters from.
+	 * @param boolean $convertNames Set to true to convert parameter names from lowercased_with_underscores to CamelCased.
+	 *
+	 * @throws FroodParameterException If an invalid parameter is encountered.
 	 *
 	 * @return void
 	 */
-	public function __construct(array $from = null) {
+	public function __construct(array $from = null, $convertNames = false) {
 		if ($from === null) {
 			$from = array_merge($_GET, $_POST);
 		}
 
 		foreach ($from as $key => $value) {
-			if ($name = Frood::convertPhpNameToHtmlName($key)) {
+			if ($name = Frood::convertHtmlNameToPhpName($key)) {
 				$this->_values[$name] = $value;
 			} else {
 				throw new FroodParameterException($key, $value);
@@ -49,7 +52,7 @@ class FroodParameters {
 	}
 
 	/**
-	 * This handles all calls to ->getXxx() methods.
+	 * This handles all calls to ->getXxx() and ->hasXxx() methods.
 	 *
 	 * @param string $name The name of the method being called.
 	 * @param array  $args An enumerated array containing the parameters passed to the $name'ed method.
@@ -60,8 +63,22 @@ class FroodParameters {
 	 */
 	public function __call($name, array $args) {
 		$matches = array();
-		if (preg_match('/^get([A-Z][A-Za-z0-9]*)$/', $name, $matches)) {
-			return $this->_getParameter($matches[1]);
+		if (preg_match('/^((?:get)|(?:has))([A-Z][A-Za-z0-9]*)$/', $name, $matches)) {
+			if ($matches[1] == 'get') {
+				if (count($args) == 0) {
+					return $this->_getParameter($matches[2]);
+				} else if (count($args) == 1) {
+					return $this->_getParameter($matches[2], $args[0]);
+				} else {
+					throw new RuntimeException("->$name should be called with 0 or 1 parameters. Called with " . count($args) . ' parameters.');
+				}
+			} else if ($matches[1] == 'has') {
+				if (count($args) == 0) {
+					return $this->_hasParameter($matches[2]);
+				} else {
+					throw new RuntimeException("->$name should be called with 0  parameters. Called with " . count($args) . ' parameters.');
+				}
+			}
 		}
 
 		throw new RuntimeException("Call to undefined method, $name.");
@@ -85,15 +102,33 @@ class FroodParameters {
 	/**
 	 * Get the named parameter.
 	 *
-	 * @param string $name The name of the parameter to get.
+	 * @param string $name    The name of the parameter to get.
+	 * @param mixed  $default A value to return if the parameter has not been set.
 	 *
 	 * @return mixed It's like a box of chocolates.
 	 *
-	 * @throws RuntimeException For non-existing parameters.
+	 * @throws RuntimeException For non-existing parameters, if no default is given.
 	 */
-	private function _getParameter($name) {
-		$name = Frood::convertPhpNameToHtmlName($name);
+	private function _getParameter($name, $default = null) {
+		if ($this->hasParameter($name)) {
+			return $this->_values[$name];
+		} else {
+			if ($default !== null) {
+				return $default;
+			} else {
+				throw new RuntimeException("Attempting to retrieve parameter, $name, which has not been set and has no default value.");
+			}
+		}
+	}
 
-
+	/**
+	 * Check if the named parameter is set.
+	 *
+	 * @param string $name The name of the parameter to check.
+	 *
+	 * @return boolean True if the named parameter is set.
+	 */
+	private function _hasParameter($name) {
+		return array_key_exists($name, $this->_values);
 	}
 }
