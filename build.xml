@@ -18,7 +18,8 @@
 	<!-- Php files to syntax check -->
 	<path id="checkphp.fileset">
 		<fileset dir="${basedir}">
-			<include name="**/*.php" />
+			<include name="src/**/*.php" />
+			<include name="tests/**/*.php" />
 		</fileset>
 	</path>
 

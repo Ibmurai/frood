@@ -33,6 +33,7 @@ class Frood {
 	public function __construct() {
 		$this->_setupAutoloader();
 		$this->_setupModuleAndIsAdmin();
+		$this->_buildUriFormat();
 	}
 
 	/**
@@ -44,6 +45,9 @@ class Frood {
 	 * @param array  $parameters The parameters for the action.
 	 *
 	 * @return void
+	 *
+	 * @throws FroodDispatchException  When Frood cannot dispatch.
+	 * @throws FroodParameterException When the parameters are invalid.
 	 */
 	public function dispatch($controller = null, $action = null, $parameters = null) {
 		if ($controller === null) {
@@ -61,8 +65,22 @@ class Frood {
 		if (method_exists($controller, $action)) {
 			call_user_func(array($controller, $action), $parameters);
 		} else {
-			// TODO: What to do?
-			throw new RuntimeException("Could not call $controller::$action(...)");
+			throw new FroodDispatchException($controller, $action, $parameters);
+		}
+	}
+
+	/**
+	 * Dispatch an action to a controller, and produce a 404 for an invalid request.
+	 * The header of the 404 will contain an X-Frood-Message header with the exception string.
+	 * Determines everything from the request.
+	 *
+	 * @return void
+	 */
+	public function safeDispatch() {
+		try {
+			$this->dispatch();
+		} catch (FroodDispatchException $e) {
+			header("X-Frood-Message: {$e->getMessage()}", false, 404);
 		}
 	}
 
@@ -77,6 +95,47 @@ class Frood {
 		if ($filePath = $this->_classNameToPath($name)) {
 			require_once $filePath;
 		}
+	}
+
+	/**
+	 * Attempt to guess the controller to call, based on the request.
+	 *
+	 * @return null|string The name of a controller. Or null if it can't guess.
+	 */
+	private function _guessController() {
+		$requestUri = $_SERVER['REQUEST_URI'];
+
+		$matches = array();
+		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
+			return $matches[1];
+		}
+
+		return null;
+	}
+
+	/**
+	 * Attempt to guess the action to call, based on the request.
+	 *
+	 * @return null|string The name of an action. 'index' if it can't guess. null if the URI isn't up to snuff.
+	 */
+	private function _guessAction() {
+		$requestUri = $_SERVER['REQUEST_URI'];
+
+		$matches = array();
+		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
+			return isset($matches[2]) ? $matches[2] : 'index';
+		}
+
+		return null;
+	}
+
+	/**
+	 * Generate a FroodParameters instance, based on the request.
+	 *
+	 * @return FroodParameters Parameters for a controller action.
+	 */
+	private function _guessParameters() {
+		return new FroodParameters();
 	}
 
 	/**
@@ -114,6 +173,21 @@ class Frood {
 				$this->_isAdmin = false;
 			}
 		}
+	}
+
+	/**
+	 * Builds the regex to parse the uri.
+	 *
+	 * @return void
+	 */
+	private function _buildUriFormat() {
+		$this->_uriFormat = '/^
+			\/modules
+			\/' . $this->_module . '                     #     module name
+			' . ($this->_isAdmin ? '\/admin' : '') . '   #     admin if in admin mode
+			\/([a-z][a-z0-9_]*)                          # 1 : controller
+			(?:\/([a-z][a-z0-9_]*))?                     # 2 : action
+		/x';
 	}
 
 	/**
@@ -157,7 +231,7 @@ class Frood {
 	 *
 	 * @param $name The camelCased string to convert.
 	 *
-	 * @return A lowercased_with_underscores version of $name.
+	 * @return string A lowercased_with_underscores version of $name.
 	 */
 	public static function convertPhpNameToHtmlName($name) {
 		// First lowercase the first letter.
@@ -166,6 +240,4 @@ class Frood {
 		// Second replace capital letters with _ followed by the letter, lowercased.
 		return preg_replace('/([A-Z])/e', "'_'.strtolower('\\1')", $name);
 	}
-
-
 }

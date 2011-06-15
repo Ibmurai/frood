@@ -38,6 +38,14 @@ class FroodParameters {
 		if ($from === null) {
 			$from = array_merge($_GET, $_POST);
 		}
+
+		foreach ($from as $key => $value) {
+			if ($name = Frood::convertPhpNameToHtmlName($key)) {
+				$this->_values[$name] = $value;
+			} else {
+				throw new FroodParameterException($key, $value);
+			}
+		}
 	}
 
 	/**
@@ -57,6 +65,21 @@ class FroodParameters {
 		}
 
 		throw new RuntimeException("Call to undefined method, $name.");
+	}
+
+	/**
+	 * Get a nice string representation of the parameters.
+	 *
+	 * @return string A nice string representation of the parameters.
+	 */
+	public function __toString() {
+		$res = array();
+
+		foreach ($this->_values as $key => $value) {
+			$res[] = "$key=$value";
+		}
+
+		return implode(', ', $res);
 	}
 
 	/**
