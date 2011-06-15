@@ -29,7 +29,6 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	protected function setUp() {
-		$this->_frood = new Frood();
 	}
 
 	/**
@@ -42,10 +41,36 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Test various $_GET and $_POST combinations.
+	 * Provides test data for testGetParameter and testHasParameter.
+	 *
+	 * @return FroodParameters Test data for testGetParameter and testHasParameter.
+	 */
+	public static function providerSomeFroodParameters() {
+		return array(array(new FroodParameters(array(
+			'on_your_face'   => 'bunched',
+			'on_your_face2'  => 'The munchies',
+			'IAmYourFather'  => 'Luke',
+			'iAmYour_mother' => 'yo YO!',
+			'a'              => 'A',
+			'B'              => 'b',
+		))));
+	}
+
+	/**
+	 * Test parameter get's.
+	 *
+	 * @dataProvider providerSomeFroodParameters
+	 *
+	 * @param FroodParameters $params
 	 *
 	 * @return void
 	 */
-	public function testParameterCombinations() {
+	public function testGetParameter(FroodParameters $params) {
+		$this->assertEquals('bunched', $params->getOnYourFace());
+		$this->assertEquals('The munchies', $params->getOnYourFace2());
+		$this->assertEquals('Luke', $params->getIAmYourFather());
+		$this->assertEquals('yo YO!', $params->getIAmYourMother());
+		$this->assertEquals('A', $params->getA());
+		$this->assertEquals('b', $params->getB());
 	}
 }

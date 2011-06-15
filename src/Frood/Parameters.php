@@ -109,7 +109,7 @@ class FroodParameters {
 	 * @throws RuntimeException For non-existing parameters, if no default is given.
 	 */
 	private function _getParameter($name, $default = null) {
-		if ($this->hasParameter($name)) {
+		if ($this->_hasParameter($name)) {
 			return $this->_values[$name];
 		} else {
 			if ($default !== null) {

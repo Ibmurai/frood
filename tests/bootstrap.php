@@ -10,3 +10,4 @@
  * @since    2011-06-10
  */
 require_once dirname(__FILE__).'/../src/Frood.php';
+new Frood();
