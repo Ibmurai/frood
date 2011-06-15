@@ -41,31 +41,20 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Provides test data for testGetParameter and testHasParameter.
+	 * Test parameter get's.
 	 *
-	 * @return FroodParameters Test data for testGetParameter and testHasParameter.
+	 * @return void
 	 */
-	public static function providerSomeFroodParameters() {
-		return array(array(new FroodParameters(array(
+	public function testGetParameter() {
+		$params = new FroodParameters(array(
 			'on_your_face'   => 'bunched',
 			'on_your_face2'  => 'The munchies',
 			'IAmYourFather'  => 'Luke',
 			'iAmYour_mother' => 'yo YO!',
 			'a'              => 'A',
 			'B'              => 'b',
-		))));
-	}
+		));
 
-	/**
-	 * Test parameter get's.
-	 *
-	 * @dataProvider providerSomeFroodParameters
-	 *
-	 * @param FroodParameters $params
-	 *
-	 * @return void
-	 */
-	public function testGetParameter(FroodParameters $params) {
 		$this->assertEquals('bunched', $params->getOnYourFace());
 		$this->assertEquals('The munchies', $params->getOnYourFace2());
 		$this->assertEquals('Luke', $params->getIAmYourFather());
@@ -77,13 +66,18 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test parameter has's.
 	 *
-	 * @dataProvider providerSomeFroodParameters
-	 *
-	 * @param FroodParameters $params
-	 *
 	 * @return void
 	 */
-	public function testHasParameter(FroodParameters $params) {
+	public function testHasParameter() {
+		$params = new FroodParameters(array(
+			'on_your_face'   => 'bunched',
+			'on_your_face2'  => 'The munchies',
+			'IAmYourFather'  => 'Luke',
+			'iAmYour_mother' => 'yo YO!',
+			'a'              => 'A',
+			'B'              => 'b',
+		));
+
 		$this->assertTrue($params->hasOnYourFace());
 		$this->assertTrue($params->hasOnYourFace2());
 		$this->assertTrue($params->hasIAmYourFather());
@@ -93,5 +87,21 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($params->hasOnyourFace());
 		$this->assertFalse($params->hasNop());
 		$this->assertFalse($params->hasStuff());
+	}
+
+	/**
+	 * Test parameter default values.
+	 *
+	 * @return void
+	 */
+	public function testDefaultValues() {
+		$params = new FroodParameters(array(
+			'a'              => 'A',
+			'B'              => 'b',
+		));
+
+		$this->assertEquals('A', $params->getA('d'));
+		$this->assertEquals('b', $params->getB('e'));
+		$this->assertEquals('c', $params->getC('c'));
 	}
 }
