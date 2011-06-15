@@ -73,4 +73,25 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('A', $params->getA());
 		$this->assertEquals('b', $params->getB());
 	}
+
+	/**
+	 * Test parameter has's.
+	 *
+	 * @dataProvider providerSomeFroodParameters
+	 *
+	 * @param FroodParameters $params
+	 *
+	 * @return void
+	 */
+	public function testHasParameter(FroodParameters $params) {
+		$this->assertTrue($params->hasOnYourFace());
+		$this->assertTrue($params->hasOnYourFace2());
+		$this->assertTrue($params->hasIAmYourFather());
+		$this->assertTrue($params->hasIAmYourMother());
+		$this->assertTrue($params->hasA());
+		$this->assertTrue($params->hasB());
+		$this->assertFalse($params->hasOnyourFace());
+		$this->assertFalse($params->hasNop());
+		$this->assertFalse($params->hasStuff());
+	}
 }
