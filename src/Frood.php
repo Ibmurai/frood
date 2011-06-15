@@ -28,11 +28,14 @@ class Frood {
 	/**
 	 * Do initialization stuff.
 	 *
+	 * @param string  $module  The dirname of the module to work with.
+	 * @param boolean $isAdmin Are we handling admin pages?
+	 *
 	 * @return void
 	 */
-	public function __construct() {
+	public function __construct($module = null, $isAdmin = false) {
 		$this->_setupAutoloader();
-		$this->_setupModuleAndIsAdmin();
+		$this->_setupModuleAndIsAdmin($module, $isAdmin);
 		$this->_buildUriFormat();
 	}
 
@@ -107,7 +110,7 @@ class Frood {
 
 		$matches = array();
 		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
-			return $matches[1];
+			return self::convertHtmlNameToPhpName("{$this->_module}_{$matches[1]}_controller");
 		}
 
 		return null;
@@ -123,7 +126,10 @@ class Frood {
 
 		$matches = array();
 		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
-			return isset($matches[2]) ? $matches[2] : 'index';
+			$action = isset($matches[2]) ? $matches[2] : 'index';
+			$action = self::convertHtmlNameToPhpName($action, false);
+
+			return $action . 'Action';
 		}
 
 		return null;
@@ -155,23 +161,32 @@ class Frood {
 
 	/**
 	 * Determine context: Module and whether we are in admin mode.
+	 * Call with no parameters to determine this from the request.
+	 *
+	 * @param string  $module  The dirname of the module to work with.
+	 * @param boolean $isAdmin Are we handling admin pages?
 	 *
 	 * @return void
 	 */
-	private function _setupModuleAndIsAdmin() {
-		$matches = array();
-		if (preg_match('/
-			\/([a-z]*)
-			\/([a-z]*)
-			\/index\.php
-		$/ix', $_SERVER['SCRIPT_FILENAME'], $matches)) {
-			if ($matches[2] == 'admin') {
-				$this->_module  = $matches[1];
-				$this->_isAdmin = true;
-			} else {
-				$this->_module  = $matches[2];
-				$this->_isAdmin = false;
+	private function _setupModuleAndIsAdmin($module = null, $isAdmin = false) {
+		if ($module === null) {
+			$matches = array();
+			if (preg_match('/
+				\/([a-z]*)
+				\/([a-z]*)
+				\/index\.php
+			$/ix', $_SERVER['SCRIPT_FILENAME'], $matches)) {
+				if ($matches[2] == 'admin') {
+					$this->_module  = $matches[1];
+					$this->_isAdmin = true;
+				} else {
+					$this->_module  = $matches[2];
+					$this->_isAdmin = false;
+				}
 			}
+		} else {
+			$this->_module  = $module;
+			$this->_isAdmin = $isAdmin;
 		}
 	}
 
@@ -207,18 +222,20 @@ class Frood {
 
 		// ...And in the module
 		if ($this->_module !== null) {
-			$searchLocations[] = realpath(dirname(__FILE__) . '/../../../' . $this->_module);
+			$searchLocations[] = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/class');
 		}
 
 		if (preg_match('/^((?:[A-Z][a-z]+)+)$/', $name)) {
 			// Build a regular expression matching... Well... The end of the filepaths to accept...
 			$regex = '/' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '\/?\\1', substr($name, 1)) . '.php$/';
 
-			$directory = new RecursiveDirectoryIterator(dirname(__FILE__));
-			$iterator = new RecursiveIteratorIterator($directory);
-			foreach ($iterator as $finfo) {
-				if (preg_match($regex, $finfo->getPathname())) {
-					return $finfo->getPathname();
+			foreach ($searchLocations as $classPath) {
+				$directory = new RecursiveDirectoryIterator($classPath);
+				$iterator = new RecursiveIteratorIterator($directory);
+				foreach ($iterator as $finfo) {
+					if (preg_match($regex, $finfo->getPathname())) {
+						return $finfo->getPathname();
+					}
 				}
 			}
 		}
@@ -245,12 +262,15 @@ class Frood {
 	 * Converts a lowercased_with_underscores string to a CamelCased string.
 	 *
 	 * @param $name The lowercased_with_underscores string to convert.
+	 * @param $ucFirst Set this to false to get a dromedaryCased string instead.
 	 *
-	 * @return string A CamelCased version of $name.
+	 * @return string A CamelCased or dromedaryCased version of $name.
 	 */
-	public static function convertHtmlNameToPhpName($name) {
+	public static function convertHtmlNameToPhpName($name, $ucFirst = true) {
 		// First uppercase the first letter.
-		$name = strtoupper(substr($name, 0, 1)) . substr($name, 1);
+		if ($ucFirst) {
+			$name = strtoupper(substr($name, 0, 1)) . substr($name, 1);
+		}
 
 		// Second replace _ followed by a letter with capital letters.
 		return preg_replace('/(_[a-z0-9])/e', "substr(strtoupper('\\1'),1)", $name);
