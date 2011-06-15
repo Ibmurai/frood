@@ -19,9 +19,6 @@
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
 class FroodParametersTest extends PHPUnit_Framework_TestCase {
-	/** @var Frood The Frood instance used for these tests. */
-	private $_frood = null;
-
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
@@ -96,8 +93,8 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testDefaultValues() {
 		$params = new FroodParameters(array(
-			'a'              => 'A',
-			'B'              => 'b',
+			'a' => 'A',
+			'B' => 'b',
 		));
 
 		$this->assertEquals('A', $params->getA('d'));
