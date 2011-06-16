@@ -28,15 +28,19 @@ class Frood {
 	/**
 	 * Do initialization stuff.
 	 *
-	 * @param string  $module  The dirname of the module to work with.
-	 * @param boolean $isAdmin Are we handling admin pages?
+	 * @param string  $module    The dirname of the module to work with.
+	 * @param boolean $isAdmin   Are we handling admin pages?
+	 * @param boolean $bootXoops Boot Xoops? The answer is probably only no for tests.
 	 *
 	 * @return void
 	 */
-	public function __construct($module = null, $isAdmin = false) {
+	public function __construct($module = null, $isAdmin = false, $bootXoops = true) {
 		$this->_setupAutoloader();
 		$this->_setupModuleAndIsAdmin($module, $isAdmin);
 		$this->_buildUriFormat();
+		if ($bootXoops) {
+			$this->_bootXoops();
+		}
 	}
 
 	/**
@@ -49,8 +53,8 @@ class Frood {
 	 *
 	 * @return void
 	 *
-	 * @throws FroodDispatchException  When Frood cannot dispatch.
-	 * @throws FroodParameterException When the parameters are invalid.
+	 * @throws FroodDispatchException If Frood cannot dispatch.
+	 * @throws RuntimeException       If Xoops cannot be booted.
 	 */
 	public function dispatch($controller = null, $action = null, $parameters = null) {
 		if ($controller === null) {
@@ -187,6 +191,30 @@ class Frood {
 		} else {
 			$this->_module  = $module;
 			$this->_isAdmin = $isAdmin;
+		}
+	}
+
+	/**
+	 * Boot Xoops or die trying!
+	 *
+	 * @return void
+	 *
+	 * @throws RuntimeException If Xoops cannot be booted.
+	 */
+	private function _bootXoops() {
+		if ($this->_isAdmin) {
+			if ($cpHeader = realpath(dirname(__FILE__) . '/../../../../../include/cp_header.php')) {
+				require_once $cpHeader;
+			} else {
+				throw new RuntimeException('Frood could not boot Xoops! (admin mode)');
+			}
+		} else {
+			if ($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../../mainfile.php')) {
+				require_once $xoopsMainfile;
+				require_once XOOPS_ROOT_PATH . '/header.php';
+			} else {
+				throw new RuntimeException('Frood could not boot Xoops!');
+			}
 		}
 	}
 

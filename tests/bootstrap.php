@@ -10,4 +10,6 @@
  * @since    2011-06-10
  */
 require_once dirname(__FILE__).'/../src/Frood.php';
-new Frood();
+
+// This basically just sets up the autoloader, without booting Xoops.
+new Frood(null, false, false);
