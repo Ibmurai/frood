@@ -30,9 +30,7 @@ class FroodParameters {
 	 * If the same parameter(s) exist in both, POST "wins".
 	 * Pass an associative array to override this behaviour.
 	 *
-	 * @param array   $from         An associative array to generate parameters from.
-	 *
-	 * @throws FroodParameterException If an invalid parameter is encountered.
+	 * @param array $from An associative array to generate parameters from.
 	 *
 	 * @return void
 	 */
@@ -44,8 +42,6 @@ class FroodParameters {
 		foreach ($from as $key => $value) {
 			if ($name = Frood::convertHtmlNameToPhpName($key)) {
 				$this->_values[$name] = $value;
-			} else {
-				throw new FroodParameterException($key, $value);
 			}
 		}
 	}
