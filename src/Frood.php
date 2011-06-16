@@ -69,8 +69,8 @@ class Frood {
 			$parameters = $this->_guessParameters();
 		}
 
-		if (method_exists($controller, $action)) {
-			call_user_func(array(new $controller, $action), $parameters);
+		if (class_exists($controller) && ($controllerInstance = new $controller()) && method_exists($controllerInstance, $action)) {
+			call_user_func(array($controllerInstance, $action), $parameters);
 		} else {
 			throw new FroodDispatchException($controller, $action, $parameters);
 		}
@@ -203,11 +203,16 @@ class Frood {
 	 */
 	private function _bootXoops() {
 		if ($this->_isAdmin) {
-			if (!($cpHeader = realpath(dirname(__FILE__) . '/../../../../../include/cp_header.php') && include_once $cpHeader)) {
+			if (($cpHeader = realpath(dirname(__FILE__) . '/../../../../../include/cp_header.php')) && file_exists($cpHeader)) {
+				include_once $cpHeader;
+			} else {
 				throw new RuntimeException('Frood could not boot Xoops! (admin mode)');
 			}
 		} else {
-			if (!($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../../mainfile.php') && include_once $xoopsMainfile && include_once XOOPS_ROOT_PATH . '/header.php')) {
+			if (($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../../mainfile.php')) && file_exists($xoopsMainfile) && file_exists(XOOPS_ROOT_PATH . '/header.php')) {
+				include_once $xoopsMainfile;
+				include_once XOOPS_ROOT_PATH . '/header.php';
+			} else {
 				throw new RuntimeException('Frood could not boot Xoops!');
 			}
 		}
@@ -244,13 +249,13 @@ class Frood {
 		);
 
 		// ...And in the modules class folder
-		if ($this->_module !== null) {
-			$searchLocations[] = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/class');
+		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../../../' . $this->_module . '/class'))) {
+			$searchLocations[] = $folder;
 		}
 
 		// ...And, if we're in admin mode, the admin/class folder
-		if ($this->_isAdmin) {
-			$searchLocations[] = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/admin/class');
+		if (($this->_isAdmin) && ($folder = realpath(dirname(__FILE__) . '/../../../../' . $this->_module . '/admin/class'))) {
+			$searchLocations[] = $folder;
 		}
 
 		if (preg_match('/^((?:[A-Z][a-z]+)+)$/', $name)) {
