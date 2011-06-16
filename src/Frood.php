@@ -70,7 +70,7 @@ class Frood {
 		}
 
 		if (method_exists($controller, $action)) {
-			call_user_func(array($controller, $action), $parameters);
+			call_user_func(array(new $controller, $action), $parameters);
 		} else {
 			throw new FroodDispatchException($controller, $action, $parameters);
 		}
@@ -203,16 +203,11 @@ class Frood {
 	 */
 	private function _bootXoops() {
 		if ($this->_isAdmin) {
-			if ($cpHeader = realpath(dirname(__FILE__) . '/../../../../../include/cp_header.php')) {
-				require_once $cpHeader;
-			} else {
+			if (!($cpHeader = realpath(dirname(__FILE__) . '/../../../../../include/cp_header.php') && include_once $cpHeader)) {
 				throw new RuntimeException('Frood could not boot Xoops! (admin mode)');
 			}
 		} else {
-			if ($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../../mainfile.php')) {
-				require_once $xoopsMainfile;
-				require_once XOOPS_ROOT_PATH . '/header.php';
-			} else {
+			if (!($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../../mainfile.php') && include_once $xoopsMainfile && include_once XOOPS_ROOT_PATH . '/header.php')) {
 				throw new RuntimeException('Frood could not boot Xoops!');
 			}
 		}
@@ -248,9 +243,14 @@ class Frood {
 			dirname(__FILE__),
 		);
 
-		// ...And in the module
+		// ...And in the modules class folder
 		if ($this->_module !== null) {
 			$searchLocations[] = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/class');
+		}
+
+		// ...And, if we're in admin mode, the admin/class folder
+		if ($this->_isAdmin) {
+			$searchLocations[] = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/admin/class');
 		}
 
 		if (preg_match('/^((?:[A-Z][a-z]+)+)$/', $name)) {
