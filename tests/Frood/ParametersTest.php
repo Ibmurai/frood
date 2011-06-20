@@ -119,4 +119,20 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('strut', $params->getLagen());
 		$this->assertEquals('this', $params->getHest());
 	}
+
+	/**
+	 * Test parameter toString method.
+	 *
+	 * @return void
+	 */
+	public function testToString() {
+		$params = new FroodParameters(array(
+			'a' => 'A',
+			'B' => 'b',
+			's_m' => 'hej',
+			'Nitrat' => 'uetUHet',
+		));
+
+		$this->assertEquals('A=A, B=b, SM=hej, Nitrat=uetUHet', '' . $params);
+	}
 }
