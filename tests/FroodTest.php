@@ -86,7 +86,7 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 
 		try {
 			$frood->dispatch();
-			$this->assertTrue(false, 'Expected an Exception before this!');
+			$this->fail('Expected an Exception before this!');
 		} catch (FroodDispatchException $e) {
 			$this->assertEquals(
 				'CruisecontrolBuildresultsController',

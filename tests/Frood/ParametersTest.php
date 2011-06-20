@@ -135,4 +135,57 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals('A=A, B=b, SM=hej, Nitrat=uetUHet', '' . $params);
 	}
+
+	/**
+	 * Test parameter get with too many arguments.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testTooManyArgumentsToGet() {
+		$params = new FroodParameters();
+
+		$params->getMechaSalmon('default', 'too many parameters');
+	}
+
+	/**
+	 * Test parameter has with too many arguments.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testTooManyArgumentsToHas() {
+		$params = new FroodParameters();
+
+		$params->hasMechaSalmon('too many parameters');
+	}
+
+
+	/**
+	 * Test call to missing method.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testMissingMethod() {
+		$params = new FroodParameters();
+
+		$params->superMechaSalmon('too many parameters');
+	}
+
+	/**
+	 * Test parameter get with undefined parameter and no default.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testNoDefaultValue() {
+		$params = new FroodParameters();
+
+		$params->getMechaSalmon();
+	}
 }
