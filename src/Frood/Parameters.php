@@ -71,7 +71,7 @@ class FroodParameters {
 				if (count($args) == 0) {
 					return $this->_hasParameter($matches[2]);
 				} else {
-					throw new RuntimeException("->$name should be called with 0  parameters. Called with " . count($args) . ' parameters.');
+					throw new RuntimeException("->$name should be called with 0 parameters. Called with " . count($args) . ' parameters.');
 				}
 			}
 		}

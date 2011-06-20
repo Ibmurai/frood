@@ -101,4 +101,22 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('b', $params->getB('e'));
 		$this->assertEquals('c', $params->getC('c'));
 	}
+
+	/**
+	 * Test parameter values from GET/POST merging.
+	 *
+	 * @return void
+	 */
+	public function testGetPostMerging() {
+		$_GET['lam']    = 'hej';
+		$_GET['hest']   = 'not this';
+		$_POST['lagen'] = 'strut';
+		$_POST['hest']  = 'this';
+
+		$params = new FroodParameters();
+
+		$this->assertEquals('hej', $params->getLam());
+		$this->assertEquals('strut', $params->getLagen());
+		$this->assertEquals('this', $params->getHest());
+	}
 }
