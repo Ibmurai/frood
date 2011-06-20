@@ -23,7 +23,7 @@ class Frood {
 	private $_module = null;
 
 	/** @var boolean Are we handling admin pages? */
-	private $_isAdmin = null;
+	private $_isAdmin;
 
 	/**
 	 * Do initialization stuff.
@@ -63,16 +63,18 @@ class Frood {
 
 		if ($action === null) {
 			$action = $this->_guessAction();
+			$method = $action . 'Action';
 		}
 
 		if ($parameters === null) {
 			$parameters = $this->_guessParameters();
 		}
 
-		if (class_exists($controller) && ($controllerInstance = new $controller()) && method_exists($controllerInstance, $action)) {
-			call_user_func(array($controllerInstance, $action), $parameters);
+		if (class_exists($controller) && ($controllerInstance = new $controller($this->_module, $this->_isAdmin)) && method_exists($controllerInstance, $method)) {
+			call_user_func(array($controllerInstance, $method), $parameters);
+			$controllerInstance->render($action);
 		} else {
-			throw new FroodDispatchException($controller, $action, $parameters);
+			throw new FroodDispatchException($controller, $method, $parameters);
 		}
 	}
 
@@ -87,7 +89,12 @@ class Frood {
 		try {
 			$this->dispatch();
 		} catch (FroodDispatchException $e) {
-			header("X-Frood-Message: {$e->getMessage()}", false, 404);
+			if ($this->_isAdmin) {
+				echo '<h1>Frood error</h1>';
+				echo $e->getMessage();
+			} else {
+				header("X-Frood-Message: {$e->getMessage()}", false, 404);
+			}
 		}
 	}
 
@@ -110,7 +117,7 @@ class Frood {
 	 * @return null|string The name of a controller. Or null if it can't guess.
 	 */
 	private function _guessController() {
-		$requestUri = $_SERVER['REQUEST_URI'];
+		$requestUri = self::_getRequestUri();
 
 		$matches = array();
 		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
@@ -126,14 +133,14 @@ class Frood {
 	 * @return null|string The name of an action. 'index' if it can't guess. null if the URI isn't up to snuff.
 	 */
 	private function _guessAction() {
-		$requestUri = $_SERVER['REQUEST_URI'];
+		$requestUri = self::_getRequestUri();
 
 		$matches = array();
 		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
 			$action = isset($matches[2]) ? $matches[2] : 'index';
 			$action = self::convertHtmlNameToPhpName($action, false);
 
-			return $action . 'Action';
+			return $action;
 		}
 
 		return null;
@@ -205,13 +212,20 @@ class Frood {
 		if ($this->_isAdmin) {
 			if (($cpHeader = realpath(dirname(__FILE__) . '/../../../../../include/cp_header.php')) && file_exists($cpHeader)) {
 				include_once $cpHeader;
+				$vararr = get_defined_vars();
+				foreach ($vararr as $varName => $varValue) {
+					$GLOBALS[$varName] = $varValue;
+				}
 			} else {
 				throw new RuntimeException('Frood could not boot Xoops! (admin mode)');
 			}
 		} else {
-			if (($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../../mainfile.php')) && file_exists($xoopsMainfile) && file_exists(XOOPS_ROOT_PATH . '/header.php')) {
+			if (($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../../mainfile.php')) && file_exists($xoopsMainfile)) {
 				include_once $xoopsMainfile;
-				include_once XOOPS_ROOT_PATH . '/header.php';
+				$vararr = get_defined_vars();
+				foreach ($vararr as $varName => $varValue) {
+					$GLOBALS[$varName] = $varValue;
+				}
 			} else {
 				throw new RuntimeException('Frood could not boot Xoops!');
 			}
@@ -248,18 +262,18 @@ class Frood {
 			dirname(__FILE__),
 		);
 
-		// ...And in the modules class folder
-		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../../../' . $this->_module . '/class'))) {
-			$searchLocations[] = $folder;
-		}
-
-		// ...And, if we're in admin mode, the admin/class folder
+		// ...And, if we're in admin mode, the admin/class folder...
 		if (($this->_isAdmin) && ($folder = realpath(dirname(__FILE__) . '/../../../../' . $this->_module . '/admin/class'))) {
 			$searchLocations[] = $folder;
 		}
 
+		// ...And in the modules class folder.
+		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../../../' . $this->_module . '/class'))) {
+			$searchLocations[] = $folder;
+		}
+
 		if (preg_match('/^((?:[A-Z][a-z]+)+)$/', $name)) {
-			// Build a regular expression matching... Well... The end of the filepaths to accept...
+			// Build a regular expression matching the end of the filepaths to accept...
 			$regex = '/' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '\/?\\1', substr($name, 1)) . '.php$/';
 
 			foreach ($searchLocations as $classPath) {
@@ -274,6 +288,19 @@ class Frood {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the real request URI.
+	 *
+	 * @return string The real request URI.
+	 */
+	private static function _getRequestUri() {
+		if (isset($_SERVER['ORIGINAL_REQUEST_URI'])) {
+			return $_SERVER['ORIGINAL_REQUEST_URI'];
+		} else {
+			return $_SERVER['REQUEST_URI'];
+		}
 	}
 
 	/**
