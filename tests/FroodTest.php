@@ -73,4 +73,29 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	public function testConvertHtmlNameToPhpName($output, $input) {
 		$this->assertEquals($output, Frood::convertHtmlNameToPhpName($input));
 	}
+
+	/**
+	 * Test request parsing and exceptions.
+	 *
+	 * @return void
+	 */
+	public function testRequestParsing() {
+		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/buildresults/frood?tab=coverage';
+
+		$frood = new Frood('cruisecontrol', false, false);
+
+		try {
+			$frood->dispatch();
+			$this->assertTrue(false, 'Expected an Exception before this!');
+		} catch (FroodDispatchException $e) {
+			$this->assertEquals(
+				'CruisecontrolBuildresultsController',
+				$e->getController()
+			);
+			$this->assertEquals(
+				'froodAction',
+				$e->getAction()
+			);
+		}
+	}
 }
