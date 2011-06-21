@@ -10,14 +10,14 @@
 	<!-- ================================= target: tag latest succesful build =============================== -->
 	<target name="tagLatest">
 		<sshexec 
-			keyfile="/home/web/.sshid_dsa" 
+			keyfile="/home/web/.ssh/id_dsa" 
 			trust="yes" 
 			passphrase=""
 			username="web"
 			host="127.0.0.1" 
 			command="svn delete ${svn.base}${svn.project}/${svn.tags}/latest -m 'Removed old latest tag from ${svn.project}'" />
 		<sshexec 
-			keyfile="/home/web/.sshid_dsa" 
+			keyfile="/home/web/.ssh/id_dsa" 
 			trust="yes" 
 			passphrase="" 
 			host="127.0.0.1"
