@@ -1,14 +1,52 @@
 <h1>The Frood</h1>
 
-<p><em>Author</em><a href="mailto:jers@fynskemedier.dk">Jens Riisom Schultz</a><br />
-<em>Since</em>2011-06-21</p>
+	<p><em>Author</em><a href="mailto:jers@fynskemedier.dk">Jens Riisom Schultz</a><br />
+	<em>Since</em>2011-06-21</p>
 
-<p>The Frood standardizes MVC in Xoops.</p>
+	<p>The Frood standardizes MVC in Xoops.</p>
 
 <h1>MVC</h1>
 
-<p>For an extensive description of MVC in general, read <a href="http://en.wikipedia.org/wiki/Model-view-controller">this wiki article</a>.</p>
+	<p>For an extensive description of MVC in general, read <a href="http://en.wikipedia.org/wiki/Model-view-controller">this wiki article</a>.</p>
+
+<h1>The autoloader</h1>
+
+	<p>The Frood sets an autoloader up for you.</p>
+	<p>To ensure your classes are autoloaded you simply need to place your classes in the correct files and the correct locations.</p>
+
+	<h2>Class and file name conventions</h2>
+
+		<p>Classes always start with the module name.</p>
+		<p>Classes are defined in files with the same name as the class.</p>
+		<p>Part of the file name may be the path to the file (confusing... see the examples).</p>
+
+		<h3>Examples</h3>
+		<p>
+			<pre>XoopsImageSomething</pre> should be defined in one of:
+			<ul>
+				<li><pre>XoopsImageSomething.php</pre></li>
+				<li><pre>Xoops/ImageSomething.php</pre></li>
+				<li><pre>XoopsImage/Something.php</pre></li>
+				<li><pre>Xoops/Image/Something.php</pre></li>
+			</ul>
+		</p>
+
+	<h2>File locations</h2>
+
+
+		<p>The Frood will basically autoload all classes in <pre>class/</pre>.</p>
+		<p>When in admin mode classes in <pre>admin/class/</pre> will also be autoloaded.</p>
+
+		<ul>
+			<li>Model classes should be placed in <pre>class/model/</pre>.</li>
+			<li>Public controllers should be placed in <pre>class/controllers/</pre>.</li>
+			<li>Private controllers should be placed in <pre>admin/class/controllers/</pre>.</li>
+		</ul>
+
+<h1>Controllers</h1>
+
+	<p>TODO: Write this :)</p>
 
 <script type="syntaxhighlighter" class="brush: php"><![CDATA[
-echo 'hello world';
+echo 'example';
 ]]></script>
