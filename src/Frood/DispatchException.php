@@ -71,7 +71,7 @@ class FroodDispatchException extends Exception {
 	}
 
 	/**
-	 * Get the controller that Frood attempted to dispatch to as a string.
+	 * Get the parameters that Frood attempted to pass to the action.
 	 *
 	 * @return FroodParameters The parameters that Frood attempted to pass to the action.
 	 */

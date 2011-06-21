@@ -1,0 +1,87 @@
+The Frood
+=========
+
+*Author* [Jens Riisom Schultz](mailto:jers@fynskemedier.dk)
+*Since*  2011-06-20
+
+The Frood standardizes MVC in Xoops.
+
+It will help you to:
+
+  * Add MVC code to existing modules without breaking existing functionality.
+  * Refactor modules to MVC.
+  * Create entirely new full fledged MVC modules.
+  * Communicate with other Froody modules, using MVC without the overhead and hassle of http requests.
+
+
+Installing
+----------
+
+To set a module up for The Frood, you need to create 2 `.htaccess`-files and 2 `index.php` files.
+
+
+### Add The Frood as an external
+
+From the command line:
+
+	cd /the/root/of/the/module
+	mkdir lib
+	svn propedit svn:externals lib
+
+Add the following line:
+
+	frood svn://develop.fyens.dk/frood/trunk
+
+Save, quit and:
+
+	svn up
+
+
+### The admin interface
+
+First edit `admin/.htaccess`:
+
+	RewriteEngine on
+
+	# You need to change this to the correct module name
+	RewriteBase /modules/moduleName/admin/
+
+	# These rules exclude real files and directories from
+	# the rewriting and lets them pass through unaffected
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+
+	# Direct all requests to index.php, except specified file types
+	RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ index.php
+
+Then edit `admin/index.php`:
+
+	require_once dirname(__FILE__) . '/../lib/frood/src/Frood.php';
+	$frood = new Frood();
+	$frood->safeDispatch();
+
+### The public part
+
+First edit `.htaccess`:
+
+	RewriteEngine on
+
+	# You need to change this to the correct module name
+	RewriteBase /modules/moduleName/
+
+	# These rules exclude real files and directories from
+	# the rewriting and lets them pass through unaffected
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+
+	# Direct all requests to index.php, except specified file types
+	RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ index.php
+
+Then edit `index.php`:
+
+	require_once dirname(__FILE__) . '/lib/frood/src/Frood.php';
+	$frood = new Frood();
+	$frood->safeDispatch();
+
+*That's it.*
+
