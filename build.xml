@@ -292,13 +292,15 @@
 								<arg line="--ignoresymlinks on" />
 								<arg line="--quiet on" />
 								<arg line="--undocumentedelements on" />
-								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL" />
+								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL,TUTORIAL,TUTORIAL" />
 								<arg line="--sourcecode on" />
 								<arg line="--title 'Phpdoc for ${ant.project.name}'" />
 								<arg line="--defaultpackagename ${modulename}" />
 								<arg line="--defaultcategoryname ${modulename}" />
 								<arg line="--target ${basedir}/${build}/api" />
 								<arg line="--examplesdir ${phpdoc.examples}" />
+								<arg line="--output 'HTML:Phpuc:phpuc'" />
+								<arg line="--templatebase '${basedir}/tools/phpdocTemplate'" />
 							</exec>
 						</then>
 						<else>
@@ -307,7 +309,7 @@
 								<arg line="--ignoresymlinks on" />
 								<arg line="--quiet on" />
 								<arg line="--undocumentedelements on" />
-								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL" />
+								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL,TUTORIAL" />
 								<arg line="--sourcecode on" />
 								<arg line="--title 'Phpdoc for ${ant.project.name}'" />
 								<arg line="--defaultpackagename ${modulename}" />
@@ -315,6 +317,8 @@
 								<arg line="--target ${basedir}/${build}/api" />
 								<arg line="--examplesdir ${phpdoc.examples}" />
 								<arg line="--filename ${phpdoc.include.file}" />
+								<arg line="--output 'HTML:Phpuc:phpuc'" />
+								<arg line="--templatebase '${basedir}/tools/phpdocTemplate'" />
 							</exec>
 						</else>
 					</if>
@@ -328,7 +332,7 @@
 								<arg line="--ignoresymlinks on" />
 								<arg line="--quiet on" />
 								<arg line="--undocumentedelements on" />
-								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL" />
+								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL,TUTORIAL" />
 								<arg line="--sourcecode on" />
 								<arg line="--title 'Phpdoc for ${ant.project.name}'" />
 								<arg line="--defaultpackagename ${modulename}" />
@@ -336,6 +340,8 @@
 								<arg line="--target ${basedir}/${build}/api" />
 								<arg line="--examplesdir ${phpdoc.examples}" />
 								<arg line="--ignore ${phpdoc.exclude}" />
+								<arg line="--output 'HTML:Phpuc:phpuc'" />
+								<arg line="--templatebase '${basedir}/tools/phpdocTemplate'" />
 							</exec>
 						</then>
 						<else>
@@ -344,7 +350,7 @@
 								<arg line="--ignoresymlinks on" />
 								<arg line="--quiet on" />
 								<arg line="--undocumentedelements on" />
-								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL" />
+								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL,TUTORIAL" />
 								<arg line="--sourcecode on" />
 								<arg line="--title 'Phpdoc for ${ant.project.name}'" />
 								<arg line="--defaultpackagename ${modulename}" />
@@ -353,6 +359,8 @@
 								<arg line="--examplesdir ${phpdoc.examples}" />
 								<arg line="--filename ${phpdoc.include.file}" />
 								<arg line="--ignore ${phpdoc.exclude}" />
+								<arg line="--output 'HTML:Phpuc:phpuc'" />
+								<arg line="--templatebase '${basedir}/tools/phpdocTemplate'" />
 							</exec>
 						</else>
 					</if>
@@ -375,7 +383,7 @@
 								<arg line="--ignoresymlinks on" />
 								<arg line="--quiet on" />
 								<arg line="--undocumentedelements on" />
-								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL" />
+								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL,TUTORIAL" />
 								<arg line="--sourcecode on" />
 								<arg line="--title 'Phpdoc for ${ant.project.name}'" />
 								<arg line="--defaultpackagename ${modulename}" />
@@ -383,7 +391,7 @@
 								<arg line="--target ${basedir}/${build}/api" />
 								<arg line="--examplesdir ${phpdoc.examples}" />
 								<arg line="--output 'HTML:Phpuc:phpuc'" />
-								<arg line="--templatebase '/usr/share/php/data/phpUnderControl/data/phpdoc'" />
+								<arg line="--templatebase '${basedir}/tools/phpdocTemplate'" />
 							</exec>
 						</then>
 						<else>
@@ -392,7 +400,7 @@
 								<arg line="--ignoresymlinks on" />
 								<arg line="--quiet on" />
 								<arg line="--undocumentedelements on" />
-								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL" />
+								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL,TUTORIAL" />
 								<arg line="--sourcecode on" />
 								<arg line="--title 'Phpdoc for ${ant.project.name}'" />
 								<arg line="--defaultpackagename ${modulename}" />
@@ -401,7 +409,7 @@
 								<arg line="--examplesdir ${phpdoc.examples}" />
 								<arg line="--filename ${phpdoc.include.file}" />
 								<arg line="--output 'HTML:Phpuc:phpuc'" />
-								<arg line="--templatebase '/usr/share/php/data/phpUnderControl/data/phpdoc'" />
+								<arg line="--templatebase '${basedir}/tools/phpdocTemplate'" />
 							</exec>
 						</else>
 					</if>
@@ -415,7 +423,7 @@
 								<arg line="--ignoresymlinks on" />
 								<arg line="--quiet on" />
 								<arg line="--undocumentedelements on" />
-								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL" />
+								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL,TUTORIAL" />
 								<arg line="--sourcecode on" />
 								<arg line="--title 'Phpdoc for ${ant.project.name}'" />
 								<arg line="--defaultpackagename ${modulename}" />
@@ -424,7 +432,7 @@
 								<arg line="--examplesdir ${phpdoc.examples}" />
 								<arg line="--ignore ${phpdoc.exclude}" />
 								<arg line="--output 'HTML:Phpuc:phpuc'" />
-								<arg line="--templatebase '/usr/share/php/data/phpUnderControl/data/phpdoc'" />
+								<arg line="--templatebase '${basedir}/tools/phpdocTemplate'" />
 							</exec>
 						</then>
 						<else>
@@ -433,7 +441,7 @@
 								<arg line="--ignoresymlinks on" />
 								<arg line="--quiet on" />
 								<arg line="--undocumentedelements on" />
-								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL" />
+								<arg line="--readmeinstallchangelog README,CHANGELOG,INSTALL,TUTORIAL" />
 								<arg line="--sourcecode on" />
 								<arg line="--title 'Phpdoc for ${ant.project.name}'" />
 								<arg line="--defaultpackagename ${modulename}" />
@@ -443,7 +451,7 @@
 								<arg line="--filename ${phpdoc.include.file}" />
 								<arg line="--ignore ${phpdoc.exclude}" />
 								<arg line="--output 'HTML:Phpuc:phpuc'" />
-								<arg line="--templatebase '/usr/share/php/data/phpUnderControl/data/phpdoc'" />
+								<arg line="--templatebase '${basedir}/tools/phpdocTemplate'" />
 							</exec>
 						</else>
 					</if>
