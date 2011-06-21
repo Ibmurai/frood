@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="frood" basedir=".">
+	<description>This file is called from build.xml. It will fail if targets are called directly or form another server than CC!</description>
+
+	<!-- Svn config -->
+	<property name="svn.base" value="svn+ssh://develop.fyens.dk/home/svnroot/" />
+	<property name="svn.project" value="${ant.project.name}" />
+	<property name="svn.tags" value="tags" />
+
+	<!-- ================================= target: tag latest succesful build =============================== -->
+	<target name="tagLatest">
+		<sshexec keyfile="/home/web/.sshid_dsa" 
+			trust="yes" 
+			passphrase="" 
+			host="127.0.0.1" 
+			command="svn delete ${svn.base}${svn.project}/${svn.tags}/latest -m 'Removed old latest tag from ${svn.project}'" />
+		<sshexec keyfile="/home/web/.sshid_dsa" 
+			trust="yes" 
+			passphrase="" 
+			host="127.0.0.1" 
+			command="svn copy ${svn.base}${svn.project}/trunk ${svn.base}${svn.project}/${svn.tags}/latest -m 'Tagged latest successful ${svn.project} build'" />
+	</target>
+</project>

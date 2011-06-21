@@ -95,6 +95,7 @@
 		<antcall target="phpdocCC" />
 		<antcall target="phplocCC" />
 		<antcall target="phpcb" />
+		<ant antfile="deploy.xml" target="tagLatest" />
 	</target>
 
 	<!-- ================================= target: jenkinsbuild =============================== -->
