@@ -9,7 +9,6 @@
 
 <p>For an extensive description of MVC in general, read <a href="http://en.wikipedia.org/wiki/Model-view-controller">this wiki article</a>.</p>
 
-<a href="classtrees_Frood.html">Frood</a>
 <script type="syntaxhighlighter" class="brush: php"><![CDATA[
 echo 'hello world';
 ]]></script>
