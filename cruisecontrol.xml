@@ -31,8 +31,6 @@
 			<execute command="phpuc graph logs/${project.name} ${artifact.dir}" />
 			<execute
 				command="/usr/bin/php ./pduc.php --logs=${cruise.logs.dir} --artifacts=${cruise.artifacts.dir} --project=${project.name}  --path=./ --ignore=tests,doc/examples,tools" />
-			<execute
-				command="/usr/bin/php ./pdoxy.php --logs=${cruise.logs.dir} --artifacts=${cruise.artifacts.dir} --project=${project.name}" />
 		</publishers>
 	</project>
 </cruisecontrol>

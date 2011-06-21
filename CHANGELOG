@@ -1,4 +1,5 @@
 trunk:
 First working, stable version. @jers
 Added installation instructions. @jers
+Removed doxy documentation generation. @jers
 
