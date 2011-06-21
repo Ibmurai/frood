@@ -1,5 +1,14 @@
-<h1>Demo</h1>
-<p>Content</p>
+<h1>The Frood</h1>
+
+<p><em>Author</em> <a href="mailto:jers@fynskemedier.dk">Jens Riisom Schultz</a>
+<em>Since</em>  2011-06-20</p>
+
+<p>The Frood standardizes MVC in Xoops.</p>
+
+<h1>MVC</h1>
+
+<p>For an extensive description of MVC in general, read <a href="http://en.wikipedia.org/wiki/Model-view-controller">this wiki article</a>.</p>
+
 <a href="classtrees_Frood.html">Frood</a>
 <script type="syntaxhighlighter" class="brush: php"><![CDATA[
 echo 'hello world';

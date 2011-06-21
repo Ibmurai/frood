@@ -1,1 +1,24 @@
-For now look here for info aabout Frood: http://vserver10.fynskemedier.dk:8080/cruisecontrol/buildresults/frood
+The Frood
+=========
+
+*Author* [Jens Riisom Schultz](mailto:jers@fynskemedier.dk)
+*Since*  2011-06-20
+
+The Frood standardizes MVC in Xoops.
+
+It will help you to:
+
+  * Add MVC code to existing modules without breaking existing functionality.
+  * Refactor modules to MVC.
+  * Create entirely new full fledged MVC modules.
+  * Communicate with other Froody modules, using MVC without the overhead and hassle of http requests.
+
+
+Documentation
+-------------
+
+All of the compiled documentation for The Frood can be found [here](http://vserver10.fynskemedier.dk:8080/cruisecontrol/buildresults/frood?tab=documentation)
+
+  * See INSTALL for installation instructions.
+  * See TUTORIAL for instructions on how to code with The Frood.
+  * See CHANGELOG for a change log.
