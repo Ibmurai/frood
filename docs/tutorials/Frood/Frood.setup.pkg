@@ -1,0 +1,26 @@
+<refentry id="{@id}">
+	<refnamediv>
+		<refname>Setup</refname>
+		<refpurpose>This section describe how to setup Frood</refpurpose>
+	</refnamediv>
+	<refsynopsisdiv>
+		<author>
+			Jens Riisom Schultz
+			Johannes Skov Frandsen
+			<authorblurb>
+				{@link mailto:jers@fynskemedier.dk jers@fynskemedier.dk}
+				{@link mailto:jsf@fynskemedier.dk jsf@fynskemedier.dk}
+			</authorblurb>
+		</author>
+	</refsynopsisdiv>
+	{@toc}
+	<refsect1 id="{@id setup}">
+		<title>Setup</title>
+		<para>
+			<itemizedlist>
+				<listitem><para>Something</para></listitem>
+		</itemizedlist>
+		</para>
+		{@example example1.php}
+	</refsect1>
+</refentry>

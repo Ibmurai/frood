@@ -20,7 +20,8 @@
 	<logging>
 		<log type="coverage-html" target="../build/coverage" charset="UTF-8" yui="true" />
 		<log type="coverage-xml" target="../build/logs/coverage.xml" />
-		<log type="junit" target="../build/logs/logfile.xml" logIncompleteSkipped="true" />
+		<log type="junit" target="../build/logs/junit.xml" logIncompleteSkipped="true" />
+		<log type="coverage-clover" target="../build/logs/clover.xml"/>
 	</logging>
 
 	<filter>

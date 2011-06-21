@@ -1,0 +1,22 @@
+<refentry id="{@id}">
+	<refnamediv>
+		<refname>Frood</refname>
+		<refpurpose>Frood is a dropin MVC component to be used in Xoops modules</refpurpose>
+	</refnamediv>
+	<refsynopsisdiv>
+		<author>
+			Jens Riisom Schultz, 
+			Johannes Skov Frandsen
+			<authorblurb>
+				Written by 
+				{@link mailto:jers@fynskemedier.dk jers@fynskemedier.dk}, 
+				{@link mailto:jsf@fynskemedier.dk jsf@fynskemedier.dk}
+			</authorblurb>
+		</author>
+	</refsynopsisdiv>
+	{@toc}
+	<refsect1 id="{@id intro}">
+	<title>Introduction</title>
+	<para>Frood brings MVC to XOOPS modules! Frood means 'a really amazingly together guy.'</para>
+	</refsect1>
+</refentry>
