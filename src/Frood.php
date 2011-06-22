@@ -17,6 +17,11 @@
  * @package    Frood
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ *
+ * @todo Get rid of these suppressions. Refactor the uri stuff to a seperate class and the convert methods to a util class.
+ *
+ * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Frood {
 	/** @var string The module we're working with. */

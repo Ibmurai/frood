@@ -113,6 +113,8 @@ abstract class FroodController {
 	 * @param string $action The action to render the view for. Ignored here.
 	 *
 	 * @return string The rendered output.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	private function _renderJson($action) {
 		header('Content-type: application/json');
@@ -126,6 +128,8 @@ abstract class FroodController {
 	 * @param string $action The action to render the view for.
 	 *
 	 * @return void
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	private function _renderXoops($action) {
 		if ($this->_isAdmin) {

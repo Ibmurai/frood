@@ -57,8 +57,9 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @param string $input  Input
 	 * @param string $output Output
-	 * 
+	 *
 	 * @dataProvider providerConvertPhpNameToHtmlName
+	 *
 	 * @return void
 	 */
 	public function testConvertPhpNameToHtmlName($input, $output) {
@@ -67,13 +68,13 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Test FroodParameters::convertHtmlNameToPhpName()
-	 * 
+	 *
 	 * @param string $output Output
 	 * @param string $input  Input
 	 *
 	 * @dataProvider providerConvertPhpNameToHtmlName
+	 *
 	 * @return void
-	 * @todo Should the method signature not match that of FroodParameters::convertPhpNameToHtmlName?
 	 */
 	public function testConvertHtmlNameToPhpName($output, $input) {
 		$this->assertEquals($output, Frood::convertHtmlNameToPhpName($input));
