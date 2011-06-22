@@ -21,7 +21,7 @@
 	<!-- Path to rules file -->
 	<property name="phpmd.rules" value="${basedir}/tests/rules.xml" />
 	<!-- Should we fail the build if pmd violations are detected? -->
-	<property name="phpmd.failonerror" value="false" />
+	<property name="phpmd.failonerror" value="true" />
 
 	<!-- ================ PHPCS Settings ===================== -->
 	<!-- SPACE separated list of folders to include -->
@@ -97,6 +97,7 @@
 
 	<!-- ================================= target: ccbuild =============================== -->
 	<target name="ccbuild" depends="basebuild" description="Build on CC">
+		<antcall target="phpcpd" />
 		<antcall target="phplocCC" />
 		<antcall target="phpcb" />
 		<ant antfile="deploy.xml" target="tagLatest" />
@@ -104,18 +105,18 @@
 
 	<!-- ================================= target: jenkinsbuild =============================== -->
 	<target name="jenkinsbuild" depends="basebuild" description="Build on Jenkins">
+		<antcall target="phpcpd" />
 		<antcall target="phplocCC" />
 		<antcall target="phpcb" />
 	</target>
 
 	<!-- ================================= target: ParallelTasks =============================== -->
-	<target name="parallelTasks" description="Run the pdepend, phpmd, phpcpd, phpdoc and phpcs tasks in parallel using a maximum of 2 threads.">
+	<target name="parallelTasks" description="Run the pdepend, phpmd, phpdoc and phpcs tasks in parallel using a maximum of 2 threads.">
 		<parallel threadCount="2">
 			<sequential>
 				<antcall target="pdepend" />
 				<antcall target="phpmd" />
 			</sequential>
-			<antcall target="phpcpd" />
 			<antcall target="phpcs" />
 			<antcall target="phpdoc" />
 		</parallel>
@@ -152,31 +153,42 @@
 		<if>
 			<equals arg1="${phpmd.exclude}" arg2="" />
 			<then>
-				<exec executable="phpmd" dir="${basedir}" failonerror="${phpmd.failonerror}">
+				<exec executable="phpmd" dir="${basedir}" resultproperty="phpmd.result">
 					<arg line="${phpmd.include} html ${phpmd.rules}" />
 					<arg line="--reportfile ${basedir}/${build}/logs/pmd.html" />
 					<arg line="--suffixes php" />
 				</exec>
-				<exec executable="phpmd" dir="${basedir}" failonerror="${phpmd.failonerror}">
+				<exec executable="phpmd" dir="${basedir}" resultproperty="phpmd.result">
 					<arg line="${phpmd.include} xml ${phpmd.rules}" />
 					<arg line="--reportfile ${basedir}/${build}/logs/pmd.xml" />
 					<arg line="--suffixes php" />
 				</exec>
 			</then>
 			<else>
-				<exec executable="phpmd" dir="${basedir}" failonerror="${phpmd.failonerror}">
+				<exec executable="phpmd" dir="${basedir}" resultproperty="phpmd.result">
 					<arg line="${phpmd.include} html ${phpmd.rules}" />
 					<arg line="--reportfile ${basedir}/${build}/logs/pmd.html" />
 					<arg line="--suffixes php" />
 					<arg line="--exclude ${phpmd.exclude}" />
 				</exec>
-				<exec executable="phpmd" dir="${basedir}" failonerror="${phpmd.failonerror}">
+				<exec executable="phpmd" dir="${basedir}" resultproperty="phpmd.result">
 					<arg line="${phpmd.include} xml ${phpmd.rules}" />
 					<arg line="--reportfile ${basedir}/${build}/logs/pmd.xml" />
 					<arg line="--suffixes php" />
 					<arg line="--exclude ${phpmd.exclude}" />
 				</exec>
 			</else>
+		</if>
+		<if>
+			<equals arg1="${phpmd.result}" arg2="2" />
+			<then>
+				<if>
+					<equals arg1="${phpmd.failonerror}" arg2="true" />
+					<then>
+						<fail message="PHPMD reported violations" />
+					</then>
+				</if>
+			</then>
 		</if>
 	</target>
 
