@@ -162,14 +162,16 @@ abstract class FroodController {
 	 * @return string
 	 */
 	public function _getSmartyResource($action) {
-		$controllerName = strtolower(preg_replace(
-			array(
-				'/^' . $this->_module . '/i',
-				'/Controller$/',
-			),
-			array('', ''),
-			get_class($this)
-		));
+		$controllerName = strtolower(
+			preg_replace(
+				array(
+					'/^' . $this->_module . '/i',
+					'/Controller$/',
+				),
+				array('', ''),
+				get_class($this)
+			)
+		);
 
 		return 'blief:' . strtolower($this->_module) . '/' . ($this->_isAdmin ? 'admin/' : 'public/') . strtolower($controllerName) . '/' . strtolower($action) . '.tpl.html';
 	}
