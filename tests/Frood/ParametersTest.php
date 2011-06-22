@@ -43,14 +43,16 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testGetParameter() {
-		$params = new FroodParameters(array(
-			'on_your_face'   => 'bunched',
-			'on_your_face2'  => 'The munchies',
-			'IAmYourFather'  => 'Luke',
-			'iAmYour_mother' => 'yo YO!',
-			'a'              => 'A',
-			'B'              => 'b',
-		));
+		$params = new FroodParameters(
+			array(
+				'on_your_face'   => 'bunched',
+				'on_your_face2'  => 'The munchies',
+				'IAmYourFather'  => 'Luke',
+				'iAmYour_mother' => 'yo YO!',
+				'a'              => 'A',
+				'B'              => 'b',
+			)
+		);
 
 		$this->assertEquals('bunched', $params->getOnYourFace());
 		$this->assertEquals('The munchies', $params->getOnYourFace2());
@@ -66,14 +68,16 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testHasParameter() {
-		$params = new FroodParameters(array(
-			'on_your_face'   => 'bunched',
-			'on_your_face2'  => 'The munchies',
-			'IAmYourFather'  => 'Luke',
-			'iAmYour_mother' => 'yo YO!',
-			'a'              => 'A',
-			'B'              => 'b',
-		));
+		$params = new FroodParameters(
+			array(
+				'on_your_face'   => 'bunched',
+				'on_your_face2'  => 'The munchies',
+				'IAmYourFather'  => 'Luke',
+				'iAmYour_mother' => 'yo YO!',
+				'a'              => 'A',
+				'B'              => 'b',
+			)
+		);
 
 		$this->assertTrue($params->hasOnYourFace());
 		$this->assertTrue($params->hasOnYourFace2());
@@ -92,10 +96,12 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testDefaultValues() {
-		$params = new FroodParameters(array(
-			'a' => 'A',
-			'B' => 'b',
-		));
+		$params = new FroodParameters(
+			array(
+				'a' => 'A',
+				'B' => 'b',
+			)
+		);
 
 		$this->assertEquals('A', $params->getA('d'));
 		$this->assertEquals('b', $params->getB('e'));
@@ -126,12 +132,14 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testToString() {
-		$params = new FroodParameters(array(
-			'a' => 'A',
-			'B' => 'b',
-			's_m' => 'hej',
-			'Nitrat' => 'uetUHet',
-		));
+		$params = new FroodParameters(
+			array(
+				'a' => 'A',
+				'B' => 'b',
+				's_m' => 'hej',
+				'Nitrat' => 'uetUHet',
+			)
+		);
 
 		$this->assertEquals('A=A, B=b, SM=hej, Nitrat=uetUHet', '' . $params);
 	}
