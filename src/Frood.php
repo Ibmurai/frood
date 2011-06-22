@@ -107,7 +107,7 @@ class Frood {
 	 */
 	public function autoload($name) {
 		if ($filePath = $this->_classNameToPath($name)) {
-			require_once $filePath;
+			include_once $filePath;
 		}
 	}
 
@@ -182,11 +182,14 @@ class Frood {
 	private function _setupModuleAndIsAdmin($module = null, $isAdmin = false) {
 		if ($module === null) {
 			$matches = array();
-			if (preg_match('/
+			if (preg_match(
+			    '/
 				\/([a-z]*)
 				\/([a-z]*)
 				\/index\.php
-			$/ix', $_SERVER['SCRIPT_FILENAME'], $matches)) {
+			    $/ix', $_SERVER['SCRIPT_FILENAME'], $matches
+		    )
+			) {
 				if ($matches[2] == 'admin') {
 					$this->_module  = $matches[1];
 					$this->_isAdmin = true;
@@ -259,7 +262,7 @@ class Frood {
 	private function _classNameToPath($name) {
 		// Search for classes in Frood...
 		$searchLocations = array(
-			dirname(__FILE__),
+		dirname(__FILE__),
 		);
 
 		// ...And, if we're in admin mode, the admin/class folder...
@@ -306,7 +309,7 @@ class Frood {
 	/**
 	 * Converts a camelCased string to a lowercased_with_underscores string.
 	 *
-	 * @param $name The CamelCased string to convert.
+	 * @param string $name The CamelCased string to convert.
 	 *
 	 * @return string A lowercased_with_underscores version of $name.
 	 */
@@ -321,8 +324,8 @@ class Frood {
 	/**
 	 * Converts a lowercased_with_underscores string to a CamelCased string.
 	 *
-	 * @param $name The lowercased_with_underscores string to convert.
-	 * @param $ucFirst Set this to false to get a dromedaryCased string instead.
+	 * @param string  $name    The lowercased_with_underscores string to convert.
+	 * @param boolean $ucFirst Set this to false to get a dromedaryCased string instead.
 	 *
 	 * @return string A CamelCased or dromedaryCased version of $name.
 	 */
