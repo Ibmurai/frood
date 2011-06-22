@@ -13,16 +13,16 @@
 			<arg line="-c 'echo $HOME'" />
 		</exec>
 		<sshexec 
-			keyfile="${userhome}/.ssh/web_dsa" 
+			keyfile="${userhome}/.ssh/id_dsa_phpuc" 
 			trust="yes" 
-			passphrase=""
+			passphrase="phpuc"
 			username="web"
 			host="127.0.0.1" 
 			command="svn delete ${svn.base}${svn.project}/${svn.tags}/latest -m 'Removed old latest tag from ${svn.project}'" />
 		<sshexec 
-			keyfile="${userhome}/.ssh/web_dsa" 
+			keyfile="${userhome}/.ssh/id_dsa_phpuc" 
 			trust="yes" 
-			passphrase="" 
+			passphrase="phpuc" 
 			host="127.0.0.1"
 			username="web"
 			command="svn copy ${svn.base}${svn.project}/trunk ${svn.base}${svn.project}/${svn.tags}/latest -m 'Tagged latest successful ${svn.project} build'" />
