@@ -9,15 +9,18 @@
 
 	<!-- ================================= target: tag latest succesful build =============================== -->
 	<target name="tagLatest">
+		<exec executable="bash" dir="${basedir}/src/" outputproperty="userhome">
+			<arg line="-c 'echo $HOME'" />
+		</exec>
 		<sshexec 
-			keyfile="/home/web/.ssh/id_dsa" 
+			keyfile="${userhome}/.ssh/web_dsa" 
 			trust="yes" 
 			passphrase=""
 			username="web"
 			host="127.0.0.1" 
 			command="svn delete ${svn.base}${svn.project}/${svn.tags}/latest -m 'Removed old latest tag from ${svn.project}'" />
 		<sshexec 
-			keyfile="/home/web/.ssh/id_dsa" 
+			keyfile="${userhome}/.ssh/web_dsa" 
 			trust="yes" 
 			passphrase="" 
 			host="127.0.0.1"
