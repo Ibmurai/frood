@@ -2,29 +2,10 @@
 <project name="frood" basedir=".">
 	<description>This file is called from build.xml. It will fail if targets are called directly or form another server than CC!</description>
 
-	<!-- Svn config -->
-	<property name="svn.base" value="svn+ssh://develop.fyens.dk/home/svnroot/" />
-	<property name="svn.project" value="${ant.project.name}" />
-	<property name="svn.tags" value="tags" />
-
-	<!-- ================================= target: tag latest succesful build =============================== -->
+	<!-- ================================= target: Tag latest succesful build =============================== -->
 	<target name="tagLatest">
-		<exec executable="bash" dir="${basedir}/src/" outputproperty="userhome">
-			<arg line="-c 'echo $HOME'" />
-		</exec>
-		<sshexec 
-			keyfile="${userhome}/.ssh/id_dsa_phpuc" 
-			trust="yes" 
-			passphrase="phpuc"
-			username="web"
-			host="127.0.0.1" 
-			command="svn delete ${svn.base}${svn.project}/${svn.tags}/latest -m 'Removed old latest tag from ${svn.project}'" />
-		<sshexec 
-			keyfile="${userhome}/.ssh/id_dsa_phpuc" 
-			trust="yes" 
-			passphrase="phpuc" 
-			host="127.0.0.1"
-			username="web"
-			command="svn copy ${svn.base}${svn.project}/trunk ${svn.base}${svn.project}/${svn.tags}/latest -m 'Tagged latest successful ${svn.project} build'" />
+        <exec dir="${basedir}" executable="bash" failonerror="true">
+                <arg line="-c './latest ${ant.project.name}'" />
+        </exec>
 	</target>
 </project>
