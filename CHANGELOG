@@ -7,4 +7,5 @@ Added a proper README - modified all of the CAPS files. @jers
 Changed the INSTALL file. @jers
 Removed the .htaccess_example - It is now a part of INSTALL. @jers
 FroodParameters now implement Iterator @jers
+FroodParameters now implement IteratorAggregate @jers
 

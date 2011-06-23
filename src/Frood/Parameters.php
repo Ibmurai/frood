@@ -19,7 +19,7 @@
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class FroodParameters implements Iterator {
+class FroodParameters implements Iterator, IteratorAggregate {
 	/** @var array This associative array contains the actual parameter values. */
 	private $_values = array();
 
@@ -171,5 +171,14 @@ class FroodParameters implements Iterator {
 	public function valid() {
 		$key = key($this->_values);
 		return ($key !== NULL && $key !== FALSE);
+	}
+
+	/**
+	 * Implementation of the IteratorAggregate interface.
+	 *
+	 * @return Iterator
+	 */
+	public function getIterator() {
+		return $this;
 	}
 }
