@@ -205,7 +205,7 @@
 		<if>
 			<equals arg1="${phpcs.exclude}" arg2="" />
 			<then>
-				<exec dir="${basedir}" executable="phpcs" output="${basedir}/${build}/logs/checkstyle.xml" failonerror="${phpcs.failonerror}">
+				<exec dir="${basedir}" executable="phpcs" output="${basedir}/${build}/logs/checkstyle.xml">
 					<arg line="--report=checkstyle" />
 					<arg line="--standard=${basedir}/tools/FynskeMedier/" />
 					<arg line="--extensions=php" />
@@ -215,7 +215,7 @@
 				</exec>
 			</then>
 			<else>
-				<exec dir="${basedir}" executable="phpcs" output="${basedir}/${build}/logs/checkstyle.xml" failonerror="${phpcs.failonerror}">
+				<exec dir="${basedir}" executable="phpcs" output="${basedir}/${build}/logs/checkstyle.xml">
 					<arg line="--report=checkstyle" />
 					<arg line="--standard=${basedir}/tools/FynskeMedier/" />
 					<arg line="--extensions=php" />
@@ -229,6 +229,25 @@
 		<xslt in="${basedir}/${build}/logs/checkstyle.xml" out="${basedir}/${build}/logs/checkstyle.html" style="tools/CheckStyleReport/codestyle.xsl">
 		</xslt>
 		<copy file="${basedir}/tools/CheckStyleReport/cs.css" tofile="${basedir}/${build}/logs/cs.css" />
+		<exec executable="grep" outputproperty="phpcs.result">
+			<arg line="--max-count=1" />
+			<arg line="'error'" />
+			<arg line="${basedir}/${build}/logs/checkstyle.xml" />
+		</exec>
+		<if>
+			<equals arg1="${phpcs.result}" arg2="" />
+			<then>
+				<echo>PHPCS reported no violations</echo>
+			</then>
+			<else>
+				<if>
+					<equals arg1="${phpcs.failonerror}" arg2="true" />
+					<then>
+						<fail message="PHPCS reported violations" />
+					</then>
+				</if>
+			</else>
+		</if>
 	</target>
 
 	<!-- ================================= target: phpcpd ================================ -->
