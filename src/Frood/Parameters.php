@@ -19,7 +19,7 @@
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class FroodParameters {
+class FroodParameters implements Iterator {
 	/** @var array This associative array contains the actual parameter values. */
 	private $_values = array();
 
@@ -125,5 +125,51 @@ class FroodParameters {
 	 */
 	private function _hasParameter($name) {
 		return array_key_exists($name, $this->_values);
+	}
+
+	/**
+	 * Implementation of the Iterator interface.
+	 *
+	 * @return void
+	 */
+	public function rewind() {
+		reset($this->_values);
+	}
+
+	/**
+	 * Implementation of the Iterator interface.
+	 *
+	 * @return mixed
+	 */
+	public function current() {
+		return current($this->_values);
+	}
+
+	/**
+	 * Implementation of the Iterator interface.
+	 *
+	 * @return string
+	 */
+	public function key() {
+		return key($this->_values);
+	}
+
+	/**
+	 * Implementation of the Iterator interface.
+	 *
+	 * @return mixed
+	 */
+	public function next() {
+		return next($this->_values);
+	}
+
+	/**
+	 * Implementation of the Iterator interface.
+	 *
+	 * @return boolean
+	 */
+	public function valid() {
+		$key = key($this->_values);
+		return ($key !== NULL && $key !== FALSE);
 	}
 }
