@@ -178,8 +178,8 @@ class FroodParameters implements Iterator, ArrayAccess, Countable {
 	/**
 	 * Implementation of the ArrayAccess interface.
 	 *
-	 * @param mixed $offset
-	 * @param mixed $value
+	 * @param mixed $offset The offset.
+	 * @param mixed $value  The value.
 	 *
 	 * @return void
 	 */
@@ -194,7 +194,7 @@ class FroodParameters implements Iterator, ArrayAccess, Countable {
 	/**
 	 * Implementation of the ArrayAccess interface.
 	 *
-	 * @param mixed $offset
+	 * @param mixed $offset The offset.
 	 *
 	 * @return boolean
 	 */
@@ -205,7 +205,7 @@ class FroodParameters implements Iterator, ArrayAccess, Countable {
 	/**
 	 * Implementation of the ArrayAccess interface.
 	 *
-	 * @param mixed $offset
+	 * @param mixed $offset The offset.
 	 *
 	 * @return void
 	 */
@@ -216,7 +216,7 @@ class FroodParameters implements Iterator, ArrayAccess, Countable {
 	/**
 	 * Implementation of the ArrayAccess interface.
 	 *
-	 * @param mixed $offset
+	 * @param mixed $offset The offset.
 	 *
 	 * @return mixed
 	 */
