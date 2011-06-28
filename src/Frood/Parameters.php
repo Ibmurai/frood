@@ -178,6 +178,9 @@ class FroodParameters implements Iterator, ArrayAccess, Countable {
 	/**
 	 * Implementation of the ArrayAccess interface.
 	 *
+	 * @param mixed $offset
+	 * @param mixed $value
+	 *
 	 * @return void
 	 */
 	public function offsetSet($offset, $value) {
@@ -191,6 +194,8 @@ class FroodParameters implements Iterator, ArrayAccess, Countable {
 	/**
 	 * Implementation of the ArrayAccess interface.
 	 *
+	 * @param mixed $offset
+	 *
 	 * @return boolean
 	 */
 	public function offsetExists($offset) {
@@ -200,6 +205,8 @@ class FroodParameters implements Iterator, ArrayAccess, Countable {
 	/**
 	 * Implementation of the ArrayAccess interface.
 	 *
+	 * @param mixed $offset
+	 *
 	 * @return void
 	 */
 	public function offsetUnset($offset) {
@@ -208,6 +215,8 @@ class FroodParameters implements Iterator, ArrayAccess, Countable {
 
 	/**
 	 * Implementation of the ArrayAccess interface.
+	 *
+	 * @param mixed $offset
 	 *
 	 * @return mixed
 	 */
