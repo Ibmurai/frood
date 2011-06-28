@@ -9,3 +9,4 @@ Removed the .htaccess_example - It is now a part of INSTALL. @jers
 FroodParameters now implement Iterator @jers
 FroodParameters now implement IteratorAggregate @jers
 FroodParameters no longer implement IteratorAggregate - but now it implement ArrayAccess and Countable instead @jers
+Dispatch errors now show if The Frood was in public or admin mode @jers

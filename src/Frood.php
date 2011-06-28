@@ -79,7 +79,7 @@ class Frood {
 			call_user_func(array($controllerInstance, $method), $parameters);
 			$controllerInstance->render($action);
 		} else {
-			throw new FroodDispatchException($controller, $method, $parameters);
+			throw new FroodDispatchException($controller, $method, $parameters, $this->_isAdmin);
 		}
 	}
 
