@@ -91,6 +91,8 @@ class FroodDispatchException extends Exception {
 
 	/**
 	 * Was The Frood was in admin mode?
+	 *
+	 * @return boolean
 	 */
 	public function isAdmin() {
 		return $this->_isAdmin;
