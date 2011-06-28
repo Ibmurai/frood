@@ -18,8 +18,10 @@
  * @package    Frood
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ *
+ * @SuppressWarnings(PHPMD.TooManyMethods) It's because of the many interfaces.
  */
-class FroodParameters implements Iterator, IteratorAggregate {
+class FroodParameters implements Iterator, ArrayAccess, Countable {
 	/** @var array This associative array contains the actual parameter values. */
 	private $_values = array();
 
@@ -174,11 +176,51 @@ class FroodParameters implements Iterator, IteratorAggregate {
 	}
 
 	/**
-	 * Implementation of the IteratorAggregate interface.
+	 * Implementation of the ArrayAccess interface.
 	 *
-	 * @return Iterator
+	 * @return void
 	 */
-	public function getIterator() {
-		return $this;
+	public function offsetSet($offset, $value) {
+		if ($offset == "") {
+			$this->_values[] = $value;
+		} else {
+			$this->_values[$offset] = $value;
+		}
+	}
+
+	/**
+	 * Implementation of the ArrayAccess interface.
+	 *
+	 * @return boolean
+	 */
+	public function offsetExists($offset) {
+		return isset($this->_values[$offset]);
+	}
+
+	/**
+	 * Implementation of the ArrayAccess interface.
+	 *
+	 * @return void
+	 */
+	public function offsetUnset($offset) {
+		unset($this->_values[$offset]);
+	}
+
+	/**
+	 * Implementation of the ArrayAccess interface.
+	 *
+	 * @return mixed
+	 */
+	public function offsetGet($offset) {
+		return isset($this->_values[$offset]) ? $this->_values[$offset] : null;
+	}
+
+	/**
+	 * Implementation of the Countable interface.
+	 *
+	 * @return integer
+	 */
+	public function count() {
+		return count($this->_values);
 	}
 }
