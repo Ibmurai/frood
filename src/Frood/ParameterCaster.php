@@ -62,6 +62,10 @@ abstract class FroodParameterCaster {
 				return self::_castAsFloat($value);
 			case self::AS_ARRAY:
 				return self::_castAsArray($value);
+			case self::AS_ISO:
+				return self::_castAsIso($value);
+			case self::AS_UTF8:
+				return self::_castAsUtf8($value);
 			default:
 				throw new RuntimeException('Unknown type, ' . $type . '.');
 		}
@@ -144,5 +148,68 @@ abstract class FroodParameterCaster {
 		}
 
 		throw new FroodCastingException($value, self::AS_ARRAY);
+	}
+
+	/**
+	 * Attempt to cast a value to an ISO-8859-1 encoded string.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodCastingException If the value could not be cast.
+	 *
+	 * @return array
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 */
+	private static function _castAsIso($value) {
+		try {
+			return self::_encode(self::_cast(self::AS_STRING, $value), 'ISO-8859-1');
+		} catch (FroodCastingException $e) {
+			throw new FroodCastingException($value, self::AS_ISO);
+		}
+	}
+
+	/**
+	 * Attempt to cast a value to an UTF-8 encoded string.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodCastingException If the value could not be cast.
+	 *
+	 * @return array
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 */
+	private static function _castAsUtf8($value) {
+		try {
+			return self::_encode(self::_cast(self::AS_STRING, $value), 'UTF-8');
+		} catch (FroodCastingException $e) {
+			throw new FroodCastingException($value, self::AS_UTF8);
+		}
+	}
+
+	/**
+	 * Get the content encoding.
+	 *
+	 * @return string
+	 */
+	private static function _contentEncoding() {
+		if (preg_match('/charset=([\w-]+)/', $_SERVER['CONTENT_TYPE'], $match)) {
+			return $match[1];
+		} else {
+			return 'UTF-8';
+		}
+	}
+
+	/**
+	 * Reencode (if nessesary) the string to our choosen character set.
+	 *
+	 * @param string $value   The string to encode.
+	 * @param string $charset The charset to encode to.
+	 *
+	 * @return string
+	 */
+	private static function _encode($value, $charset) {
+		return iconv(self::_contentEncoding(), "$charset//TRANSLIT", $value);
 	}
 }
