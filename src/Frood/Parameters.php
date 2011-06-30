@@ -80,22 +80,23 @@ class FroodParameters implements Iterator, Countable {
 	public function __call($name, array $args) {
 		$matches = array();
 		if (preg_match('/^((?:get)|(?:has))([A-Z][A-Za-z0-9]*)$/', $name, $matches)) {
-			if ($matches[1] == 'get') {
-				if (count($args) == 0) {
-					return $this->_getParameter($matches[2], null, FroodNullParameter::getInstance());
-				} else if (count($args) == 1) {
-					return $this->_getParameter($matches[2], $args[0], FroodNullParameter::getInstance());
-				} else if (count($args) == 2) {
-					return $this->_getParameter($matches[2], $args[0], $args[1]);
-				} else {
-					throw new RuntimeException("->$name should be called with 0, 1 or 2 parameters. Called with " . count($args) . ' parameters.');
-				}
-			} else if ($matches[1] == 'has') {
-				if (count($args) == 0) {
-					return $this->_hasParameter($matches[2]);
-				} else {
-					throw new RuntimeException("->$name should be called with 0 parameters. Called with " . count($args) . ' parameters.');
-				}
+			switch ($matches[1]) {
+				case 'get':
+					if (count($args) == 0) {
+						return $this->_getParameter($matches[2], null, FroodNullParameter::getInstance());
+					} else if (count($args) == 1) {
+						return $this->_getParameter($matches[2], $args[0], FroodNullParameter::getInstance());
+					} else if (count($args) == 2) {
+						return $this->_getParameter($matches[2], $args[0], $args[1]);
+					} else {
+						throw new RuntimeException("->$name should be called with 0, 1 or 2 parameters. Called with " . count($args) . ' parameters.');
+					}
+				case 'has':
+					if (count($args) == 0) {
+						return $this->_hasParameter($matches[2]);
+					} else {
+						throw new RuntimeException("->$name should be called with 0 parameters. Called with " . count($args) . ' parameters.');
+					}
 			}
 		}
 
