@@ -366,6 +366,31 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test array conversion of parameter values.
+	 *
+	 * @return void
+	 */
+	public function testArrayConversion() {
+		$params = new FroodParameters(
+			array(
+				'skam'  => array(),
+				'laks'  => array('2'),
+				'tal'   => '22,4',
+				'svar'  => 42,
+				'mecha' => 32.42,
+				'slut'  => null,
+			)
+		);
+
+		$this->assertEquals(array(), $params->getSkam(FroodParameters::AS_ARRAY));
+		$this->assertEquals(array('2'), $params->getLaks(FroodParameters::AS_ARRAY));
+		$this->assertEquals(array(), $params->getTal(FroodParameters::AS_ARRAY, array()));
+		$this->assertEquals(array(''), $params->getSvar(FroodParameters::AS_ARRAY, array('')));
+		$this->assertEquals(array('1'), $params->getMecha(FroodParameters::AS_ARRAY, array('1')));
+		$this->assertEquals(array('1', '2'), $params->getSlut(FroodParameters::AS_ARRAY, array('1', '2')));
+	}
+
+	/**
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is a string.
 	 *

@@ -19,27 +19,9 @@
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  *
- * @SuppressWarnings(PHPMD.TooManyMethods) It's because of the many interfaces.
+ * @SuppressWarnings(PHPMD.TooManyMethods) It's because of the two interfaces.
  */
-class FroodParameters implements Iterator, Countable {
-	/** @var string The constant to tell the get function that you want an integer. */
-	const AS_INTEGER = 'integer';
-
-	/** @var string The constant to tell the get function that you want a float. */
-	const AS_FLOAT = 'float';
-
-	/** @var string The constant to tell the get function that you want an array. */
-	const AS_ARRAY = 'array';
-
-	/** @var string The constant to tell the get function that you want a string. */
-	const AS_STRING = 'string';
-
-	/** @var string The constant to tell the get function that you want a ISO-8859-1 encoded string. */
-	const AS_ISO = 'ISO-8859-1 encoded string';
-
-	/** @var string The constant to tell the get function that you want a UTF-8 encoded string. */
-	const AS_UTF8 = 'UTF-8 encoded string';
-
+class FroodParameters extends FroodParameterCaster implements Iterator, Countable {
 	/** @var array This associative array contains the actual parameter values. */
 	private $_values = array();
 
@@ -160,94 +142,6 @@ class FroodParameters implements Iterator, Countable {
 	 */
 	private function _hasParameter($name) {
 		return array_key_exists($name, $this->_values);
-	}
-
-	/**
-	 * Attempt to cast a value as the given type.
-	 *
-	 * @param string $type  Ensure that the parameter value is of the given type. Use one of the AS_ class constants.
-	 * @param mixed  $value The value to cast.
-	 *
-	 * @return mixed It's like a box of chocolates.
-	 *
-	 * @throws FroodCastingException If the value could not be cast.
-	 * @throws RuntimeException      If the type is unknown.
-	 */
-	private static function _cast($type, $value) {
-		switch ($type) {
-			case null:
-				return $value;
-			case self::AS_INTEGER:
-				return self::_castAsInteger($value);
-			case self::AS_STRING:
-				return self::_castAsString($value);
-			case self::AS_FLOAT:
-				return self::_castAsFloat($value);
-			default:
-				throw new RuntimeException('Unknown type, ' . $type . '.');
-		}
-	}
-
-	/**
-	 * Attempt to cast a value to integer.
-	 *
-	 * @param mixed $value The value to cast.
-	 *
-	 * @throws FroodCastingException If the value could not be cast.
-	 *
-	 * @return integer
-	 */
-	public function _castAsInteger($value) {
-		if (is_int($value)) {
-			return (int) $value;
-		}
-		if (is_string($value) && preg_match('/^\s*\-?[0-9]+\s*$/', $value)) {
-			return intval($value);
-		}
-
-		throw new FroodCastingException($value, self::AS_INTEGER);
-	}
-
-	/**
-	 * Attempt to cast a value to string.
-	 *
-	 * @param mixed $value The value to cast.
-	 *
-	 * @throws FroodCastingException If the value could not be cast.
-	 *
-	 * @return string
-	 */
-	public function _castAsString($value) {
-		if ($value !== null && !is_array($value) && !is_object($value)) {
-			return (string) $value;
-		}
-
-		throw new FroodCastingException($value, self::AS_STRING);
-	}
-
-	/**
-	 * Attempt to cast a value to float.
-	 *
-	 * @param mixed $value The value to cast.
-	 *
-	 * @throws FroodCastingException If the value could not be cast.
-	 *
-	 * @return float
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-	 */
-	public function _castAsFloat($value) {
-		if (is_float($value)) {
-			return (float) $value;
-		}
-		if ($value !== null && !is_array($value) && !is_object($value) && is_string($value) && preg_match('/^\s*\-?[0-9\.,]+\s*$/', $value)) {
-			return floatval(str_replace(',', '.', $value));
-		}
-		try {
-			return (float) self::_cast(self::AS_INTEGER, $value);
-		} catch (FroodCastingException $e) {
-			throw new FroodCastingException($value, self::AS_FLOAT);
-		}
 	}
 
 	/**
