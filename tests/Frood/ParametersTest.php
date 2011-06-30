@@ -371,6 +371,24 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test integer conversion exceptions when parameter value cannot be
+	 * interpreted as integer. When value is an array.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testIntegerConversionExceptionArray() {
+		$params = new FroodParameters(
+			array(
+				'laks' => array(32),
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_INTEGER);
+	}
+
+	/**
 	 * Test string conversion exceptions when parameter value cannot be
 	 * interpreted as string. When value is null.
 	 *
