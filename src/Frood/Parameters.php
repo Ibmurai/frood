@@ -74,7 +74,8 @@ class FroodParameters implements Iterator, Countable {
 	 *
 	 * @return mixed It's like a box of chocolates.
 	 *
-	 * @throws RuntimeException For non-existing methods and parameters.
+	 * @throws RuntimeException      For non-existing methods and parameters.
+	 * @throws FroodCastingException For get methods with failed casting.
 	 */
 	public function __call($name, array $args) {
 		$matches = array();
@@ -133,11 +134,11 @@ class FroodParameters implements Iterator, Countable {
 		if ($this->_hasParameter($name)) {
 			try {
 				return self::_cast($type, $this->_values[$name]);
-			} catch (RuntimeException $e) {
+			} catch (FroodCastingException $e) {
 				if ($default !== FroodNullParameter::getInstance()) {
 					return self::_cast($type, $default);
 				} else {
-					throw new RuntimeException("Attempting to retrieve parameter, $name, which has been set to a non-$type value and has no default value.");
+					return self::_cast($type, $this->_values[$name]);
 				}
 			}
 		} else {
@@ -168,29 +169,85 @@ class FroodParameters implements Iterator, Countable {
 	 *
 	 * @return mixed It's like a box of chocolates.
 	 *
-	 * @throws RuntimeException If the value could not be cast.
+	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws RuntimeException      If the type is unknown.
 	 */
 	private static function _cast($type, $value) {
 		switch ($type) {
 			case null:
 				return $value;
 			case self::AS_INTEGER:
-				if (is_int($value)) {
-					return (int) $value;
-				}
-				if (is_string($value) && preg_match('/^\s*\-?[0-9]+\s*$/', $value)) {
-					return intval($value);
-				}
-				break;
+				return self::_castAsInteger($value);
 			case self::AS_STRING:
-				if ($value !== null && !is_array($value)) {
-					return (string) $value;
-				}
+				return self::_castAsString($value);
+			case self::AS_FLOAT:
+				return self::_castAsFloat($value);
 			default:
 				throw new RuntimeException('Unknown type, ' . $type . '.');
 				break;
 		}
-		throw new RuntimeException('Parameter value, ' . var_export($value, true) . ', could not be cast as ' . $type . '.');
+	}
+
+	/**
+	 * Attempt to cast a value to integer.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodCastingException If the value could not be cast.
+	 *
+	 * @return integer
+	 */
+	public function _castAsInteger($value) {
+		if (is_int($value)) {
+			return (int) $value;
+		}
+		if (is_string($value) && preg_match('/^\s*\-?[0-9]+\s*$/', $value)) {
+			return intval($value);
+		}
+
+		throw new FroodCastingException($value, self::AS_INTEGER);
+	}
+
+	/**
+	 * Attempt to cast a value to string.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodCastingException If the value could not be cast.
+	 *
+	 * @return string
+	 */
+	public function _castAsString($value) {
+		if ($value !== null && !is_array($value) && !is_object($value)) {
+			return (string) $value;
+		}
+
+		throw new FroodCastingException($value, self::AS_STRING);
+	}
+
+	/**
+	 * Attempt to cast a value to float.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodCastingException If the value could not be cast.
+	 *
+	 * @return float
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 */
+	public function _castAsFloat($value) {
+		if (is_float($value)) {
+			return (float) $value;
+		}
+		if ($value !== null && !is_array($value) && !is_object($value) && is_string($value) && preg_match('/^\s*\-?[0-9\.,]+\s*$/', $value)) {
+			return floatval(str_replace(',', '.', $value));
+		}
+		try {
+			return (float) self::_cast(self::AS_INTEGER, $value);
+		} catch (FroodCastingException $e) {
+			throw new FroodCastingException($value, self::AS_FLOAT);
+		}
 	}
 
 	/**

@@ -12,7 +12,7 @@
  */
 
 /**
- * A custom Exception for exceptions during dispatching.
+ * FroodDispatchException - A custom Exception for exceptions during dispatching.
  *
  * @category   Test
  * @package    Frood

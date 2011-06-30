@@ -335,10 +335,41 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test float conversion of parameter values.
+	 *
+	 * @return void
+	 */
+	public function testFloatConversion() {
+		$params = new FroodParameters(
+			array(
+				'skam'  => '11',
+				'laks'  => '22.2',
+				'tal'   => '22,4',
+				'svar'  => 42,
+				'mecha' => 32.42,
+				'slut'  => null,
+				'spam'  => 'orm',
+			)
+		);
+
+		$this->assertEquals(11.0, $params->getSkam(FroodParameters::AS_FLOAT));
+		$this->assertEquals(22.2, $params->getLaks(FroodParameters::AS_FLOAT));
+		$this->assertEquals(22.4, $params->getTal(FroodParameters::AS_FLOAT));
+		$this->assertEquals(42.0, $params->getSvar(FroodParameters::AS_FLOAT));
+		$this->assertEquals(32.42, $params->getMecha(FroodParameters::AS_FLOAT));
+		$this->assertEquals(33.0, $params->getSlut(FroodParameters::AS_FLOAT, 33));
+		$this->assertEquals(33.0, $params->getSlut(FroodParameters::AS_FLOAT, 33.0));
+		$this->assertEquals(33.0, $params->getSlut(FroodParameters::AS_FLOAT, '33'));
+		$this->assertEquals(33.0, $params->getSlut(FroodParameters::AS_FLOAT, '33.0'));
+		$this->assertEquals(33.0, $params->getSlut(FroodParameters::AS_FLOAT, '33,0'));
+		$this->assertEquals(0.0, $params->getSpam(FroodParameters::AS_FLOAT, 0));
+	}
+
+	/**
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is a string.
 	 *
-	 * @expectedException RuntimeException
+	 * @expectedException FroodCastingException
 	 *
 	 * @return void
 	 */
@@ -356,7 +387,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is null.
 	 *
-	 * @expectedException RuntimeException
+	 * @expectedException FroodCastingException
 	 *
 	 * @return void
 	 */
@@ -374,7 +405,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is an array.
 	 *
-	 * @expectedException RuntimeException
+	 * @expectedException FroodCastingException
 	 *
 	 * @return void
 	 */
@@ -392,7 +423,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test string conversion exceptions when parameter value cannot be
 	 * interpreted as string. When value is null.
 	 *
-	 * @expectedException RuntimeException
+	 * @expectedException FroodCastingException
 	 *
 	 * @return void
 	 */
@@ -410,7 +441,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test string conversion exceptions when parameter value cannot be
 	 * interpreted as string. When value is an array.
 	 *
-	 * @expectedException RuntimeException
+	 * @expectedException FroodCastingException
 	 *
 	 * @return void
 	 */
@@ -422,5 +453,59 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$params->getLaks(FroodParameters::AS_STRING);
+	}
+
+	/**
+	 * Test float conversion exceptions when parameter value cannot be
+	 * interpreted as float. When value is a string.
+	 *
+	 * @expectedException FroodCastingException
+	 *
+	 * @return void
+	 */
+	public function testFloatConversionExceptionString() {
+		$params = new FroodParameters(
+			array(
+				'laks'  => 'madpakke',
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_FLOAT);
+	}
+
+	/**
+	 * Test float conversion exceptions when parameter value cannot be
+	 * interpreted as float. When value is null.
+	 *
+	 * @expectedException FroodCastingException
+	 *
+	 * @return void
+	 */
+	public function testFloatConversionExceptionNull() {
+		$params = new FroodParameters(
+			array(
+				'laks' => null,
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_FLOAT);
+	}
+
+	/**
+	 * Test float conversion exceptions when parameter value cannot be
+	 * interpreted as float. When value is an array.
+	 *
+	 * @expectedException FroodCastingException
+	 *
+	 * @return void
+	 */
+	public function testFloatConversionExceptionArray() {
+		$params = new FroodParameters(
+			array(
+				'laks' => array('vildt', 'meget', 32),
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_FLOAT);
 	}
 }
