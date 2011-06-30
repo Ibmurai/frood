@@ -63,7 +63,7 @@ class FroodParameters implements Iterator, Countable {
 		if (preg_match('/^((?:get)|(?:has))([A-Z][A-Za-z0-9]*)$/', $name, $matches)) {
 			if ($matches[1] == 'get') {
 				if (count($args) == 0) {
-					return $this->_getParameter($matches[2]);
+					return $this->_getParameter($matches[2], FroodNullParameter::getInstance());
 				} else if (count($args) == 1) {
 					return $this->_getParameter($matches[2], $args[0]);
 				} else {
@@ -106,11 +106,11 @@ class FroodParameters implements Iterator, Countable {
 	 *
 	 * @throws RuntimeException For non-existing parameters, if no default is given.
 	 */
-	private function _getParameter($name, $default = null) {
+	private function _getParameter($name, $default) {
 		if ($this->_hasParameter($name)) {
 			return $this->_values[$name];
 		} else {
-			if ($default !== null) {
+			if ($default !== FroodNullParameter::getInstance()) {
 				return $default;
 			} else {
 				throw new RuntimeException("Attempting to retrieve parameter, $name, which has not been set and has no default value.");

@@ -78,6 +78,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 				'iAmYour_mother' => 'yo YO!',
 				'a'              => 'A',
 				'B'              => 'b',
+				'C'              => null,
 			)
 		);
 
@@ -87,6 +88,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($params->hasIAmYourMother());
 		$this->assertTrue($params->hasA());
 		$this->assertTrue($params->hasB());
+		$this->assertTrue($params->hasC());
 		$this->assertFalse($params->hasOnyourFace());
 		$this->assertFalse($params->hasNop());
 		$this->assertFalse($params->hasStuff());
@@ -102,12 +104,15 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 			array(
 				'a' => 'A',
 				'B' => 'b',
+				'f' => null,
 			)
 		);
 
 		$this->assertEquals('A', $params->getA('d'));
 		$this->assertEquals('b', $params->getB('e'));
 		$this->assertEquals('c', $params->getC('c'));
+		$this->assertEquals(null, $params->getF('f'));
+		$this->assertEquals(null, $params->getNull(null));
 	}
 
 	/**
@@ -274,6 +279,8 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider providerCount
 	 *
 	 * @return void
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	public function testForeach(array $values, $expectedCount) {
 		$params = new FroodParameters($values);
