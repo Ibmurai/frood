@@ -278,13 +278,10 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	public function testForeach(array $values, $expectedCount) {
 		$params = new FroodParameters($values);
 
-		echo "\n";
 		$count = 0;
 		foreach ($params as $key => $value) {
-			echo "$key => $value\n";
 			$count++;
 		}
-		echo "\n";
 
 		$this->assertEquals($expectedCount, $count);
 	}
