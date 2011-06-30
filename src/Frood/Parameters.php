@@ -22,6 +22,24 @@
  * @SuppressWarnings(PHPMD.TooManyMethods) It's because of the many interfaces.
  */
 class FroodParameters implements Iterator, Countable {
+	/** @var string The constant to tell the get function that you want an integer. */
+	const AS_INTEGER = 'integer';
+
+	/** @var string The constant to tell the get function that you want a float. */
+	const AS_FLOAT = 'float';
+
+	/** @var string The constant to tell the get function that you want an array. */
+	const AS_ARRAY = 'array';
+
+	/** @var string The constant to tell the get function that you want a string. */
+	const AS_STRING = 'string';
+
+	/** @var string The constant to tell the get function that you want a ISO-8859-1 encoded string. */
+	const AS_ISO = 'ISO-8859-1 encoded string';
+
+	/** @var string The constant to tell the get function that you want a UTF-8 encoded string. */
+	const AS_UTF8 = 'UTF-8 encoded string';
+
 	/** @var array This associative array contains the actual parameter values. */
 	private $_values = array();
 
@@ -63,11 +81,13 @@ class FroodParameters implements Iterator, Countable {
 		if (preg_match('/^((?:get)|(?:has))([A-Z][A-Za-z0-9]*)$/', $name, $matches)) {
 			if ($matches[1] == 'get') {
 				if (count($args) == 0) {
-					return $this->_getParameter($matches[2], FroodNullParameter::getInstance());
+					return $this->_getParameter($matches[2], null, FroodNullParameter::getInstance());
 				} else if (count($args) == 1) {
-					return $this->_getParameter($matches[2], $args[0]);
+					return $this->_getParameter($matches[2], $args[0], FroodNullParameter::getInstance());
+				} else if (count($args) == 2) {
+					return $this->_getParameter($matches[2], $args[0], $args[1]);
 				} else {
-					throw new RuntimeException("->$name should be called with 0 or 1 parameters. Called with " . count($args) . ' parameters.');
+					throw new RuntimeException("->$name should be called with 0, 1 or 2 parameters. Called with " . count($args) . ' parameters.');
 				}
 			} else if ($matches[1] == 'has') {
 				if (count($args) == 0) {
@@ -100,18 +120,25 @@ class FroodParameters implements Iterator, Countable {
 	 * Get the named parameter.
 	 *
 	 * @param string $name    The name of the parameter to get.
+	 * @param string $type    Ensure that the parameter value is of the given type. Use one of the AS_ class constants.
 	 * @param mixed  $default A value to return if the parameter has not been set.
 	 *
 	 * @return mixed It's like a box of chocolates.
 	 *
-	 * @throws RuntimeException For non-existing parameters, if no default is given.
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default is given for a missing parameter.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
-	private function _getParameter($name, $default) {
+	private function _getParameter($name, $type, $default) {
 		if ($this->_hasParameter($name)) {
-			return $this->_values[$name];
+			try {
+				return self::_cast($type, $this->_values[$name]);
+			} catch (RuntimeException $e) {
+				return self::_cast($type, $default);
+			}
 		} else {
 			if ($default !== FroodNullParameter::getInstance()) {
-				return $default;
+				return self::_cast($type, $default);
 			} else {
 				throw new RuntimeException("Attempting to retrieve parameter, $name, which has not been set and has no default value.");
 			}
@@ -127,6 +154,35 @@ class FroodParameters implements Iterator, Countable {
 	 */
 	private function _hasParameter($name) {
 		return array_key_exists($name, $this->_values);
+	}
+
+	/**
+	 * Attempt to cast a value as the given type.
+	 *
+	 * @param string $type  Ensure that the parameter value is of the given type. Use one of the AS_ class constants.
+	 * @param mixed  $value The value to cast.
+	 *
+	 * @return mixed It's like a box of chocolates.
+	 *
+	 * @throws RuntimeException If the value could not be cast.
+	 */
+	private static function _cast($type, $value) {
+		switch ($type) {
+			case null:
+				return $value;
+			case self::AS_INTEGER:
+				if (is_int($value)) {
+					return (int) $value;
+				}
+				if (is_string($value) && preg_match('/^\s*\-?[0-9]+\s*$/', $value)) {
+					return intval($value);
+				}
+				break;
+			default:
+				throw new RuntimeException('Unknown type, ' . $type . '.');
+				break;
+		}
+		throw new RuntimeException('Parameter value, ' . var_export($value, true) . ', could not be cast as ' . $type . '.');
 	}
 
 	/**

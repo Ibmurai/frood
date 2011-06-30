@@ -108,11 +108,11 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 			)
 		);
 
-		$this->assertEquals('A', $params->getA('d'));
-		$this->assertEquals('b', $params->getB('e'));
-		$this->assertEquals('c', $params->getC('c'));
-		$this->assertEquals(null, $params->getF('f'));
-		$this->assertEquals(null, $params->getNull(null));
+		$this->assertEquals('A', $params->getA(null, 'd'));
+		$this->assertEquals('b', $params->getB(null, 'e'));
+		$this->assertEquals('c', $params->getC(null, 'c'));
+		$this->assertEquals(null, $params->getF(null, 'f'));
+		$this->assertEquals(null, $params->getNull(null, null));
 	}
 
 	/**
@@ -161,7 +161,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	public function testTooManyArgumentsToGet() {
 		$params = new FroodParameters();
 
-		$params->getMechaSalmon('default', 'too many parameters');
+		$params->getMechaSalmon('type', 'default', 'too many parameters');
 	}
 
 	/**
@@ -291,5 +291,60 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		}
 
 		$this->assertEquals($expectedCount, $count);
+	}
+
+	/**
+	 * Test integer conversion of parameter values.
+	 *
+	 * @return void
+	 */
+	public function testIntegerConversion() {
+		$params = new FroodParameters(
+			array(
+				'laks'  => 'madpakke',
+				'tal'   => '42',
+				'mecha' => null,
+			)
+		);
+
+		$this->assertEquals(9, $params->getLaks(FroodParameters::AS_INTEGER, 9));
+		$this->assertEquals(42, $params->getTal(FroodParameters::AS_INTEGER));
+		$this->assertEquals(12, $params->getMecha(FroodParameters::AS_INTEGER, 12));
+	}
+
+	/**
+	 * Test integer conversion exceptions when parameter value cannot be
+	 * interpreted as integer. When value is a string.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testIntegerConversionExceptionString() {
+		$params = new FroodParameters(
+			array(
+				'laks'  => 'madpakke',
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_INTEGER);
+	}
+
+	/**
+	 * Test integer conversion exceptions when parameter value cannot be
+	 * interpreted as integer. When value is null.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testIntegerConversionExceptionNull() {
+		$params = new FroodParameters(
+			array(
+				'laks'  => null,
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_INTEGER);
 	}
 }
