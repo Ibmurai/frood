@@ -508,4 +508,21 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 
 		$params->getLaks(FroodParameters::AS_FLOAT);
 	}
+
+	/**
+	 * Tests that a RuntimeException is thrown when passing bs to the AS_ parameter.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testConvertingToUnknownTypeException() {
+		$params = new FroodParameters(
+			array(
+				'laks' => array('vildt', 'meget', 32),
+			)
+		);
+
+		$params->getLaks('as a string, please!');
+	}
 }
