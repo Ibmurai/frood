@@ -272,12 +272,26 @@
 
 	<!-- ================================= target: pdepend =============================== -->
 	<target name="pdepend" description="Generate jdepend.xml and software metrics charts using PHP_Depend">
-		<exec executable="pdepend">
-			<arg line="--jdepend-xml=${basedir}/${build}/logs/jdepend.xml
-	                   --jdepend-chart=${basedir}/${build}/pdepend/dependencies.svg
-	                   --overview-pyramid=${basedir}/${build}/pdepend/overview-pyramid.svg
-				       ${phpdepend.include}" />
-		</exec>
+		<if>
+			<equals arg1="${phpdepend.exclude}" arg2="" />
+			<then>
+				<exec executable="pdepend">
+					<arg line="--jdepend-xml=${basedir}/${build}/logs/jdepend.xml" />
+					<arg line="--jdepend-chart=${basedir}/${build}/pdepend/10-dependencies.svg" />
+					<arg line="--overview-pyramid=${basedir}/${build}/pdepend/11-overview-pyramid.svg" />
+					<arg line="${phpdepend.include}" />
+				</exec>
+			</then>
+			<else>
+				<exec executable="pdepend">
+					<arg line="--jdepend-xml=${basedir}/${build}/logs/jdepend.xml" />
+					<arg line="--jdepend-chart=${basedir}/${build}/pdepend/10-dependencies.svg" />
+					<arg line="--overview-pyramid=${basedir}/${build}/pdepend/11-overview-pyramid.svg" />
+					<arg line="--ignore=${phpdepend.include}" />
+					<arg line="${phpdepend.exclude}" />
+				</exec>
+			</else>
+		</if>
 	</target>
 
 	<!-- ================================= target: phpdoc ================================ -->

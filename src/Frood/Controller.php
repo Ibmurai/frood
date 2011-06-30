@@ -7,6 +7,7 @@
  * @category Library
  * @package  Frood
  * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @author   Johannes Frandsen <jsf@fynskemedier.dk>
  * @since    2011-06-16
  */
 
@@ -17,6 +18,10 @@
  * @package    Frood
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @author     Johannes Frandsen <jsf@fynskemedier.dk>
+ * 
+ * @todo Consider extracting renders to seperate classes
+ * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 abstract class FroodController {
 	/** @var boolean Are we handling admin pages? */
@@ -36,6 +41,9 @@ abstract class FroodController {
 
 	/** @var string Output mode JSON. */
 	const _JSON = 'JSON';
+
+	/** @var string Output mode Smarty. */
+	const _SMARTY = 'Smarty';
 
 	/**
 	 * Construct a new controller instance.
@@ -80,6 +88,9 @@ abstract class FroodController {
 			case self::_XOOPS:
 				$this->_renderXoops($action);
 				break;
+			case self::_SMARTY:
+				$this->_renderSmarty($action);
+				break;
 			case self::_JSON:
 				$this->_renderJson($action);
 				break;
@@ -108,6 +119,15 @@ abstract class FroodController {
 	}
 
 	/**
+	 * Set the output mode to Smarty.
+	 *
+	 * @return void
+	 */
+	public function doOutputSmarty() {
+		$this->_doOutput(self::_SMARTY);
+	}
+
+	/**
 	 * Render the output as JSON.
 	 *
 	 * @param string $action The action to render the view for. Ignored here.
@@ -115,11 +135,35 @@ abstract class FroodController {
 	 * @return string The rendered output.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	private function _renderJson($action) {
 		header('Content-type: application/json');
-
+		extract($GLOBALS, EXTR_REFS);
+		$xoopsLogger->activated = false;
 		echo json_encode($this->_values);
+	}
+
+	/**
+	 * Render the output as html using Smarty.
+	 *
+	 * @param string $action The action to render the view for.
+	 *
+	 * @return string The rendered output.
+	 * 
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 */
+	private function _renderSmarty($action) {
+		include_once XOOPS_ROOT_PATH.'/class/template.php';
+		extract($GLOBALS, EXTR_REFS);
+		$xoopsLogger->activated = false;
+
+		$tpl = new XoopsTpl();
+		foreach ($this->_values as $key => $value) {
+			$tpl->assign($key, $value);
+		}
+
+		$tpl->display($this->_getSmartyResource($action));
 	}
 
 	/**
@@ -128,19 +172,14 @@ abstract class FroodController {
 	 * @param string $action The action to render the view for.
 	 *
 	 * @return void
-	 *
+	 * 
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	private function _renderXoops($action) {
 		if ($this->_isAdmin) {
 			xoops_cp_header();
 
-			$tpl = new XoopsTpl();
-			foreach ($this->_values as $key => $value) {
-				$tpl->assign($key, $value);
-			}
-
-			$tpl->display($this->_getSmartyResource($action));
+			$this->_renderSmarty($action);
 
 			xoops_cp_footer();
 		} else {
@@ -165,7 +204,7 @@ abstract class FroodController {
 	 *
 	 * @return string
 	 */
-	public function _getSmartyResource($action) {
+	private function _getSmartyResource($action) {
 		$controllerName = strtolower(
 			preg_replace(
 				array(
