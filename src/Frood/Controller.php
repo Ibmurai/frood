@@ -19,7 +19,7 @@
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  * @author     Johannes Frandsen <jsf@fynskemedier.dk>
- * 
+ *
  * @todo Consider extracting renders to seperate classes
  * @SuppressWarnings(PHPMD.TooManyMethods)
  */
@@ -139,8 +139,10 @@ abstract class FroodController {
 	 */
 	private function _renderJson($action) {
 		header('Content-type: application/json');
+
 		extract($GLOBALS, EXTR_REFS);
 		$xoopsLogger->activated = false;
+
 		echo json_encode($this->_values);
 	}
 
@@ -150,11 +152,12 @@ abstract class FroodController {
 	 * @param string $action The action to render the view for.
 	 *
 	 * @return string The rendered output.
-	 * 
+	 *
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	private function _renderSmarty($action) {
 		include_once XOOPS_ROOT_PATH.'/class/template.php';
+
 		extract($GLOBALS, EXTR_REFS);
 		$xoopsLogger->activated = false;
 
@@ -172,7 +175,7 @@ abstract class FroodController {
 	 * @param string $action The action to render the view for.
 	 *
 	 * @return void
-	 * 
+	 *
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	private function _renderXoops($action) {

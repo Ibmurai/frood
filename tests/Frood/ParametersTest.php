@@ -17,6 +17,8 @@
  * @package    Frood
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ *
+ * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
@@ -195,5 +197,71 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		$params = new FroodParameters();
 
 		$params->getMechaSalmon();
+	}
+
+	/**
+	 * Provides test data for the count test.
+	 *
+	 * @return array
+	 */
+	public static function providerCount() {
+		return array(
+			array(
+				array(
+					'a' => 1,
+				),
+				1
+			),
+			array(
+				array(
+					'a' => 1,
+					'b' => 2,
+				),
+				2
+			),
+			array(
+				array(
+					'a' => 1,
+					'b' => 2,
+					'c' => 3,
+				),
+				3
+			),
+			array(
+				array(
+					'a' => 1,
+					'b' => 2,
+					'aa' => 1,
+					'bo' => 2,
+					'aeo' => 1,
+					'ueub' => 2,
+					'ieuia' => 1,
+					'ueb' => 2,
+					'auoeueo' => 1,
+					'aaab' => 2,
+					'ab' => 1,
+					'bueueoueo' => 2,
+					'az' => 1,
+					'bz' => 2,
+				),
+				14
+			),
+		);
+	}
+
+	/**
+	 * Test counting parameters.
+	 *
+	 * @param array   $values        An associative array to use as parameters.
+	 * @param integer $expectedCount The number count should return.
+	 *
+	 * @dataProvider providerCount
+	 *
+	 * @return void
+	 */
+	public function testCount(array $values, $expectedCount) {
+		$params = new FroodParameters($values);
+
+		$this->assertEquals($expectedCount, count($params));
 	}
 }
