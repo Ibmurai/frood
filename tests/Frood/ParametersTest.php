@@ -264,4 +264,28 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals($expectedCount, count($params));
 	}
+
+	/**
+	 * Test foreachability.
+	 *
+	 * @param array   $values        An associative array to use as parameters.
+	 * @param integer $expectedCount The number of iterations expected.
+	 *
+	 * @dataProvider providerCount
+	 *
+	 * @return void
+	 */
+	public function testForeach(array $values, $expectedCount) {
+		$params = new FroodParameters($values);
+
+		echo "\n";
+		$count = 0;
+		foreach ($params as $key => $value) {
+			echo "$key => $value\n";
+			$count++;
+		}
+		echo "\n";
+
+		$this->assertEquals($expectedCount, $count);
+	}
 }

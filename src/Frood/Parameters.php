@@ -21,7 +21,7 @@
  *
  * @SuppressWarnings(PHPMD.TooManyMethods) It's because of the many interfaces.
  */
-class FroodParameters implements Iterator, ArrayAccess, Countable {
+class FroodParameters implements Iterator, Countable {
 	/** @var array This associative array contains the actual parameter values. */
 	private $_values = array();
 
@@ -173,55 +173,6 @@ class FroodParameters implements Iterator, ArrayAccess, Countable {
 	public function valid() {
 		$key = key($this->_values);
 		return ($key !== NULL && $key !== FALSE);
-	}
-
-	/**
-	 * Implementation of the ArrayAccess interface.
-	 *
-	 * @param mixed $offset The offset.
-	 * @param mixed $value  The value.
-	 *
-	 * @return void
-	 */
-	public function offsetSet($offset, $value) {
-		if ($offset == "") {
-			$this->_values[] = $value;
-		} else {
-			$this->_values[$offset] = $value;
-		}
-	}
-
-	/**
-	 * Implementation of the ArrayAccess interface.
-	 *
-	 * @param mixed $offset The offset.
-	 *
-	 * @return boolean
-	 */
-	public function offsetExists($offset) {
-		return isset($this->_values[$offset]);
-	}
-
-	/**
-	 * Implementation of the ArrayAccess interface.
-	 *
-	 * @param mixed $offset The offset.
-	 *
-	 * @return void
-	 */
-	public function offsetUnset($offset) {
-		unset($this->_values[$offset]);
-	}
-
-	/**
-	 * Implementation of the ArrayAccess interface.
-	 *
-	 * @param mixed $offset The offset.
-	 *
-	 * @return mixed
-	 */
-	public function offsetGet($offset) {
-		return isset($this->_values[$offset]) ? $this->_values[$offset] : null;
 	}
 
 	/**
