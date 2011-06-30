@@ -184,7 +184,6 @@ class FroodParameters implements Iterator, Countable {
 				return self::_castAsFloat($value);
 			default:
 				throw new RuntimeException('Unknown type, ' . $type . '.');
-				break;
 		}
 	}
 
