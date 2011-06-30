@@ -313,6 +313,28 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test string conversion of parameter values.
+	 *
+	 * @return void
+	 */
+	public function testStringConversion() {
+		$params = new FroodParameters(
+			array(
+				'laks'  => 'madpakke',
+				'tal'   => '42',
+				'svar'  => 42,
+				'mecha' => null,
+			)
+		);
+
+		$this->assertEquals('madpakke', $params->getLaks(FroodParameters::AS_STRING));
+		$this->assertEquals('42', $params->getTal(FroodParameters::AS_STRING));
+		$this->assertEquals('42', $params->getSvar(FroodParameters::AS_STRING));
+		$this->assertEquals('12', $params->getMecha(FroodParameters::AS_STRING, 12));
+		$this->assertEquals('sko', $params->getMecha(FroodParameters::AS_STRING, 'sko'));
+	}
+
+	/**
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is a string.
 	 *
@@ -346,5 +368,41 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$params->getLaks(FroodParameters::AS_INTEGER);
+	}
+
+	/**
+	 * Test string conversion exceptions when parameter value cannot be
+	 * interpreted as string. When value is null.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testStringConversionExceptionNull() {
+		$params = new FroodParameters(
+			array(
+				'laks' => null,
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_STRING);
+	}
+
+	/**
+	 * Test string conversion exceptions when parameter value cannot be
+	 * interpreted as string. When value is an array.
+	 *
+	 * @expectedException RuntimeException
+	 *
+	 * @return void
+	 */
+	public function testStringConversionExceptionArray() {
+		$params = new FroodParameters(
+			array(
+				'laks' => array('vildt', 'meget', 32),
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_STRING);
 	}
 }

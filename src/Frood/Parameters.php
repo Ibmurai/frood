@@ -125,7 +125,7 @@ class FroodParameters implements Iterator, Countable {
 	 *
 	 * @return mixed It's like a box of chocolates.
 	 *
-	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default is given for a missing parameter.
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default is given for a missing parameter. Or if no default has been given for a parameter with a value of the wrong type.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
@@ -134,7 +134,11 @@ class FroodParameters implements Iterator, Countable {
 			try {
 				return self::_cast($type, $this->_values[$name]);
 			} catch (RuntimeException $e) {
-				return self::_cast($type, $default);
+				if ($default !== FroodNullParameter::getInstance()) {
+					return self::_cast($type, $default);
+				} else {
+					throw new RuntimeException("Attempting to retrieve parameter, $name, which has been set to a non-$type value and has no default value.");
+				}
 			}
 		} else {
 			if ($default !== FroodNullParameter::getInstance()) {
@@ -178,6 +182,10 @@ class FroodParameters implements Iterator, Countable {
 					return intval($value);
 				}
 				break;
+			case self::AS_STRING:
+				if ($value !== null && !is_array($value)) {
+					return (string) $value;
+				}
 			default:
 				throw new RuntimeException('Unknown type, ' . $type . '.');
 				break;
