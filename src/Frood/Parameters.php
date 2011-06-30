@@ -80,9 +80,9 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 						throw new RuntimeException("->$name should be called with 0 parameters. Called with " . count($args) . ' parameters.');
 					}
 			}
+		} else {
+			throw new RuntimeException("Call to undefined method, $name.");
 		}
-
-		throw new RuntimeException("Call to undefined method, $name.");
 	}
 
 	/**

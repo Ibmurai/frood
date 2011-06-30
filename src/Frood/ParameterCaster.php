@@ -12,6 +12,7 @@
 
 /**
  * FroodParameterCaster - Static methods for parameter value casting.
+ * FroodParameters extends this to use the functionality in a direct way.
  *
  * @category   Library
  * @package    Frood
