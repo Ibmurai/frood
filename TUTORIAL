@@ -22,25 +22,25 @@
 
 		<h3>Examples</h3>
 		<p>
-			<pre>XoopsImageSomething</pre> should be defined in one of:
+			<code>XoopsImageSomething</code> should be defined in one of:
 			<ul>
-				<li><pre>XoopsImageSomething.php</pre></li>
-				<li><pre>Xoops/ImageSomething.php</pre></li>
-				<li><pre>XoopsImage/Something.php</pre></li>
-				<li><pre>Xoops/Image/Something.php</pre></li>
+				<li><code>XoopsImageSomething.php</code></li>
+				<li><code>Xoops/ImageSomething.php</code></li>
+				<li><code>XoopsImage/Something.php</code></li>
+				<li><code>Xoops/Image/Something.php</code></li>
 			</ul>
 		</p>
 
 	<h2>File locations</h2>
 
 
-		<p>The Frood will basically autoload all classes in <pre>class/</pre>.</p>
-		<p>When in admin mode classes in <pre>admin/class/</pre> will also be autoloaded.</p>
+		<p>The Frood will basically autoload all classes in <code>class/</code>.</p>
+		<p>When in admin mode classes in <code>admin/class/</code> will also be autoloaded.</p>
 
 		<ul>
-			<li>Model classes should be placed in <pre>class/model/</pre>.</li>
-			<li>Public controllers should be placed in <pre>class/controllers/</pre>.</li>
-			<li>Private controllers should be placed in <pre>admin/class/controllers/</pre>.</li>
+			<li>Model classes should be placed in <code>class/model/</code>.</li>
+			<li>Public controllers should be placed in <code>class/controllers/</code>.</li>
+			<li>Private controllers should be placed in <code>admin/class/controllers/</code>.</li>
 		</ul>
 
 <h1>Controllers</h1>

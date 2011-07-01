@@ -25,7 +25,7 @@
  */
 class Frood {
 	/** @var string The module we're working with. */
-	private $_module = null;
+	private $_module;
 
 	/** @var boolean Are we handling admin pages? */
 	private $_isAdmin;
@@ -218,7 +218,7 @@ class Frood {
 	 */
 	private function _bootXoops() {
 		if ($this->_isAdmin) {
-			if (($cpHeader = realpath(dirname(__FILE__) . '/../../../../../include/cp_header.php')) && file_exists($cpHeader)) {
+			if (($cpHeader = realpath(dirname(__FILE__) . '/../../../../include/cp_header.php')) && file_exists($cpHeader)) {
 				include_once $cpHeader;
 				$vararr = get_defined_vars();
 				foreach ($vararr as $varName => $varValue) {
@@ -228,7 +228,7 @@ class Frood {
 				throw new RuntimeException('Frood could not boot Xoops! (admin mode)');
 			}
 		} else {
-			if (($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../../mainfile.php')) && file_exists($xoopsMainfile)) {
+			if (($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../mainfile.php')) && file_exists($xoopsMainfile)) {
 				include_once $xoopsMainfile;
 				$vararr = get_defined_vars();
 				foreach ($vararr as $varName => $varValue) {
@@ -271,12 +271,12 @@ class Frood {
 		);
 
 		// ...And, if we're in admin mode, the admin/class folder...
-		if (($this->_isAdmin) && ($folder = realpath(dirname(__FILE__) . '/../../../../' . $this->_module . '/admin/class'))) {
+		if (($this->_isAdmin) && ($folder = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/admin/class'))) {
 			$searchLocations[] = $folder;
 		}
 
 		// ...And in the modules class folder.
-		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../../../' . $this->_module . '/class'))) {
+		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/class'))) {
 			$searchLocations[] = $folder;
 		}
 

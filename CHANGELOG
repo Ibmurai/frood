@@ -1,13 +1,2 @@
 trunk:
 First working, stable version. @jers
-Added installation instructions. @jers
-Removed doxy documentation generation. @jers
-Removed docs folder. @jers
-Added a proper README - modified all of the CAPS files. @jers
-Changed the INSTALL file. @jers
-Removed the .htaccess_example - It is now a part of INSTALL. @jers
-FroodParameters now implement Iterator @jers
-FroodParameters now implement IteratorAggregate @jers
-FroodParameters no longer implement IteratorAggregate - but now it implement ArrayAccess and Countable instead @jers
-FroodController now supports Smarty render and disables Xoops log for Json  and Smarty render @jsf
-Dispatch errors now show if The Frood was in public or admin mode @jers

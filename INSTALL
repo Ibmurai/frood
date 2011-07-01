@@ -18,7 +18,7 @@ From the command line:
 
 Add the following line:
 
-	frood svn://develop.fyens.dk/frood/tags/latest
+	frood svn://develop.fyens.dk/frood/tags/latest/src
 
 Save, quit and:
 
@@ -45,7 +45,7 @@ First edit `admin/.htaccess`:
 
 Then edit `admin/index.php`:
 
-	require_once dirname(__FILE__) . '/../lib/frood/src/Frood.php';
+	require_once dirname(__FILE__) . '/../lib/frood/Frood.php';
 	$frood = new Frood();
 	$frood->safeDispatch();
 
@@ -70,7 +70,7 @@ First edit `.htaccess`:
 
 Then edit `index.php`:
 
-	require_once dirname(__FILE__) . '/lib/frood/src/Frood.php';
+	require_once dirname(__FILE__) . '/lib/frood/Frood.php';
 	$frood = new Frood();
 	$frood->safeDispatch();
 
