@@ -49,16 +49,11 @@ echo 'example';
 
 <h1>Extending the Frood controller</h1>
 <p>It is not required to extend the Frood controller to make use of Frood, but to support legacy code is is usaly a good idea.</p>
-<p>If you need to output something else than Froods build in output renderes (XOOP, SMARTY, JSON) or need access to global variables
-made available by XOOPS you also need to extend the Frood controller.</p>
+<p>If you need to output something else than Froods builtin output renderers (XOOPS, SMARTY, JSON) or need access to global variables made available by XOOPS you also need to extend the Frood controller.</p>
 <h2>Example</h2>
-<p>In this example we overwrite the <kbd><a href="Frood/Class/FroodController.html#render">FroodController::render()</a></kbd> method to add a new output 
-method <kbd>doOutputImage()</kbd> for outputting images. Additionally we need to create a method <kbd>_renderImage()</kbd> and a constant <kbd>_IMAGE</kbd>.</p>
+<p>In this example we overwrite the <kbd><a href="Frood/Class/FroodController.html#render">FroodController::render()</a></kbd> method to add a new output method <kbd>doOutputImage()</kbd> for outputting images. Additionally we need to create a method <kbd>_renderImage()</kbd> and a constant <kbd>_IMAGE</kbd>.</p>
 <p>We also add a method <kbd>_requireHeader()</kbd> for including the header file for the module, as we need stuff from the XOOPS environment.</p>
-<p>To make sure all our actions has access to XOOPS we overwrite <a href="Frood/Class/FroodController.html#__construct">FroodController::__construct()</a> and 
-call the <kbd>_requireHeader()</kbd> there. If only some of your actions need XOOPS,
-you can also just call <kbd>_requireHeader()</kbd> on the individual actions. The latter is the better solution performance vice as loading the whole XOOPS
-enviroment if you don't need it is kind of overkill. The former is convenient if you know you need it for all your actions.</p>
+<p>To make sure all our actions has access to XOOPS we overwrite <kbd><a href="Frood/Class/FroodController.html#__construct">FroodController::__construct()</a></kbd> and call the <kbd>_requireHeader()</kbd> there. If only some of your actions need XOOPS, you can also just call <kbd>_requireHeader()</kbd> on the individual actions. The latter is the better solution performance vice as loading the whole XOOPS enviroment if you don't need it is kind of overkill. The former is convenient if you know you need it for all your actions.</p>
 <script type="syntaxhighlighter" class="brush: php"><![CDATA[
 abstract class SomeController extends FroodController {
 
