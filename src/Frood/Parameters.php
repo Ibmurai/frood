@@ -162,8 +162,8 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 			$result[] = new FroodFileParameter(
 				$file['tmp_name'][$i],
 				$file['name'][$i],
-				null, // We don't trust the submitted file type!
 				$file['size'][$i],
+				null, // We don't trust the submitted file type!
 				$file['error'][$i]
 			);
 		}
