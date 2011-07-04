@@ -69,7 +69,7 @@ abstract class FroodController {
 	 *
 	 * @return void
 	 */
-	public function assign($key, $value) {
+	final public function assign($key, $value) {
 		$this->_values[$key] = $value;
 	}
 
@@ -105,7 +105,7 @@ abstract class FroodController {
 	 *
 	 * @return void
 	 */
-	public function doOutputJson() {
+	final public function doOutputJson() {
 		$this->_doOutput(self::_JSON);
 	}
 
@@ -114,7 +114,7 @@ abstract class FroodController {
 	 *
 	 * @return void
 	 */
-	public function doOutputXoops() {
+	final public function doOutputXoops() {
 		$this->_doOutput(self::_XOOPS);
 	}
 
@@ -123,7 +123,7 @@ abstract class FroodController {
 	 *
 	 * @return void
 	 */
-	public function doOutputSmarty() {
+	final public function doOutputSmarty() {
 		$this->_doOutput(self::_SMARTY);
 	}
 
@@ -229,7 +229,7 @@ abstract class FroodController {
 	 *
 	 * @return void
 	 */
-	private function _doOutput($mode) {
+	final protected function _doOutput($mode) {
 		$this->_outputMode = $mode;
 	}
 }
