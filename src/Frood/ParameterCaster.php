@@ -250,7 +250,7 @@ abstract class FroodParameterCaster {
 	 * @return string
 	 */
 	private static function _contentEncoding() {
-		if (preg_match('/charset=([\w-]+)/', $_SERVER['CONTENT_TYPE'], $match)) {
+		if (array_key_exists('CONTENT_TYPE', $_SERVER) && preg_match('/charset=([\w-]+)/', $_SERVER['CONTENT_TYPE'], $match)) {
 			return $match[1];
 		} else {
 			return 'UTF-8';
