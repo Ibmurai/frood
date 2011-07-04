@@ -57,7 +57,8 @@ class FroodFileParameter {
 		}
 
 		if ($type === null) {
-			if (preg_match('/^(\S+)/', exec('file -bi ' . escapeshellarg($path), $matches))) {
+			$matches = array();
+			if (preg_match('/^(\S+)/', exec('file -bi ' . escapeshellarg($path)), $matches)) {
 				$type = $matches[1];
 			}
 		}
