@@ -104,4 +104,54 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 			);
 		}
 	}
+
+	/**
+	 * Test request parsing with no specified action.
+	 *
+	 * @return void
+	 */
+	public function testRequestParsingNoAction() {
+		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/test';
+
+		$frood = new Frood('cruisecontrol', false, false);
+
+		try {
+			$frood->dispatch();
+			$this->fail('Expected an Exception before this!');
+		} catch (FroodDispatchException $e) {
+			$this->assertEquals(
+				'CruisecontrolTestController',
+				$e->getController()
+			);
+			$this->assertEquals(
+				'indexAction',
+				$e->getAction()
+			);
+		}
+	}
+
+	/**
+	 * Test request parsing with no specified action.
+	 *
+	 * @return void
+	 */
+	public function testRequestParsingNoActionTrailingSlash() {
+		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/test/';
+
+		$frood = new Frood('cruisecontrol', false, false);
+
+		try {
+			$frood->dispatch();
+			$this->fail('Expected an Exception before this!');
+		} catch (FroodDispatchException $e) {
+			$this->assertEquals(
+				'CruisecontrolTestController',
+				$e->getController()
+			);
+			$this->assertEquals(
+				'indexAction',
+				$e->getAction()
+			);
+		}
+	}
 }
