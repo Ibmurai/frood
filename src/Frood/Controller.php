@@ -249,4 +249,13 @@ abstract class FroodController {
 			throw new RuntimeException("No value has been set for key, $key.");
 		}
 	}
+
+	/**
+	 * Get the output mode.
+	 *
+	 * @return string The output mode.
+	 */
+	final protected function _getOutputMode() {
+		return $this->_outputMode;
+	}
 }
