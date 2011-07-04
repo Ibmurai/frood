@@ -39,6 +39,9 @@ abstract class FroodParameterCaster {
 	/** @var string The constant to tell the get function that you want a UTF-8 encoded string. */
 	const AS_UTF8 = 'UTF-8 encoded string';
 
+	/** @var string The constant to tell the get function that you want a json decoded string (i.e. an array). */
+	const AS_JSON = 'JSON formatted string';
+
 	/**
 	 * Attempt to cast a value as the given type.
 	 *
@@ -66,6 +69,8 @@ abstract class FroodParameterCaster {
 				return self::_castAsIso($value);
 			case self::AS_UTF8:
 				return self::_castAsUtf8($value);
+			case self::AS_JSON:
+				return self::_castAsJson($value);
 			default:
 				throw new RuntimeException('Unknown type, ' . $type . '.');
 		}
@@ -186,6 +191,57 @@ abstract class FroodParameterCaster {
 		} catch (FroodCastingException $e) {
 			throw new FroodCastingException($value, self::AS_UTF8);
 		}
+	}
+
+	/**
+	 * Attempt to cast a value to a JSON encoded array.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @todo Uncomment the error handling (PHP 5.3.3+)
+	 *
+	 * @throws FroodCastingException If the value could not be cast.
+	 *
+	 * @return array
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 */
+	private static function _castAsJson($value) {
+		try {
+			$result = json_decode(self::_cast(self::AS_UTF8, $value), true);
+		} catch (FroodCastingException $e) {
+			throw new FroodCastingException($value, self::AS_JSON);
+		}
+
+		return $result;
+
+		// Full JSON decoding error handling is not available until PHP 5.3.3
+		/*
+		$errorMessage = 'Parameter value, ' . var_export($value, true) . ', could not be cast as ' . self::AS_JSON;
+		switch (json_last_error()) {
+			case JSON_ERROR_NONE:
+				return $result;
+				break;
+			case JSON_ERROR_DEPTH:
+				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (The maximum stack depth has been exceeded)');
+				break;
+			case JSON_ERROR_STATE_MISMATCH:
+				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Invalid or malformed JSON)');
+				break;
+			case JSON_ERROR_CTRL_CHAR:
+				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Control character error, possibly incorrectly encoded)');
+				break;
+			case JSON_ERROR_SYNTAX:
+				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Syntax error)');
+				break;
+			case JSON_ERROR_UTF8:
+				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Malformed UTF-8 characters, possibly incorrectly encoded)');
+				break;
+			default:
+				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Unknown error)');
+				break;
+		}
+		*/
 	}
 
 	/**

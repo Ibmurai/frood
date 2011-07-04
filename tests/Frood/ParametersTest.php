@@ -391,6 +391,31 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test json conversion of parameter values.
+	 *
+	 * @return void
+	 */
+	public function testJsonConversion() {
+		$params = new FroodParameters(
+			array(
+				'skam'   => '["32","thirtytwo"]',
+				'laks'   => '{"32":"thirtytwo"}',
+				'tal'    => '[22,4.0]',
+				'svar'   => '{"32":"thirtytwo","42":"fortytwo"}',
+				'empty'  => '{}',
+				'empty2' => '[]',
+			)
+		);
+
+		$this->assertEquals(array('32','thirtytwo'), $params->getSkam(FroodParameters::AS_JSON));
+		$this->assertEquals(array('32' => 'thirtytwo'), $params->getLaks(FroodParameters::AS_JSON));
+		$this->assertEquals(array(22, 4.0), $params->getTal(FroodParameters::AS_JSON));
+		$this->assertEquals(array('32' => 'thirtytwo', '42' => 'fortytwo'), $params->getSvar(FroodParameters::AS_JSON));
+		$this->assertEquals(array(), $params->getEmpty(FroodParameters::AS_JSON));
+		$this->assertEquals(array(), $params->getEmpty2(FroodParameters::AS_JSON));
+	}
+
+	/**
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is a string.
 	 *
