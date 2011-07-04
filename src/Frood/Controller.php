@@ -232,4 +232,21 @@ abstract class FroodController {
 	final protected function _doOutput($mode) {
 		$this->_outputMode = $mode;
 	}
+
+	/**
+	 * Get the value assigned to $key.
+	 *
+	 * @param string $key The key to get the value for.
+	 *
+	 * @return mixed It's like a box of chocolates.
+	 *
+	 * @throws RuntimeException For non-assigned keys.
+	 */
+	final protected function _getValue($key) {
+		if (array_key_exists($key, $this->_values)) {
+			return $this->_values[$key];
+		} else {
+			throw new RuntimeException("No value has been set for key, $key.");
+		}
+	}
 }
