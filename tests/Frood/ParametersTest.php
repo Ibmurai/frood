@@ -95,6 +95,27 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test typed parameter has's.
+	 *
+	 * @return void
+	 */
+	public function testHasTypedParameter() {
+		$params = new FroodParameters(
+			array(
+				'a' => 'A',
+				'B' => 2,
+				'f' => array(),
+				'j' => 42.1,
+			)
+		);
+
+		$this->assertTrue($params->hasA(FroodParameters::AS_STRING));
+		$this->assertTrue($params->hasB(FroodParameters::AS_INTEGER));
+		$this->assertTrue($params->hasF(FroodParameters::AS_ARRAY));
+		$this->assertTrue($params->hasJ(FroodParameters::AS_FLOAT));
+	}
+
+	/**
 	 * Test parameter default values.
 	 *
 	 * @return void
@@ -174,7 +195,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	public function testTooManyArgumentsToHas() {
 		$params = new FroodParameters();
 
-		$params->hasMechaSalmon('too many parameters');
+		$params->hasMechaSalmon('type', 'too many parameters');
 	}
 
 

@@ -80,8 +80,10 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 				case 'has':
 					if (count($args) == 0) {
 						return $this->_hasParameter($matches[2]);
+					} else if (count($args) == 1) {
+						return $this->_hasParameter($matches[2], $args[0]);
 					} else {
-						throw new RuntimeException("->$name should be called with 0 parameters. Called with " . count($args) . ' parameters.');
+						throw new RuntimeException("->$name should be called with 0 or 1 parameters. Called with " . count($args) . ' parameters.');
 					}
 			}
 		} else {
@@ -138,13 +140,24 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	}
 
 	/**
-	 * Check if the named parameter is set.
+	 * Check if the named parameter is set. Optionally check if it is of a certain type.
 	 *
 	 * @param string $name The name of the parameter to check.
+	 * @param string $type The type to ensure the parameter is of. One of the AS_ constants.
 	 *
 	 * @return boolean True if the named parameter is set.
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
-	private function _hasParameter($name) {
+	private function _hasParameter($name, $type = null) {
+		if ($type !== null && array_key_exists($name, $this->_values)) {
+			try {
+				self::_cast($type, $this->_values[$name]);
+			} catch (FroodCastingException $e) {
+				return false;
+			}
+		}
+
 		return array_key_exists($name, $this->_values);
 	}
 
