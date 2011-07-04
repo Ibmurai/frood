@@ -57,9 +57,9 @@ class FroodFileParameter {
 		}
 
 		if ($type === null) {
-			$finfo = finfo_open(FILEINFO_MIME_TYPE);
-			$type = finfo_file($finfo, $path);
-			finfo_close($finfo);
+			if (preg_match('/^(\S+)/', exec('file -bi ' . escapeshellarg($path), $matches))) {
+				$type = $matches[1];
+			}
 		}
 
 		$this->_name  = $name;
