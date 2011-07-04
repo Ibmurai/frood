@@ -39,6 +39,10 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	public function __construct(array $from = null) {
 		if ($from === null) {
 			$from = array_merge($_GET, $_POST);
+
+			foreach ($_FILES as $key => $value) {
+				$this->_values[$key] = self::_parseFile($value);
+			}
 		}
 
 		foreach ($from as $key => $value) {
@@ -142,6 +146,33 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 */
 	private function _hasParameter($name) {
 		return array_key_exists($name, $this->_values);
+	}
+
+	/**
+	 * Parses an element of the $_FILES array.
+	 *
+	 * @param array $file An element from the PHP $_FILES array.
+	 *
+	 * @return FroodParametersFile|FroodParametersFile[]
+	 */
+	private static function _parseFile(array $file) {
+		$result = array();
+
+		for ($i = 0; $i < count($file['name']); $i++) {
+			$result[] = new FroodFileParameter(
+				$file['tmp_name'][$i],
+				$file['name'][$i],
+				null, // We don't trust the submitted file type!
+				$file['size'][$i],
+				$file['error'][$i]
+			);
+		}
+
+		if (count($result) == 1) {
+			return $result[0];
+		} else {
+			return $result;
+		}
 	}
 
 	/**
