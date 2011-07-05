@@ -41,7 +41,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 			$from = array_merge($_GET, $_POST);
 
 			foreach ($_FILES as $key => $value) {
-				$this->_values[$key] = self::_parseFile($value);
+				$from[$key] = self::_parseFile($value);
 			}
 		}
 
