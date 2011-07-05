@@ -87,26 +87,6 @@ class Frood {
 	}
 
 	/**
-	 * Dispatch an action to a controller, and produce a 404 for an invalid request.
-	 * The header of the 404 will contain an X-Frood-Message header with the exception string.
-	 * Determines everything from the request.
-	 *
-	 * @return void
-	 */
-	public function safeDispatch() {
-		try {
-			$this->dispatch();
-		} catch (FroodDispatchException $e) {
-			if ($this->_isAdmin) {
-				echo '<h1>Frood error</h1>';
-				echo $e->getMessage();
-			} else {
-				header("X-Frood-Message: {$e->getMessage()}", false, 404);
-			}
-		}
-	}
-
-	/**
 	 * Attempts to load the given class.
 	 *
 	 * @param string $name The name of the class to load.

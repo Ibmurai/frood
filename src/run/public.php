@@ -12,8 +12,14 @@
  */
 
 require_once dirname(__FILE__) . '/../Frood.php';
+
 $frood = new Frood(
 	basename(realpath(dirname(__FILE__) . '/../../../')), // The name of the module.
 	false                                                 // Public mode.
 );
-$frood->safeDispatch();
+
+try {
+	$frood->dispatch();
+} catch (FroodDispatchException $e) {
+	header("X-Frood-Message: {$e->getMessage()}", false, 404);
+}
