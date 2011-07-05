@@ -5,7 +5,7 @@
  *
  * PHP version 5
  *
- * @category Test
+ * @category Module
  * @package  Frood
  * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
  * @since    2011-06-14
@@ -14,7 +14,7 @@
 /**
  * FroodDispatchException - A custom Exception for exceptions during dispatching.
  *
- * @category   Test
+ * @category   Module
  * @package    Frood
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>

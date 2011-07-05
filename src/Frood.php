@@ -11,7 +11,7 @@
  */
 
 /**
- * Frood - you just call dispatch!
+ * The Frood!
  *
  * @category   Library
  * @package    Frood
@@ -38,6 +38,8 @@ class Frood {
 	 * @param boolean $bootXoops Boot Xoops? The answer is probably only no for tests.
 	 *
 	 * @return void
+	 *
+	 * @throws RuntimeException       If Xoops cannot be booted.
 	 */
 	public function __construct($module = null, $isAdmin = false, $bootXoops = true) {
 		$this->_module  = $module;
@@ -62,7 +64,6 @@ class Frood {
 	 * @return void
 	 *
 	 * @throws FroodDispatchException If Frood cannot dispatch.
-	 * @throws RuntimeException       If Xoops cannot be booted.
 	 */
 	public function dispatch($controller = null, $action = null, FroodParameters $parameters = null) {
 		if ($controller === null) {
