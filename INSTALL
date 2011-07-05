@@ -28,7 +28,7 @@ Save, quit and:
 The admin interface
 -------------------
 
-First edit `admin/.htaccess`:
+Edit `admin/.htaccess` (Change `moduleName` to the actual dirname of the module):
 
 	RewriteEngine on
 
@@ -40,20 +40,14 @@ First edit `admin/.htaccess`:
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 
-	# Direct all requests to index.php, except specified file types
-	RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ index.php
-
-Then edit `admin/index.php`:
-
-	require_once dirname(__FILE__) . '/../lib/frood/Frood.php';
-	$frood = new Frood();
-	$frood->safeDispatch();
+	# Direct all requests to lib/frood/run/admin.php, except specified file types
+	RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ ../lib/frood/run/admin.php
 
 
 The public part
 ---------------
 
-First edit `.htaccess`:
+Edit `.htaccess` (Change `moduleName` to the actual dirname of the module):
 
 	RewriteEngine on
 
@@ -65,14 +59,8 @@ First edit `.htaccess`:
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 
-	# Direct all requests to index.php, except specified file types
-	RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ index.php
-
-Then edit `index.php`:
-
-	require_once dirname(__FILE__) . '/lib/frood/Frood.php';
-	$frood = new Frood();
-	$frood->safeDispatch();
+	# Direct all requests to lib/frood/run/public.php, except specified file types
+	RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ lib/frood/run/public.php
 
 
 *That's it.*

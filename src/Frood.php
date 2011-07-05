@@ -40,9 +40,12 @@ class Frood {
 	 * @return void
 	 */
 	public function __construct($module = null, $isAdmin = false, $bootXoops = true) {
+		$this->_module  = $module;
+		$this->_isAdmin = $isAdmin;
+
 		$this->_setupAutoloader();
-		$this->_setupModuleAndIsAdmin($module, $isAdmin);
 		$this->_buildUriFormat();
+
 		if ($bootXoops) {
 			$this->_bootXoops();
 		}
@@ -173,40 +176,6 @@ class Frood {
 		}
 
 		spl_autoload_register(array($this, 'autoload'));
-	}
-
-	/**
-	 * Determine context: Module and whether we are in admin mode.
-	 * Call with no parameters to determine this from the request.
-	 *
-	 * @param string  $module  The dirname of the module to work with.
-	 * @param boolean $isAdmin Are we handling admin pages?
-	 *
-	 * @return void
-	 */
-	private function _setupModuleAndIsAdmin($module = null, $isAdmin = false) {
-		if ($module === null) {
-			$matches = array();
-			if (preg_match(
-			    '/
-				\/([a-z]*)
-				\/([a-z]*)
-				\/index\.php
-			    $/ix', $_SERVER['SCRIPT_FILENAME'], $matches
-		    )
-			) {
-				if ($matches[2] == 'admin') {
-					$this->_module  = $matches[1];
-					$this->_isAdmin = true;
-				} else {
-					$this->_module  = $matches[2];
-					$this->_isAdmin = false;
-				}
-			}
-		} else {
-			$this->_module  = $module;
-			$this->_isAdmin = $isAdmin;
-		}
 	}
 
 	/**
