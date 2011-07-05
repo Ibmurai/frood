@@ -437,6 +437,23 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test file "conversion" of parameter values.
+	 *
+	 * @return void
+	 */
+	public function testFileConversion() {
+		$params = new FroodParameters(
+			array(
+				'skam' => new FroodFileParameter(__FILE__),
+				'guf'  => 'not a file',
+			)
+		);
+
+		$this->assertEquals('FroodFileParameter', get_class($params->getSkam(FroodParameters::AS_FILE)));
+		$this->assertEquals('FroodFileParameter', get_class($params->getGuf(FroodParameters::AS_FILE, new FroodFileParameter(__FILE__))));
+	}
+
+	/**
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is a string.
 	 *

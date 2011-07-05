@@ -19,6 +19,7 @@
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  *
+ * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 abstract class FroodParameterCaster {
 	/** @var string The constant to tell the get function that you want an integer. */
@@ -42,6 +43,9 @@ abstract class FroodParameterCaster {
 	/** @var string The constant to tell the get function that you want a json decoded string (i.e. an array). */
 	const AS_JSON = 'JSON formatted string';
 
+	/** @var string The constant to tell the get function that you want a file. */
+	const AS_FILE = 'file';
+
 	/**
 	 * Attempt to cast a value as the given type.
 	 *
@@ -52,6 +56,8 @@ abstract class FroodParameterCaster {
 	 *
 	 * @throws FroodCastingException If the value could not be cast.
 	 * @throws RuntimeException      If the type is unknown.
+	 *
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
 	 */
 	protected static function _cast($type, $value) {
 		switch ($type) {
@@ -71,6 +77,8 @@ abstract class FroodParameterCaster {
 				return self::_castAsUtf8($value);
 			case self::AS_JSON:
 				return self::_castAsJson($value);
+			case self::AS_FILE:
+				return self::_castAsFile($value);
 			default:
 				throw new RuntimeException('Unknown type, ' . $type . '.');
 		}
@@ -242,6 +250,23 @@ abstract class FroodParameterCaster {
 				break;
 		}
 		*/
+	}
+
+	/**
+	 * Attempt to cast a value as a file.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodCastingException If the value could not be cast.
+	 *
+	 * @return FroodFileParameter
+	 */
+	private static function _castAsFile($value) {
+		if ($value instanceof FroodFileParameter) {
+			return $value;
+		} else {
+			throw new FroodCastingException($value, self::AS_FILE);
+		}
 	}
 
 	/**
