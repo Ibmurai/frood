@@ -136,7 +136,7 @@ abstract class FroodParameterCaster {
 		if (is_float($value)) {
 			return (float) $value;
 		}
-		if ($value !== null && !is_array($value) && !is_object($value) && is_string($value) && preg_match('/^\s*\-?[0-9\.,]+\s*$/', $value)) {
+		if ($value !== null && !is_array($value) && !is_object($value) && is_string($value) && preg_match('/^\s*\-?[0-9]+(\.|,)?[0-9]+\s*$/', $value)) {
 			return floatval(str_replace(',', '.', $value));
 		}
 		try {
