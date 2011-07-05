@@ -55,16 +55,16 @@ class Frood {
 	 * Dispatch an action to a controller.
 	 * Call with no parameters to determine everything from the request.
 	 *
-	 * @param string $controller The controller to call.
-	 * @param string $action     The action to invoke.
-	 * @param array  $parameters The parameters for the action.
+	 * @param string          $controller The controller to call.
+	 * @param string          $action     The action to invoke.
+	 * @param FroodParameters $parameters The parameters for the action.
 	 *
 	 * @return void
 	 *
 	 * @throws FroodDispatchException If Frood cannot dispatch.
 	 * @throws RuntimeException       If Xoops cannot be booted.
 	 */
-	public function dispatch($controller = null, $action = null, $parameters = null) {
+	public function dispatch($controller = null, $action = null, FroodParameters $parameters = null) {
 		if ($controller === null) {
 			$controller = $this->_guessController();
 		}

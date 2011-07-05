@@ -4,7 +4,7 @@ Installing The Frood
 *Author* [Jens Riisom Schultz](mailto:jers@fynskemedier.dk)
 *Since*  2011-06-21
 
-To set a module up for The Frood, you need to create two `.htaccess`-files and two `index.php` files.
+To set a module up for The Frood, you need to create two `.htaccess`-files.
 
 
 Add The Frood as an external

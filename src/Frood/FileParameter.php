@@ -46,7 +46,7 @@ class FroodFileParameter {
 	 * @return void
 	 */
 	public function __construct($path, $name = null, $size = null, $type = null, $error = null) {
-		$this->_path  = $path;
+		$this->_path = $path;
 
 		if ($name === null) {
 			$name = basename($path);
