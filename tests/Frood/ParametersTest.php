@@ -454,6 +454,42 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Provides data for testFileConversionException.
+	 *
+	 * @return array
+	 */
+	public function providerFileConversionException() {
+		return array(
+			array('a string'),
+			array(42),
+			array(42.9),
+			array(array('some array')),
+			array(new FroodParameters(array())),
+		);
+	}
+
+	/**
+	 * Test file conversion exceptions when parameter value cannot be
+	 * interpreted as file.
+	 *
+	 * @param mixed $value The value to fail casting to a file.
+	 *
+	 * @dataProvider      providerFileConversionException
+	 * @expectedException FroodCastingException
+	 *
+	 * @return void
+	 */
+	public function testFileConversionException($value) {
+		$params = new FroodParameters(
+			array(
+				'value' => $value,
+			)
+		);
+
+		$params->getValue(FroodParameters::AS_FILE);
+	}
+
+	/**
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is a string.
 	 *
@@ -464,7 +500,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	public function testIntegerConversionExceptionString() {
 		$params = new FroodParameters(
 			array(
-				'laks'  => 'madpakke',
+				'laks' => 'madpakke',
 			)
 		);
 
