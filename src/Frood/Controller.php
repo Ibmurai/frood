@@ -132,7 +132,7 @@ abstract class FroodController {
 	 *
 	 * @param string $action The action to render the view for. Ignored here.
 	 *
-	 * @return string The rendered output.
+	 * @return void
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
@@ -140,8 +140,7 @@ abstract class FroodController {
 	private function _renderJson($action) {
 		header('Content-type: application/json');
 
-		extract($GLOBALS, EXTR_REFS);
-		$xoopsLogger->activated = false;
+		$GLOBALS['xoopsLogger']->activated = false;
 
 		echo json_encode($this->_values);
 	}
@@ -149,17 +148,17 @@ abstract class FroodController {
 	/**
 	 * Render the output as html using Smarty.
 	 *
-	 * @param string $action The action to render the view for.
+	 * @param string  $action               The action to render the view for.
+	 * @param boolean $xoopsLoggerActivated Show the XoopsLogger?
 	 *
-	 * @return string The rendered output.
+	 * @return void
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
-	private function _renderSmarty($action) {
+	private function _renderSmarty($action, $xoopsLoggerActivated = false) {
 		include_once XOOPS_ROOT_PATH.'/class/template.php';
 
-		extract($GLOBALS, EXTR_REFS);
-		$xoopsLogger->activated = false;
+		$GLOBALS['xoopsLogger']->activated = $xoopsLoggerActivated;
 
 		$tpl = new XoopsTpl();
 		foreach ($this->_values as $key => $value) {
@@ -182,7 +181,7 @@ abstract class FroodController {
 		if ($this->_isAdmin) {
 			xoops_cp_header();
 
-			$this->_renderSmarty($action);
+			$this->_renderSmarty($action, true);
 
 			xoops_cp_footer();
 		} else {
