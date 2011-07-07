@@ -211,7 +211,7 @@ abstract class FroodController {
 		$controllerName = strtolower(
 			preg_replace(
 				array(
-					'/^' . $this->_module . '/i',
+					'/^' . Frood::convertHtmlNameToPhpName($this->_module) . '/',
 					'/Controller$/',
 				),
 				array('', ''),
