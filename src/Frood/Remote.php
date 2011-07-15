@@ -66,7 +66,7 @@ class FroodRemote {
 		}
 
 		if ($request->getResponseCode() == 200) {
-			return $r->getResponseBody();
+			return $request->getResponseBody();
 		} else {
 			throw new FroodRemoteDispatchException($this->_host, $controller, $action, $parameters);
 		}

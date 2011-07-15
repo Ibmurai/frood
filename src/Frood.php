@@ -72,8 +72,8 @@ class Frood {
 
 		if ($action === null) {
 			$action = $this->_guessAction();
-			$method = $action . 'Action';
 		}
+		$method = $action . 'Action';
 
 		if ($parameters === null) {
 			$parameters = $this->_guessParameters();
