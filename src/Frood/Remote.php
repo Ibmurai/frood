@@ -58,8 +58,10 @@ class FroodRemote {
 		}
 
 		if ($this->_host === null) {
-			$runner = realpath(dirname(__FILE__) . '/../run/shell.php');
-			return shell_exec("php $runner {$this->_module} $controller $action");
+			$runner          = realpath(dirname(__FILE__) . '/../run/shell.php');
+			$parameterString = self::_parametersToString($parameters);
+
+			return shell_exec("php $runner {$this->_module} $controller $action " . $parameterString);
 		} else {
 			$request = $this->_getRequest($controller, $action, $parameters);
 
@@ -111,5 +113,26 @@ class FroodRemote {
 		$request->addPostFields($fields);
 
 		return $request;
+	}
+
+	/**
+	 * Convert a FroodParameters instance to a string usable for run/shell.php
+	 *
+	 * @param FroodParameters $parameters The parameters to convert.
+	 *
+	 * @return string
+	 */
+	private function _parametersToString(FroodParameters $parameters) {
+		$result = array();
+
+		foreach ($parameters as $key => $value) {
+			if ($value instanceof FroodFileParameter) {
+				$result[] = Frood::convertPhpNameToHtmlName($key) . '=' . escapeshellarg('_FILE_:' . $value->getPath());
+			} else {
+				$result[] = Frood::convertPhpNameToHtmlName($key) . '=' . escapeshellarg($value);
+			}
+		}
+
+		return implode(' ', $result);
 	}
 }

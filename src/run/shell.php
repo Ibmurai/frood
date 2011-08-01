@@ -32,7 +32,11 @@ foreach (array_slice($argv, 4) as $arg) {
 
 	switch (true) {
 		case preg_match('/([^=]+)=(.+)/', $arg, $matches):
-			$args[$matches[1]] = $matches[2];
+			if (substr($matches[2], 0, 7) == '_FILE_:') {
+				$args[$matches[1]] = new FroodFileParameter(substr($matches[2], 7));
+			} else {
+				$args[$matches[1]] = $matches[2];
+			}
 			break;
 		default:
 			throw new Exception("Bogus parameter, $arg.");
