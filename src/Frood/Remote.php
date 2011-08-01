@@ -28,12 +28,12 @@ class FroodRemote {
 	/**
 	 * Do initialization stuff.
 	 *
-	 * @param string $host   The name of the host to connect to.
 	 * @param string $module The dirname of the module to work with.
+	 * @param string $host   The name of the host to connect to. Don't specify this to work locally.
 	 *
 	 * @return void
 	 */
-	public function __construct($host, $module) {
+	public function __construct($module, $host = null) {
 		$this->_host   = $host;
 		$this->_module = $module;
 	}
@@ -57,18 +57,23 @@ class FroodRemote {
 			$parameters = new FroodParameters(array());
 		}
 
-		$request = $this->_getRequest($controller, $action, $parameters);
-
-		try {
-			$request->send();
-		} catch (HttpException $e) {
-			throw new FroodRemoteDispatchException($this->_host, $controller, $action, $parameters);
-		}
-
-		if ($request->getResponseCode() == 200) {
-			return $request->getResponseBody();
+		if ($this->_host === null) {
+			$runner = realpath(dirname(__FILE__) . '/../../run/shell.php');
+			return shell_exec("php $runner {$this->_module} $controller $action");
 		} else {
-			throw new FroodRemoteDispatchException($this->_host, $controller, $action, $parameters);
+			$request = $this->_getRequest($controller, $action, $parameters);
+
+			try {
+				$request->send();
+			} catch (HttpException $e) {
+				throw new FroodRemoteDispatchException($this->_host, $controller, $action, $parameters);
+			}
+
+			if ($request->getResponseCode() == 200) {
+				return $request->getResponseBody();
+			} else {
+				throw new FroodRemoteDispatchException($this->_host, $controller, $action, $parameters);
+			}
 		}
 	}
 
