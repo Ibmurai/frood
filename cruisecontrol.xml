@@ -28,7 +28,7 @@
 				command="phpcb --log ${project.dir}/build/logs --output ${project.dir}/build/php-code-browser" />
 			<artifactspublisher dir="${project.dir}/build/php-code-browser"
 				dest="${artifact.dir}" subdirectory="php-code-browser" />
-			<execute command="phpuc graph logs/${project.name} ${artifact.dir}" />
+			<execute command="phpuc graph --max-number 50 logs/${project.name} ${artifact.dir}" />
 			<execute
 				command="/usr/bin/php ./pduc.php --logs=${cruise.logs.dir} --artifacts=${cruise.artifacts.dir} --project=${project.name}  --path=./ --ignore=tests,doc/examples,tools" />
 		</publishers>
