@@ -58,7 +58,7 @@ class FroodRemote {
 		}
 
 		if ($this->_host === null) {
-			$runner = realpath(dirname(__FILE__) . '/../../run/shell.php');
+			$runner = realpath(dirname(__FILE__) . '/../run/shell.php');
 			return shell_exec("php $runner {$this->_module} $controller $action");
 		} else {
 			$request = $this->_getRequest($controller, $action, $parameters);
@@ -105,7 +105,7 @@ class FroodRemote {
 					$value->getType()
 				);
 			} else {
-				$fields[$key] = $value;
+				$fields[Frood::convertPhpNameToHtmlName($key)] = $value;
 			}
 		}
 		$request->addPostFields($fields);
