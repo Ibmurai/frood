@@ -68,6 +68,8 @@ class Frood {
 	public function dispatch($controller = null, $action = null, FroodParameters $parameters = null) {
 		if ($controller === null) {
 			$controller = $this->_guessController();
+		} else {
+			$controller = self::convertHtmlNameToPhpName("{$this->_module}_{$controller}_controller");
 		}
 
 		if ($action === null) {
@@ -217,7 +219,7 @@ class Frood {
 	private function _classNameToPath($name) {
 		// Search for classes in Frood...
 		$searchLocations = array(
-		dirname(__FILE__),
+			dirname(__FILE__),
 		);
 
 		// ...And, if we're in admin mode, the admin/class folder...
