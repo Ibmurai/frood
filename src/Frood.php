@@ -74,6 +74,8 @@ class Frood {
 
 		if ($action === null) {
 			$action = $this->_guessAction();
+		} else {
+			$action = self::convertHtmlNameToPhpName($action, false);
 		}
 		$method = $action . 'Action';
 
