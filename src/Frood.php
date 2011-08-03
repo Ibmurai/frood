@@ -234,16 +234,38 @@ class Frood {
 			$searchLocations[] = $folder;
 		}
 
-		if (preg_match('/^((?:[A-Z][a-z]*)+)$/', $name)) {
+		if (preg_match('/^((?:[A-Z][a-z]+)+)$/', $name)) {
 			// Build a regular expression matching the end of the filepaths to accept...
 			$regex = '/' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '\/?\\1', substr($name, 1)) . '.php$/';
 
 			foreach ($searchLocations as $classPath) {
-				$directory = new RecursiveDirectoryIterator($classPath);
-				$iterator = new RecursiveIteratorIterator($directory);
-				foreach ($iterator as $finfo) {
-					if (preg_match($regex, $finfo->getPathname())) {
-						return $finfo->getPathname();
+				if ($path = $this->_recursiveFileSearch($classPath, $regex)) {
+					return $path;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Internally used method. Used by _classNameToPath.
+	 *
+	 * @param string $directory
+	 * @param string $regex
+	 *
+	 * @return null|string null if no match was found.
+	 */
+	private function _recursiveFileSearch($directory, $regex) {
+		$iterator = new DirectoryIterator($directory);
+
+		foreach ($iterator as $finfo) {
+			if (substr($finfo->getBasename(), 0, 1) != '.') {
+				if ($finfo->isFile() && preg_match($regex, $finfo->getPathname())) {
+					return $finfo->getPathname();
+				} else if ($finfo->isDir()) {
+					if ($sub = $this->_recursiveFileSearch($finfo->getPathname(), $regex)) {
+						return $sub;
 					}
 				}
 			}
