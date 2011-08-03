@@ -251,8 +251,8 @@ class Frood {
 	/**
 	 * Internally used method. Used by _classNameToPath.
 	 *
-	 * @param string $directory
-	 * @param string $regex
+	 * @param string $directory The directory to search in.
+	 * @param string $regex     The regular expression to match on the full path.
 	 *
 	 * @return null|string null if no match was found.
 	 */
