@@ -234,9 +234,9 @@ class Frood {
 			$searchLocations[] = $folder;
 		}
 
-		if (preg_match('/^((?:[A-Z][a-z]+)+)$/', $name)) {
+		if (preg_match('/^((?:[A-Z][a-z]*)+)$/', $name)) {
 			// Build a regular expression matching the end of the filepaths to accept...
-			$regex = '/' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '\/?\\1', substr($name, 1)) . '.php$/';
+			$regex = '/' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '\/?\\1', substr($name, 1)) . '\.php$/';
 
 			foreach ($searchLocations as $classPath) {
 				if ($path = $this->_recursiveFileSearch($classPath, $regex)) {

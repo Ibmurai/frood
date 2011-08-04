@@ -1,3 +1,4 @@
 trunk:
+ReFixed a bug in the autoloader. @jers
 Fixed the autoloader so it skips hidden files and folders. @jers
 First working, stable version. @jers
