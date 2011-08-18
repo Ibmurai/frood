@@ -1,6 +1,6 @@
 <?php
 /**
- * Run The Frood in either public or admin mode, as determined from the URI.
+ * Run a Frood app as determined from the URI.
  *
  * PHP version 5
  *
@@ -11,20 +11,41 @@
  * @since      2011-07-07
  */
 
+require_once dirname(__FILE__) . '/../Frood.php';
+
 $requestUri = $_SERVER['REQUEST_URI'];
 $module     = basename(realpath(dirname(__FILE__) . '/../../../'));
 $regex = '/^
-	\/modules
-	\/' . $module . '
-	(\/admin)?
-	(?:\/|$)
+	(
+		\/modules
+		\/' . $module . '   # 1 : start of uri
+		\/
+	)
+	([a-z]*)                # 2 : app
+	(.*)                    # 3 : the rest
 /x';
 
 if (preg_match($regex, $requestUri, $matches)) {
-	if (isset($matches[1]) && $matches[1] == '/admin') {
-		include_once dirname(__FILE__) . '/admin.php';
+	$appRunFile = dirname(__FILE__) . '/apps/' . $matches[2] . '.php';
+
+	if (file_exists($appRunFile)) {
+		include_once $appRunFile;
 	} else {
-		include_once dirname(__FILE__) . '/public.php';
+		$appRunFile = dirname(__FILE__) . '/apps/public.php';
+		if (file_exists($appRunFile)) {
+			$_SERVER['REQUEST_URI'] = preg_replace($regex, '$1public/$2$3', $requestUri);
+			if ($matches[3] == '') {
+				if ($matches[2] == '') {
+					$_SERVER['REQUEST_URI'] .= 'index';
+				} else {
+					$_SERVER['REQUEST_URI'] .= '/index';
+				}
+			}
+			header("X-Frood-Uri-Rewrite: {$_SERVER['REQUEST_URI']}");
+			include_once $appRunFile;
+		} else {
+			header("X-Frood-Error: The public app could not be bootstrapped. That really sucks.", false, 404);
+		}
 	}
 } else {
 	header("X-Frood-Error: I don't know how to handle the request URI, $requestUri.", false, 404);

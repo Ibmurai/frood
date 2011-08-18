@@ -1,4 +1,14 @@
 trunk:
+Moved the string conversion methods from Frood to FroodUtil. @jers
+Refactored the autoloader to a seperate class. @jers
+Renamed all exceptions. @jers
+Refactored rendering to seperate classes. You will need to adapt any custom rendering modes! @jers
+Template paths and names are now consistent with the urls used for the actions. @jers
+This dependency fixes the redirect screen language bug and adds the xoops logger to non admin pages [r:xoops=20110809] @jers
+Legacy support for the public app when remoting. @jers
+Removed the old public and admin runners. @jers
+Fixed array support for local Frood remoting. @jers
+Major rewrite to support local and cron apps. @jers
 ReFixed a bug in the autoloader. @jers
 Fixed the autoloader so it skips hidden files and folders. @jers
 First working, stable version. @jers

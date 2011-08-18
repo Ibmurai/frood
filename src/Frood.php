@@ -17,33 +17,31 @@
  * @package    Frood
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
- *
- * @todo Get rid of these suppressions. Refactor the uri stuff to a seperate class and the convert methods to a util class.
- *
- * @SuppressWarnings(PHPMD.TooManyMethods)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 class Frood {
 	/** @var string The module we're working with. */
 	private $_module;
 
-	/** @var boolean Are we handling admin pages? */
-	private $_isAdmin;
+	/** @var string Which application are we running? */
+	private $_app;
+
+	/** @var FroodAutoloader The autoloader instance. */
+	private $_autoloader;
 
 	/**
 	 * Do initialization stuff.
 	 *
 	 * @param string  $module    The dirname of the module to work with.
-	 * @param boolean $isAdmin   Are we handling admin pages?
+	 * @param string  $app       Which application are we running?
 	 * @param boolean $bootXoops Boot Xoops? The answer is probably only no for tests.
 	 *
 	 * @return void
 	 *
-	 * @throws RuntimeException       If Xoops cannot be booted.
+	 * @throws RuntimeException If Xoops cannot be booted.
 	 */
-	public function __construct($module = null, $isAdmin = false, $bootXoops = true) {
+	public function __construct($module = null, $app = 'public', $bootXoops = true) {
 		$this->_module  = $module;
-		$this->_isAdmin = $isAdmin;
+		$this->_app     = $app;
 
 		$this->_setupAutoloader();
 		$this->_buildUriFormat();
@@ -63,19 +61,19 @@ class Frood {
 	 *
 	 * @return void
 	 *
-	 * @throws FroodDispatchException If Frood cannot dispatch.
+	 * @throws FroodExceptionDispatch If Frood cannot dispatch.
 	 */
 	public function dispatch($controller = null, $action = null, FroodParameters $parameters = null) {
 		if ($controller === null) {
 			$controller = $this->_guessController();
 		} else {
-			$controller = self::convertHtmlNameToPhpName("{$this->_module}_{$controller}_controller");
+			$controller = FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$controller}_controller");
 		}
 
 		if ($action === null) {
 			$action = $this->_guessAction();
 		} else {
-			$action = self::convertHtmlNameToPhpName($action, false);
+			$action = FroodUtil::convertHtmlNameToPhpName($action, false);
 		}
 		$method = $action . 'Action';
 
@@ -83,24 +81,11 @@ class Frood {
 			$parameters = $this->_guessParameters();
 		}
 
-		if (class_exists($controller) && ($controllerInstance = new $controller($this->_module, $this->_isAdmin)) && method_exists($controllerInstance, $method)) {
+		if (class_exists($controller) && ($controllerInstance = new $controller($this->_module, $this->_app)) && method_exists($controllerInstance, $method)) {
 			call_user_func(array($controllerInstance, $method), $parameters);
 			$controllerInstance->render($action);
 		} else {
-			throw new FroodDispatchException($controller, $method, $parameters, $this->_isAdmin);
-		}
-	}
-
-	/**
-	 * Attempts to load the given class.
-	 *
-	 * @param string $name The name of the class to load.
-	 *
-	 * @return void
-	 */
-	public function autoload($name) {
-		if ($filePath = $this->_classNameToPath($name)) {
-			include_once $filePath;
+			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app);
 		}
 	}
 
@@ -114,7 +99,7 @@ class Frood {
 
 		$matches = array();
 		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
-			return self::convertHtmlNameToPhpName("{$this->_module}_{$matches[1]}_controller");
+			return FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$matches[1]}_controller");
 		}
 
 		return null;
@@ -131,7 +116,7 @@ class Frood {
 		$matches = array();
 		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
 			$action = isset($matches[2]) ? $matches[2] : 'index';
-			$action = self::convertHtmlNameToPhpName($action, false);
+			$action = FroodUtil::convertHtmlNameToPhpName($action, false);
 
 			return $action;
 		}
@@ -149,21 +134,6 @@ class Frood {
 	}
 
 	/**
-	 * Register the autoloader.
-	 *
-	 * @return void
-	 */
-	private function _setupAutoloader() {
-		if (false === spl_autoload_functions()) {
-			if (function_exists('__autoload')) {
-				spl_autoload_register('__autoload', false);
-			}
-		}
-
-		spl_autoload_register(array($this, 'autoload'));
-	}
-
-	/**
 	 * Boot Xoops or die trying!
 	 *
 	 * @return void
@@ -171,7 +141,7 @@ class Frood {
 	 * @throws RuntimeException If Xoops cannot be booted.
 	 */
 	private function _bootXoops() {
-		if ($this->_isAdmin) {
+		if ($this->_app == 'admin') {
 			if (($cpHeader = realpath(dirname(__FILE__) . '/../../../../include/cp_header.php')) && file_exists($cpHeader)) {
 				include_once $cpHeader;
 				$vararr = get_defined_vars();
@@ -179,7 +149,7 @@ class Frood {
 					$GLOBALS[$varName] = $varValue;
 				}
 			} else {
-				throw new RuntimeException('Frood could not boot Xoops! (admin mode)');
+				throw new RuntimeException("Frood could not boot Xoops! [{$this->_app} app]");
 			}
 		} else {
 			if (($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../mainfile.php')) && file_exists($xoopsMainfile)) {
@@ -189,10 +159,37 @@ class Frood {
 					$GLOBALS[$varName] = $varValue;
 				}
 			} else {
-				throw new RuntimeException('Frood could not boot Xoops!');
+				throw new RuntimeException("Frood could not boot Xoops! [{$this->_app} app]");
 			}
 		}
 	}
+
+	/**
+	 * Set the autoloader up.
+	 *
+	 * @return void
+	 */
+	private function _setupAutoloader() {
+		include_once dirname(__FILE__) . '/Frood/Autoloader.php';
+
+		// Search for classes in Frood...
+		$classPaths = array(
+			dirname(__FILE__) . '/Frood',
+		);
+
+		// ...And in the [app]/class folder...
+		if ($folder = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/' . $this->_app . '/class')) {
+			$classPaths[] = $folder;
+		}
+
+		// ...And in the modules class folder.
+		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/class'))) {
+			$classPaths[] = $folder;
+		}
+
+		$this->_autoloader = new FroodAutoloader($classPaths);
+	}
+
 
 	/**
 	 * Builds the regex to parse the uri.
@@ -202,76 +199,11 @@ class Frood {
 	private function _buildUriFormat() {
 		$this->_uriFormat = '/^
 			\/modules
-			\/' . $this->_module . '                     #     module name
-			' . ($this->_isAdmin ? '\/admin' : '') . '   #     admin if in admin mode
-			\/([a-z][a-z0-9_]*)                          # 1 : controller
-			(?:\/([a-z][a-z0-9_]*))?                     # 2 : action
+			\/' . $this->_module . '   #     module name
+			\/' . $this->_app . '      #     the app name
+			\/([a-z][a-z0-9_]*)        # 1 : controller
+			(?:\/([a-z][a-z0-9_]*))?   # 2 : action
 		/x';
-	}
-
-	/**
-	 * Convert a class name to a path to a file containing the class
-	 * definition.
-	 * Used by the autoloader.
-	 *
-	 * @param string $name The name of the class.
-	 *
-	 * @return null|string A full path or null if no suitable file could be found.
-	 */
-	private function _classNameToPath($name) {
-		// Search for classes in Frood...
-		$searchLocations = array(
-			dirname(__FILE__),
-		);
-
-		// ...And, if we're in admin mode, the admin/class folder...
-		if (($this->_isAdmin) && ($folder = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/admin/class'))) {
-			$searchLocations[] = $folder;
-		}
-
-		// ...And in the modules class folder.
-		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/class'))) {
-			$searchLocations[] = $folder;
-		}
-
-		if (preg_match('/^((?:[A-Z][a-z]*)+)$/', $name)) {
-			// Build a regular expression matching the end of the filepaths to accept...
-			$regex = '/' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '\/?\\1', substr($name, 1)) . '\.php$/';
-
-			foreach ($searchLocations as $classPath) {
-				if ($path = $this->_recursiveFileSearch($classPath, $regex)) {
-					return $path;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Internally used method. Used by _classNameToPath.
-	 *
-	 * @param string $directory The directory to search in.
-	 * @param string $regex     The regular expression to match on the full path.
-	 *
-	 * @return null|string null if no match was found.
-	 */
-	private function _recursiveFileSearch($directory, $regex) {
-		$iterator = new DirectoryIterator($directory);
-
-		foreach ($iterator as $finfo) {
-			if (substr($finfo->getBasename(), 0, 1) != '.') {
-				if ($finfo->isFile() && preg_match($regex, $finfo->getPathname())) {
-					return $finfo->getPathname();
-				} else if ($finfo->isDir()) {
-					if ($sub = $this->_recursiveFileSearch($finfo->getPathname(), $regex)) {
-						return $sub;
-					}
-				}
-			}
-		}
-
-		return null;
 	}
 
 	/**
@@ -285,38 +217,5 @@ class Frood {
 		} else {
 			return $_SERVER['REQUEST_URI'];
 		}
-	}
-
-	/**
-	 * Converts a camelCased string to a lowercased_with_underscores string.
-	 *
-	 * @param string $name The CamelCased string to convert.
-	 *
-	 * @return string A lowercased_with_underscores version of $name.
-	 */
-	public static function convertPhpNameToHtmlName($name) {
-		// First lowercase the first letter.
-		$name = strtolower(substr($name, 0, 1)) . substr($name, 1);
-
-		// Second replace capital letters with _ followed by the letter, lowercased.
-		return preg_replace('/([A-Z])/e', "'_'.strtolower('\\1')", $name);
-	}
-
-	/**
-	 * Converts a lowercased_with_underscores string to a CamelCased string.
-	 *
-	 * @param string  $name    The lowercased_with_underscores string to convert.
-	 * @param boolean $ucFirst Set this to false to get a dromedaryCased string instead.
-	 *
-	 * @return string A CamelCased or dromedaryCased version of $name.
-	 */
-	public static function convertHtmlNameToPhpName($name, $ucFirst = true) {
-		// First uppercase the first letter.
-		if ($ucFirst) {
-			$name = strtoupper(substr($name, 0, 1)) . substr($name, 1);
-		}
-
-		// Second replace _ followed by a letter with capital letters.
-		return preg_replace('/(_[a-z0-9])/e', "substr(strtoupper('\\1'),1)", $name);
 	}
 }

@@ -35,10 +35,8 @@ Edit `.htaccess` in the root of the module (Change `moduleName` to the actual di
 	# You need to change this to the correct module name
 	RewriteBase /modules/moduleName/
 
-	# These rules exclude real files and directories from
-	# the rewriting and lets them pass through unaffected
+	# These rules exclude real files from the rewriting and lets them pass through unaffected
 	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-d
 
 	# Direct all requests to lib/frood/run/run.php, except specified file types
 	RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ lib/frood/run/run.php

@@ -54,7 +54,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @return mixed It's like a box of chocolates.
 	 *
-	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws FroodExceptionCasting If the value could not be cast.
 	 * @throws RuntimeException      If the type is unknown.
 	 *
 	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -89,7 +89,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @param mixed $value The value to cast.
 	 *
-	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return integer
 	 */
@@ -101,7 +101,7 @@ abstract class FroodParameterCaster {
 			return intval($value);
 		}
 
-		throw new FroodCastingException($value, self::AS_INTEGER);
+		throw new FroodExceptionCasting($value, self::AS_INTEGER);
 	}
 
 	/**
@@ -109,7 +109,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @param mixed $value The value to cast.
 	 *
-	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return string
 	 */
@@ -118,7 +118,7 @@ abstract class FroodParameterCaster {
 			return (string) $value;
 		}
 
-		throw new FroodCastingException($value, self::AS_STRING);
+		throw new FroodExceptionCasting($value, self::AS_STRING);
 	}
 
 	/**
@@ -126,7 +126,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @param mixed $value The value to cast.
 	 *
-	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return float
 	 *
@@ -141,8 +141,8 @@ abstract class FroodParameterCaster {
 		}
 		try {
 			return (float) self::_cast(self::AS_INTEGER, $value);
-		} catch (FroodCastingException $e) {
-			throw new FroodCastingException($value, self::AS_FLOAT);
+		} catch (FroodExceptionCasting $e) {
+			throw new FroodExceptionCasting($value, self::AS_FLOAT);
 		}
 	}
 
@@ -151,7 +151,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @param mixed $value The value to cast.
 	 *
-	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return array
 	 */
@@ -160,7 +160,7 @@ abstract class FroodParameterCaster {
 			return $value;
 		}
 
-		throw new FroodCastingException($value, self::AS_ARRAY);
+		throw new FroodExceptionCasting($value, self::AS_ARRAY);
 	}
 
 	/**
@@ -168,7 +168,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @param mixed $value The value to cast.
 	 *
-	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return array
 	 *
@@ -177,8 +177,8 @@ abstract class FroodParameterCaster {
 	private static function _castAsIso($value) {
 		try {
 			return self::_encode(self::_cast(self::AS_STRING, $value), 'ISO-8859-1');
-		} catch (FroodCastingException $e) {
-			throw new FroodCastingException($value, self::AS_ISO);
+		} catch (FroodExceptionCasting $e) {
+			throw new FroodExceptionCasting($value, self::AS_ISO);
 		}
 	}
 
@@ -187,7 +187,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @param mixed $value The value to cast.
 	 *
-	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return array
 	 *
@@ -196,8 +196,8 @@ abstract class FroodParameterCaster {
 	private static function _castAsUtf8($value) {
 		try {
 			return self::_encode(self::_cast(self::AS_STRING, $value), 'UTF-8');
-		} catch (FroodCastingException $e) {
-			throw new FroodCastingException($value, self::AS_UTF8);
+		} catch (FroodExceptionCasting $e) {
+			throw new FroodExceptionCasting($value, self::AS_UTF8);
 		}
 	}
 
@@ -208,7 +208,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @todo Uncomment the error handling (PHP 5.3.3+)
 	 *
-	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return array
 	 *
@@ -217,8 +217,8 @@ abstract class FroodParameterCaster {
 	private static function _castAsJson($value) {
 		try {
 			$result = json_decode(self::_cast(self::AS_UTF8, $value), true);
-		} catch (FroodCastingException $e) {
-			throw new FroodCastingException($value, self::AS_JSON);
+		} catch (FroodExceptionCasting $e) {
+			throw new FroodExceptionCasting($value, self::AS_JSON);
 		}
 
 		return $result;
@@ -231,22 +231,22 @@ abstract class FroodParameterCaster {
 				return $result;
 				break;
 			case JSON_ERROR_DEPTH:
-				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (The maximum stack depth has been exceeded)');
+				throw new FroodExceptionCasting($value, self::AS_JSON, $errorMessage . ' (The maximum stack depth has been exceeded)');
 				break;
 			case JSON_ERROR_STATE_MISMATCH:
-				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Invalid or malformed JSON)');
+				throw new FroodExceptionCasting($value, self::AS_JSON, $errorMessage . ' (Invalid or malformed JSON)');
 				break;
 			case JSON_ERROR_CTRL_CHAR:
-				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Control character error, possibly incorrectly encoded)');
+				throw new FroodExceptionCasting($value, self::AS_JSON, $errorMessage . ' (Control character error, possibly incorrectly encoded)');
 				break;
 			case JSON_ERROR_SYNTAX:
-				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Syntax error)');
+				throw new FroodExceptionCasting($value, self::AS_JSON, $errorMessage . ' (Syntax error)');
 				break;
 			case JSON_ERROR_UTF8:
-				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Malformed UTF-8 characters, possibly incorrectly encoded)');
+				throw new FroodExceptionCasting($value, self::AS_JSON, $errorMessage . ' (Malformed UTF-8 characters, possibly incorrectly encoded)');
 				break;
 			default:
-				throw new FroodCastingException($value, self::AS_JSON, $errorMessage . ' (Unknown error)');
+				throw new FroodExceptionCasting($value, self::AS_JSON, $errorMessage . ' (Unknown error)');
 				break;
 		}
 		*/
@@ -257,7 +257,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @param mixed $value The value to cast.
 	 *
-	 * @throws FroodCastingException If the value could not be cast.
+	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return FroodFileParameter
 	 */
@@ -265,7 +265,7 @@ abstract class FroodParameterCaster {
 		if ($value instanceof FroodFileParameter) {
 			return $value;
 		} else {
-			throw new FroodCastingException($value, self::AS_FILE);
+			throw new FroodExceptionCasting($value, self::AS_FILE);
 		}
 	}
 

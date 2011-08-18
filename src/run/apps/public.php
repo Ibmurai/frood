@@ -6,20 +6,19 @@
  *
  * @category   Module
  * @package    Frood
- * @subpackage Runners
+ * @subpackage Runners/Apps
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  * @since      2011-07-05
  */
 
-require_once dirname(__FILE__) . '/../Frood.php';
-
 $frood = new Frood(
-	basename(realpath(dirname(__FILE__) . '/../../../')), // The name of the module.
-	false                                                 // Public mode.
+	basename(realpath(dirname(__FILE__) . '/../../../../')), // The name of the module.
+	'public'
 );
 
 try {
 	$frood->dispatch();
-} catch (FroodDispatchException $e) {
+} catch (FroodExceptionDispatch $e) {
 	header("X-Frood-Message: {$e->getMessage()}", false, 404);
+	exit;
 }

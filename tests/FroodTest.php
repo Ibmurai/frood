@@ -53,7 +53,7 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * Test FroodParameters::convertPhpNameToHtmlName()
+	 * Test FroodUtil::convertPhpNameToHtmlName()
 	 *
 	 * @param string $input  Input
 	 * @param string $output Output
@@ -63,11 +63,11 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testConvertPhpNameToHtmlName($input, $output) {
-		$this->assertEquals($output, Frood::convertPhpNameToHtmlName($input));
+		$this->assertEquals($output, FroodUtil::convertPhpNameToHtmlName($input));
 	}
 
 	/**
-	 * Test FroodParameters::convertHtmlNameToPhpName()
+	 * Test FroodUtil::convertHtmlNameToPhpName()
 	 *
 	 * @param string $output Output
 	 * @param string $input  Input
@@ -77,7 +77,7 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testConvertHtmlNameToPhpName($output, $input) {
-		$this->assertEquals($output, Frood::convertHtmlNameToPhpName($input));
+		$this->assertEquals($output, FroodUtil::convertHtmlNameToPhpName($input));
 	}
 
 	/**
@@ -86,14 +86,14 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testRequestParsing() {
-		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/buildresults/frood?tab=coverage';
+		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/public/buildresults/frood?tab=coverage';
 
-		$frood = new Frood('cruisecontrol', false, false);
+		$frood = new Frood('cruisecontrol', 'public', false);
 
 		try {
 			$frood->dispatch();
 			$this->fail('Expected an Exception before this!');
-		} catch (FroodDispatchException $e) {
+		} catch (FroodExceptionDispatch $e) {
 			$this->assertEquals(
 				'CruisecontrolBuildresultsController',
 				$e->getController()
@@ -111,14 +111,14 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testRequestParsingNoAction() {
-		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/test';
+		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/public/test';
 
-		$frood = new Frood('cruisecontrol', false, false);
+		$frood = new Frood('cruisecontrol', 'public', false);
 
 		try {
 			$frood->dispatch();
 			$this->fail('Expected an Exception before this!');
-		} catch (FroodDispatchException $e) {
+		} catch (FroodExceptionDispatch $e) {
 			$this->assertEquals(
 				'CruisecontrolTestController',
 				$e->getController()
@@ -136,14 +136,14 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testRequestParsingNoActionTrailingSlash() {
-		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/test/';
+		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/public/test/';
 
-		$frood = new Frood('cruisecontrol', false, false);
+		$frood = new Frood('cruisecontrol', 'public', false);
 
 		try {
 			$frood->dispatch();
 			$this->fail('Expected an Exception before this!');
-		} catch (FroodDispatchException $e) {
+		} catch (FroodExceptionDispatch $e) {
 			$this->assertEquals(
 				'CruisecontrolTestController',
 				$e->getController()

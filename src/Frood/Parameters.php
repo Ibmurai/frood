@@ -46,7 +46,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 		}
 
 		foreach ($from as $key => $value) {
-			if ($name = Frood::convertHtmlNameToPhpName($key)) {
+			if ($name = FroodUtil::convertHtmlNameToPhpName($key)) {
 				$this->_values[$name] = $value;
 			}
 		}
@@ -61,7 +61,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 * @return mixed It's like a box of chocolates.
 	 *
 	 * @throws RuntimeException      For non-existing methods and parameters.
-	 * @throws FroodCastingException For get methods with failed casting.
+	 * @throws FroodExceptionCasting For get methods with failed casting.
 	 */
 	public function __call($name, array $args) {
 		$matches = array();
@@ -123,7 +123,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 		if ($this->_hasParameter($name)) {
 			try {
 				return self::_cast($type, $this->_values[$name]);
-			} catch (FroodCastingException $e) {
+			} catch (FroodExceptionCasting $e) {
 				if ($default !== FroodNullParameter::getInstance()) {
 					return self::_cast($type, $default);
 				} else {
@@ -153,7 +153,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 		if ($type !== null && array_key_exists($name, $this->_values)) {
 			try {
 				self::_cast($type, $this->_values[$name]);
-			} catch (FroodCastingException $e) {
+			} catch (FroodExceptionCasting $e) {
 				return false;
 			}
 		}
@@ -171,14 +171,24 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	private static function _parseFile(array $file) {
 		$result = array();
 
-		for ($i = 0; $i < count($file['name']); $i++) {
+		if (count($file['name']) == 1) {
 			$result[] = new FroodFileParameter(
-				$file['tmp_name'][$i],
-				$file['name'][$i],
-				$file['size'][$i],
+				$file['tmp_name'],
+				$file['name'],
+				$file['size'],
 				null, // We don't trust the submitted file type!
-				$file['error'][$i]
+				$file['error']
 			);
+		} else {
+			for ($i = 0; $i < count($file['name']); $i++) {
+				$result[] = new FroodFileParameter(
+					$file['tmp_name'][$i],
+					$file['name'][$i],
+					$file['size'][$i],
+					null, // We don't trust the submitted file type!
+					$file['error'][$i]
+				);
+			}
 		}
 
 		if (count($result) == 1) {

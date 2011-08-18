@@ -22,6 +22,9 @@ class FroodRemote {
 	/** @var string The module we're working with. */
 	private $_module;
 
+	/** @var string Which application are we running? */
+	private $_app;
+
 	/** @var string The name of the host to connect to. */
 	private $_host;
 
@@ -29,13 +32,15 @@ class FroodRemote {
 	 * Do initialization stuff.
 	 *
 	 * @param string $module The dirname of the module to work with.
+	 * @param string $app    Which application are we remoting to?
 	 * @param string $host   The name of the host to connect to. Don't specify this to work locally.
 	 *
 	 * @return void
 	 */
-	public function __construct($module, $host = null) {
-		$this->_host   = $host;
+	public function __construct($module, $app = 'public', $host = null) {
 		$this->_module = $module;
+		$this->_app    = $app;
+		$this->_host   = $host;
 	}
 
 	/**
@@ -48,7 +53,7 @@ class FroodRemote {
 	 *
 	 * @return string The response as a string.
 	 *
-	 * @throws FroodRemoteDispatchException If Frood cannot dispatch.
+	 * @throws FroodExceptionRemoteDispatch If Frood cannot dispatch.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
@@ -61,20 +66,20 @@ class FroodRemote {
 			$runner          = realpath(dirname(__FILE__) . '/../run/shell.php');
 			$parameterString = self::_parametersToString($parameters);
 
-			return shell_exec("php $runner {$this->_module} $controller $action " . $parameterString);
+			return shell_exec("php $runner {$this->_module} {$this->_app} $controller $action " . $parameterString);
 		} else {
 			$request = $this->_getRequest($controller, $action, $parameters);
 
 			try {
 				$request->send();
 			} catch (HttpException $e) {
-				throw new FroodRemoteDispatchException($this->_host, $controller, $action, $parameters);
+				throw new FroodExceptionRemoteDispatch($this->_host, $controller, $action, $parameters);
 			}
 
 			if ($request->getResponseCode() == 200) {
 				return $request->getResponseBody();
 			} else {
-				throw new FroodRemoteDispatchException($this->_host, $controller, $action, $parameters);
+				throw new FroodExceptionRemoteDispatch($this->_host, $controller, $action, $parameters);
 			}
 		}
 	}
@@ -94,7 +99,7 @@ class FroodRemote {
 			$url .= '/';
 		}
 
-		$url .= "modules/{$this->_module}/$controller/$action";
+		$url .= "modules/{$this->_module}/" . ($this->_app != 'public' ? "{$this->_app}/" : '') . "$controller/$action";
 
 		$request = new HttpRequest($url, HttpRequest::METH_POST);
 
@@ -102,12 +107,12 @@ class FroodRemote {
 		foreach ($parameters as $key => $value) {
 			if ($value instanceof FroodFileParameter) {
 				$request->addPostFile(
-					Frood::convertPhpNameToHtmlName($key),
+					FroodUtil::convertPhpNameToHtmlName($key),
 					$value->getPath(),
 					$value->getType()
 				);
 			} else {
-				$fields[Frood::convertPhpNameToHtmlName($key)] = $value;
+				$fields[FroodUtil::convertPhpNameToHtmlName($key)] = $value;
 			}
 		}
 		$request->addPostFields($fields);
@@ -126,10 +131,10 @@ class FroodRemote {
 		$result = array();
 
 		foreach ($parameters as $key => $value) {
-			if ($value instanceof FroodFileParameter) {
-				$result[] = Frood::convertPhpNameToHtmlName($key) . '=' . escapeshellarg('_FILE_:' . $value->getPath());
+			if ($value instanceof FroodFileParameter || is_array($value)) {
+				$result[] = FroodUtil::convertPhpNameToHtmlName($key) . '=' . escapeshellarg('_SERI_:' . serialize($value));
 			} else {
-				$result[] = Frood::convertPhpNameToHtmlName($key) . '=' . escapeshellarg($value);
+				$result[] = FroodUtil::convertPhpNameToHtmlName($key) . '=' . escapeshellarg($value);
 			}
 		}
 

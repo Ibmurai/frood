@@ -475,7 +475,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @param mixed $value The value to fail casting to a file.
 	 *
 	 * @dataProvider      providerFileConversionException
-	 * @expectedException FroodCastingException
+	 * @expectedException FroodExceptionCasting
 	 *
 	 * @return void
 	 */
@@ -493,7 +493,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is a string.
 	 *
-	 * @expectedException FroodCastingException
+	 * @expectedException FroodExceptionCasting
 	 *
 	 * @return void
 	 */
@@ -511,7 +511,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is null.
 	 *
-	 * @expectedException FroodCastingException
+	 * @expectedException FroodExceptionCasting
 	 *
 	 * @return void
 	 */
@@ -529,7 +529,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is an array.
 	 *
-	 * @expectedException FroodCastingException
+	 * @expectedException FroodExceptionCasting
 	 *
 	 * @return void
 	 */
@@ -547,7 +547,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test string conversion exceptions when parameter value cannot be
 	 * interpreted as string. When value is null.
 	 *
-	 * @expectedException FroodCastingException
+	 * @expectedException FroodExceptionCasting
 	 *
 	 * @return void
 	 */
@@ -565,7 +565,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test string conversion exceptions when parameter value cannot be
 	 * interpreted as string. When value is an array.
 	 *
-	 * @expectedException FroodCastingException
+	 * @expectedException FroodExceptionCasting
 	 *
 	 * @return void
 	 */
@@ -583,7 +583,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test float conversion exceptions when parameter value cannot be
 	 * interpreted as float. When value is a string.
 	 *
-	 * @expectedException FroodCastingException
+	 * @expectedException FroodExceptionCasting
 	 *
 	 * @return void
 	 */
@@ -601,7 +601,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test float conversion exceptions when parameter value cannot be
 	 * interpreted as float. When value is null.
 	 *
-	 * @expectedException FroodCastingException
+	 * @expectedException FroodExceptionCasting
 	 *
 	 * @return void
 	 */
@@ -619,7 +619,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Test float conversion exceptions when parameter value cannot be
 	 * interpreted as float. When value is an array.
 	 *
-	 * @expectedException FroodCastingException
+	 * @expectedException FroodExceptionCasting
 	 *
 	 * @return void
 	 */

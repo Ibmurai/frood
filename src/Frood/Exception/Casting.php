@@ -12,14 +12,14 @@
  */
 
 /**
- * FroodCastingException - A custom Exception for exceptions during parameter value casting.
+ * FroodExceptionCasting - A custom Exception for exceptions during parameter value casting.
  *
  * @category   Test
  * @package    Frood
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class FroodCastingException extends Exception {
+class FroodExceptionCasting extends Exception {
 	/** @var mixed The value that could not be cast. */
 	protected $_value;
 

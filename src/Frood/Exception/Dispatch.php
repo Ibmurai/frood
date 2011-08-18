@@ -12,14 +12,14 @@
  */
 
 /**
- * FroodDispatchException - A custom Exception for exceptions during dispatching.
+ * FroodExceptionDispatch - A custom Exception for exceptions during dispatching.
  *
  * @category   Module
  * @package    Frood
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class FroodDispatchException extends Exception {
+class FroodExceptionDispatch extends Exception {
 	/** @var string The controller that Frood attempted to dispatch to. */
 	protected $_controller;
 
@@ -29,8 +29,8 @@ class FroodDispatchException extends Exception {
 	/** @var FroodParameters The parameters that Frood attempted to pass to the action. */
 	protected $_parameters;
 
-	/** @var boolean Was The Frood was in admin mode? */
-	private $_isAdmin;
+	/** @var string Which app was The Frood running? */
+	protected $_app;
 
 	/**
 	 * Constructs the Exception.
@@ -38,20 +38,15 @@ class FroodDispatchException extends Exception {
 	 * @param string          $controller The controller that Frood attempted to dispatch to.
 	 * @param string          $action     The action that Frood attempted to call on the controller.
 	 * @param FroodParameters $parameters The parameters that Frood attempted to pass to the action.
-	 * @param boolean         $isAdmin    Was The Frood was in admin mode?
+	 * @param string          $app        Which app was The Frood running?
 	 * @param string          $message    The Exception message to throw.
 	 * @param int             $code       The Exception code.
 	 *
 	 * @return void
 	 */
-	public function __construct($controller = '', $action = '', FroodParameters $parameters = null, $isAdmin = false, $message = '', $code = 0) {
+	public function __construct($controller = '', $action = '', FroodParameters $parameters = null, $app = '', $message = '', $code = 0) {
 		if ($message == '') {
-			$message = "Frood could not call $controller::$action($parameters)";
-			if ($isAdmin) {
-				$message .= ' [ADMIN mode]';
-			} else {
-				$message .= ' [PUBLIC mode]';
-			}
+			$message = "Frood could not call $controller::$action($parameters) [$app app]";
 		}
 
 		parent::__construct($message, $code);
@@ -59,7 +54,7 @@ class FroodDispatchException extends Exception {
 		$this->_controller = $controller;
 		$this->_action     = $action;
 		$this->_parameters = $parameters;
-		$this->_isAdmin    = $isAdmin;
+		$this->_app        = $app;
 	}
 
 	/**
@@ -90,11 +85,11 @@ class FroodDispatchException extends Exception {
 	}
 
 	/**
-	 * Was The Frood was in admin mode?
+	 * Which app was The Frood running?
 	 *
-	 * @return boolean
+	 * @return string
 	 */
-	public function isAdmin() {
-		return $this->_isAdmin;
+	public function getApp() {
+		return $this->_app;
 	}
 }

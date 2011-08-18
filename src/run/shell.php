@@ -2,10 +2,10 @@
 /**
  * Run The Frood from a shell.
  *
- * Usage: php shell.php [module] [controller] [action] parameters...
+ * Usage: php shell.php [module] [app] [controller] [action] parameters...
  * Where parameters are on the form name=value
  *
- * Example: php shell.php plaza post new title=lol body="Omg teh lolz"
+ * Example: php shell.php plaza public post new title=lol body="Omg teh lolz"
  *
  * PHP version 5
  *
@@ -17,23 +17,25 @@
  */
 
 require_once dirname(__FILE__) . '/../Frood.php';
+require_once dirname(__FILE__) . '/../Frood/FileParameter.php';
 
 if ($argc < 4) {
-	throw new Exception('Usage: php shell.php [module] [controller] [action] parameters...');
+	throw new Exception('Usage: php shell.php [module] [app] [controller] [action] parameters...');
 }
 
 $module     = $argv[1];
-$controller = $argv[2];
-$action     = $argv[3];
+$app        = $argv[2];
+$controller = $argv[3];
+$action     = $argv[4];
 
 $args = array();
-foreach (array_slice($argv, 4) as $arg) {
+foreach (array_slice($argv, 5) as $arg) {
 	$matches = array();
 
 	switch (true) {
 		case preg_match('/([^=]+)=(.+)/', $arg, $matches):
-			if (substr($matches[2], 0, 7) == '_FILE_:') {
-				$args[$matches[1]] = new FroodFileParameter(substr($matches[2], 7));
+			if (substr($matches[2], 0, 7) == '_SERI_:') {
+				$args[$matches[1]] = unserialize(substr($matches[2], 7));
 			} else {
 				$args[$matches[1]] = $matches[2];
 			}
@@ -43,7 +45,7 @@ foreach (array_slice($argv, 4) as $arg) {
 	}
 }
 
-$frood = new Frood($module);
+$frood = new Frood($module, $app);
 
 $parameters = new FroodParameters($args);
 

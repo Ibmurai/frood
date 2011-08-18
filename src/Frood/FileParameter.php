@@ -18,7 +18,7 @@
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class FroodFileParameter {
+class FroodFileParameter implements Serializable {
 	/** @var string The path to the actual file. */
 	private $_path;
 
@@ -114,5 +114,39 @@ class FroodFileParameter {
 	 */
 	public function getError() {
 		return $this->_error;
+	}
+
+	/**
+	 * Implementation of the Serializable interface.
+	 *
+	 * @return string
+	 */
+	public function serialize() {
+		return serialize(
+			array(
+				'path'  => $this->_path,
+				'name'  => $this->_name,
+				'type'  => $this->_type,
+				'size'  => $this->_size,
+				'error' => $this->_error,
+			)
+		);
+	}
+
+	/**
+	 * Implementation of the Serializable interface.
+	 *
+	 * @param string $data The serialized string.
+	 *
+	 * @return void
+	 */
+	public function unserialize($data) {
+		$array = unserialize($data);
+
+		$this->_path  = $array['path'];
+		$this->_name  = $array['name'];
+		$this->_type  = $array['type'];
+		$this->_size  = $array['size'];
+		$this->_error = $array['error'];
 	}
 }

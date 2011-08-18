@@ -12,14 +12,14 @@
  */
 
 /**
- * FroodRemoteDispatchException - A custom Exception for exceptions during remote dispatching.
+ * FroodExceptionRemoteDispatch - A custom Exception for exceptions during remote dispatching.
  *
  * @category   Module
  * @package    Frood
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class FroodRemoteDispatchException extends FroodDispatchException {
+class FroodExceptionRemoteDispatch extends FroodExceptionDispatch {
 	/**
 	 * Constructs the Exception.
 	 *
@@ -37,17 +37,17 @@ class FroodRemoteDispatchException extends FroodDispatchException {
 			$message = "Frood could not call $controller::$action($parameters) on the host, $host. [REMOTE mode]";
 		}
 
-		parent::__construct($controller, $action, $parameters, false, $message, $code);
+		parent::__construct($controller, $action, $parameters, 'REMOTE', $message, $code);
 
 		$this->_host = $host;
 	}
 
 	/**
-	 * Was The Frood was in admin mode?
+	 * Which app was The Frood running?
 	 *
-	 * @return boolean
+	 * @return string
 	 */
-	public function isAdmin() {
-		return false;
+	public function getApp() {
+		return 'REMOTE';
 	}
 }

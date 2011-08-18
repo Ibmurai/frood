@@ -19,13 +19,10 @@
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  * @author     Johannes Frandsen <jsf@fynskemedier.dk>
- *
- * @todo Consider extracting renders to seperate classes
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 abstract class FroodController {
-	/** @var boolean Are we handling admin pages? */
-	private $_isAdmin;
+	/** @var string Which application are we running? */
+	private $_app;
 
 	/** @var string The module we're working with. */
 	private $_module = null;
@@ -40,7 +37,7 @@ abstract class FroodController {
 	const _XOOPS = 'Xoops';
 
 	/** @var string Output mode JSON. */
-	const _JSON = 'JSON';
+	const _JSON = 'Json';
 
 	/** @var string Output mode Smarty. */
 	const _SMARTY = 'Smarty';
@@ -49,14 +46,14 @@ abstract class FroodController {
 	 * Construct a new controller instance.
 	 * This is automatically called from The Frood.
 	 *
-	 * @param string  $module  The module we're working with.
-	 * @param boolean $isAdmin Are we handling admin pages?
+	 * @param string $module The module we're working with.
+	 * @param string $app    Which application are we running?
 	 *
 	 * @return void
 	 */
-	public function __construct($module, $isAdmin = false) {
-		$this->_module  = $module;
-		$this->_isAdmin = $isAdmin;
+	public function __construct($module, $app) {
+		$this->_module = $module;
+		$this->_app    = $app;
 
 		$this->doOutputXoops();
 	}
@@ -86,18 +83,20 @@ abstract class FroodController {
 	public function render($action) {
 		switch ($this->_outputMode) {
 			case self::_XOOPS:
-				$this->_renderXoops($action);
+				$renderer = new FroodRendererXoops($this->_module, $this->_app, get_class($this), $action);
 				break;
 			case self::_SMARTY:
-				$this->_renderSmarty($action);
+				$renderer = new FroodRendererSmarty($this->_module, $this->_app, get_class($this), $action);
 				break;
 			case self::_JSON:
-				$this->_renderJson($action);
+				$renderer = new FroodRendererJson($this->_module, $this->_app, get_class($this), $action);
 				break;
 			default:
 				throw new RuntimeException("Undefined output mode: {$this->_outputMode}.");
 				break;
 		}
+
+		$renderer->render($this->_values);
 	}
 
 	/**
@@ -128,100 +127,6 @@ abstract class FroodController {
 	}
 
 	/**
-	 * Render the output as JSON.
-	 *
-	 * @param string $action The action to render the view for. Ignored here.
-	 *
-	 * @return void
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-	 */
-	private function _renderJson($action) {
-		header('Content-type: application/json');
-
-		$GLOBALS['xoopsLogger']->activated = false;
-
-		echo json_encode($this->_values);
-	}
-
-	/**
-	 * Render the output as html using Smarty.
-	 *
-	 * @param string  $action               The action to render the view for.
-	 * @param boolean $xoopsLoggerActivated Show the XoopsLogger?
-	 *
-	 * @return void
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-	 */
-	private function _renderSmarty($action, $xoopsLoggerActivated = false) {
-		include_once XOOPS_ROOT_PATH.'/class/template.php';
-
-		$GLOBALS['xoopsLogger']->activated = $xoopsLoggerActivated;
-
-		$tpl = new XoopsTpl();
-		foreach ($this->_values as $key => $value) {
-			$tpl->assign($key, $value);
-		}
-
-		$tpl->display($this->_getSmartyResource($action));
-	}
-
-	/**
-	 * Render the output as HTML using Xoops/Smarty.
-	 *
-	 * @param string $action The action to render the view for.
-	 *
-	 * @return void
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-	 */
-	private function _renderXoops($action) {
-		if ($this->_isAdmin) {
-			xoops_cp_header();
-
-			$this->_renderSmarty($action, true);
-
-			xoops_cp_footer();
-		} else {
-			extract($GLOBALS, EXTR_REFS);
-
-			$xoopsOption['template_main'] = $this->_getSmartyResource($action);
-
-			include_once XOOPS_ROOT_PATH . "/header.php";
-
-			foreach ($this->_values as $key => $value) {
-				$xoopsTpl->assign($key, $value);
-			}
-
-			include_once XOOPS_ROOT_PATH . "/footer.php";
-		}
-	}
-
-	/**
-	 * Get the Smarty resource for a given action.
-	 *
-	 * @param string $action The action to get a resource for.
-	 *
-	 * @return string
-	 */
-	private function _getSmartyResource($action) {
-		$controllerName = strtolower(
-			preg_replace(
-				array(
-					'/^' . Frood::convertHtmlNameToPhpName($this->_module) . '/',
-					'/Controller$/',
-				),
-				array('', ''),
-				get_class($this)
-			)
-		);
-
-		return 'blief:' . strtolower($this->_module) . '/' . ($this->_isAdmin ? 'admin/' : 'public/') . strtolower($controllerName) . '/' . strtolower($action) . '.tpl.html';
-	}
-
-	/**
 	 * Set the output mode.
 	 *
 	 * @param string $mode Should be one of the class constants.
@@ -230,6 +135,15 @@ abstract class FroodController {
 	 */
 	final protected function _doOutput($mode) {
 		$this->_outputMode = $mode;
+	}
+
+	/**
+	 * Get all assigned values.
+	 *
+	 * @return array An array of all assigned values.
+	 */
+	final protected function _getValues() {
+		return $this->_values;
 	}
 
 	/**
