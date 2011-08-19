@@ -1,131 +1,228 @@
-	<p><em>Authors</em>: <a href="mailto:jers@fynskemedier.dk">Jens Riisom Schultz</a>, <a href="mailto:jsf@fynskemedier.dk">Johanes Skov Frandsen</a></p>
-	<p><em>Since</em>: 2011-06-21</p>
-	<p>Frood standardizes MVC in XOOPS.</p>
+<p><em>Authors</em>: <a href="jers@fynskemedier.dk">Jens Riisom Schultz</a>, <a href="jsf@fynskemedier.dk">Johannes Skov Frandsen</a></p>
+
+<p><em>Since</em>: 2011-06-21</p>
+
+<p>The Frood standardizes the VC in MVC for XOOPS.</p>
 
 <h1>MVC</h1>
 
-	<p>For an extensive description of MVC in general, read <a href="http://en.wikipedia.org/wiki/Model-view-controller">this wiki article</a>.</p>
+<p>For an extensive description of MVC in general, read <a href="http://en.wikipedia.org/wiki/Model-view-controller">this wiki article</a>.</p>
+
+<h1>Notations</h1>
+
+<p>The Frood works with two different notations. <code>CamelCased</code> (CC) and <code>lower_cased_with_underscores</code> (LOW).</p>
+
+<p>The Frood contains static utility methods to convert back and forth between the two, should you need them:</p>
+
+<ul>
+<li><a href="Frood/Class/FroodUtil.html#convertPhpNameToHtmlName"><code>FroodUtil::convertPhpNameToHtmlName()</code></a> converts from CC to LOW.</li>
+<li><a href="Frood/Class/FroodUtil.html#convertHtmlNameToPhpName"><code>FroodUtil::convertHtmlNameToPhpName()</code></a> converts from LOW to CC.</li>
+</ul>
+
+<p>Here are a few examples of equivalent strings of the two formats:</p>
+
+<pre><code>CC      | c_c
+URL     | u_r_l      &lt;-- Yuck!   :'(
+Json    | json       &lt;-- Hooray! &lt;3
+OhMyGod | oh_my_god
+ImageId | image_id
+</code></pre>
+
+<p><em>Because of the ugliness of strings like <code>u_r_l</code> it is recommended to always type acronyms in CC with only the first letter as a capital.</em></p>
 
 <h1>The autoloader</h1>
 
-	<p>Frood sets an autoloader up for you.</p>
-	<p>To ensure your classes are autoloaded you simply need to place your classes in the correct files and the correct locations.</p>
+<p>Frood sets an autoloader up for you.</p>
 
-	<h2>Class and file name conventions</h2>
+<p>To ensure your classes are autoloaded you simply need to place your classes in the correct files and the correct locations.</p>
 
-		<p>Classes always start with the module name.</p>
-		<p>Classes are defined in files with the same name as the class.</p>
-		<p>Part of the file name may be the path to the file (confusing... see the examples).</p>
+<h2>Class and file name conventions</h2>
 
-		<h3>Examples</h3>
-		<p>
-			<kbd>XoopsImageSomething</kbd> should be defined in one of:
-			<ul>
-				<li><kbd>XoopsImageSomething.php</kbd></li>
-				<li><kbd>Xoops/ImageSomething.php</kbd></li>
-				<li><kbd>XoopsImage/Something.php</kbd></li>
-				<li><kbd>Xoops/Image/Something.php</kbd></li>
-			</ul>
-		</p>
+<p>Classes always start with the module name.</p>
 
-	<h2>File locations</h2>
+<p>Classes are defined in files with the same name as the class.</p>
 
-		<p>Frood will basically autoload all classes in <kbd>class/</kbd>.</p>
-		<p>When in admin mode classes in <kbd>admin/class/</kbd> will also be autoloaded.</p>
+<p>Part of the file name may be the path to the file (confusing... see the examples).</p>
 
-		<ul>
-			<li>Model classes should be placed in <kbd>class/model/</kbd>.</li>
-			<li>Public controllers should be placed in <kbd>class/controllers/</kbd>.</li>
-			<li>Private controllers should be placed in <kbd>admin/class/controllers/</kbd>.</li>
-		</ul>
+<h3>Examples</h3>
 
-<h1>Controllers</h1>
+<p><code>XoopsImageSomething</code> should be defined in one of:</p>
 
-	<p>TODO: Write this :)</p>
+<ul>
+<li><code>XoopsImageSomething.php</code></li>
+<li><code>Xoops/ImageSomething.php</code></li>
+<li><code>XoopsImage/Something.php</code></li>
+<li><code>Xoops/Image/Something.php</code></li>
+</ul>
 
-<script type="syntaxhighlighter" class="brush: php"><![CDATA[
-echo 'example';
-]]></script>
+<h2>File locations</h2>
+
+<p>Frood will always autoload all classes in <code>class/</code>.</p>
+
+<p>In addition it will also autoload the classes in the app class folder, depending on which app you are running, i.e. one of:</p>
+
+<ul>
+<li><code>public/class/</code></li>
+<li><code>admin/class/</code></li>
+<li><code>local/class/</code></li>
+<li><code>cron/class/</code></li>
+</ul>
+
+<p>It will recursively scan all folders in the class folders, giving you the freedom to organize your classes as you see fit. That being said, the following <em>conventions</em> should be adhered to, for consistency:</p>
+
+<ul>
+<li>Model classes should be placed in <code>class/model/</code>.</li>
+<li>Controller classes should be placed in <code>class/controllers/</code>.</li>
+</ul>
+
+<h1>Controllers and actions</h1>
+
+<p>TODO: Write this :)</p>
+
+<h1>Action output</h1>
+
+<p>TODO: Write this :)</p>
+
+<h1>Action parameters</h1>
+
+<p>TODO: Write this :)</p>
+
+<h2>File parameters</h2>
+
+<p>TODO: Write this :)</p>
+
+<h1>The apps</h1>
+
+<p>The Frood makes 4 distinctively different apps available for implementation. Every app is optional.</p>
+
+<p>Generally, the apps can be accessed via http requests to URI's of the following format:</p>
+
+<pre><code>/modules/[moduleName]/[app]/[controller]/[action]
+</code></pre>
+
+<p>If no action is given The Frood defaults to the <code>index</code> action.</p>
+
+<h2>The <code>public</code> app</h2>
+
+<p>This app is what anonymous users will access from their browsers.</p>
+
+<p>It can be used by requesting the following URI's:</p>
+
+<ul>
+<li>/modules/[moduleName]/public/[controller]/[action]</li>
+<li>/modules/[moduleName]/[controller]/[action]</li>
+<li>/modules/[moduleName]</li>
+</ul>
+
+<p>The latter of these will default to the <code>index</code> controller and the <code>index</code> action.</p>
+
+<h2>The other apps</h2>
+
+<ul>
+<li>The <code>admin</code> app can only be accessed with a valid XOOPS login.</li>
+<li>The <code>local</code> app can only be accessed from our web servers. It is used to provide API's to interoperate between our modules.</li>
+<li>The <code>cron</code> app is intended for cronjobs and can only be accessed from the shell.</li>
+</ul>
+
+<h1>Commandline Frood</h1>
+
+<p>The Frood apps can all be invoked from the command line. This is useful for testing, but most significantly it allows you to use The Frood for cronjobs:</p>
+
+<p><code>shell.php</code> is located in the <code>lib/frood/run/</code> folder. You invoke it like this:</p>
+
+<pre><code>php shell.php [module] [app] [controller] [action] [parameter1]=[value1]...
+</code></pre>
 
 <h1>Extending the Frood controller</h1>
-<p>It is not required to extend the Frood controller to make use of Frood, but to support legacy code is is usaly a good idea.</p>
-<p>If you need to output something else than Froods builtin output renderers (XOOPS, SMARTY, JSON) or need access to global variables made available by XOOPS you also need to extend the Frood controller.</p>
+
+<p>It is not required to extend the <a href="Frood/Class/FroodController.html"><code>FroodController</code></a> to make use of Frood, but for various reasons it is usually a good idea:</p>
+
+<ul>
+<li>You may need to include the header file in legacy modules.</li>
+<li>You may need to output something which is not directly supported by Frood.</li>
+</ul>
+
 <h2>Example</h2>
-<p>In this example we overwrite the <kbd><a href="Frood/Class/FroodController.html#render">FroodController::render()</a></kbd> method to add a new output method <kbd>doOutputImage()</kbd> for outputting images. Additionally we need to create a method <kbd>_renderImage()</kbd> and a constant <kbd>_IMAGE</kbd>.</p>
-<p>We also add a method <kbd>_requireHeader()</kbd> for including the header file for the module, as we need stuff from the XOOPS environment.</p>
-<p>To make sure all our actions has access to XOOPS we overwrite <kbd><a href="Frood/Class/FroodController.html#__construct">FroodController::__construct()</a></kbd> and call the <kbd>_requireHeader()</kbd> there. If only some of your actions need XOOPS, you can also just call <kbd>_requireHeader()</kbd> on the individual actions. The latter is the better solution performance vice as loading the whole XOOPS enviroment if you don't need it is kind of overkill. The former is convenient if you know you need it for all your actions.</p>
-<script type="syntaxhighlighter" class="brush: php"><![CDATA[
-abstract class SomeController extends FroodController {
 
-	/** @var string Output mode Image. */
-	const _IMAGE = 'Image';
+<p>In this example we overwrite the <a href="Frood/Class/FroodController.html#render"><code>FroodController::render()</code></a> method to add a new output method, <code>doOutputImage()</code> for outputting images. Additionally we need to create a method, <code>_renderImage()</code> and a constant <code>_IMAGE</code>.</p>
 
-	/**
-	 * Construct a new controller instance.
-	 * This is automatically called from The Frood.
-	 *
-	 * @param string  $module  The module we're working with.
-	 * @param boolean $isAdmin Are we handling admin pages?
-	 *
-	 * @return void
-	 */
-	public function __construct($module, $isAdmin = false) {
-		parent::__construct($module, $isAdmin);
-		$this->_requireHeader();
-	}
+<p>We also add a method, <code>_includeHeader()</code> for including the header file for the module, to support some legacy dependencies.</p>
 
-	/**
-	 * Render the output.
-	 * The Frood calls this when appropriate.
-	 *
-	 * @param string $action The action to render the view for.
-	 *
-	 * @return void
-	 *
-	 * @throws RuntimeException For undefined output modes.
-	 */
-	public function render($action) {
-		switch ($this->_getOutputMode()) {
-			case self::_IMAGE:
-				$this->_renderImage($action);
-				break;
-			default:
-				parent::render($action);
-				break;
-		}
-	}
+<p>To make sure all our actions include the header we overwrite <a href="Frood/Class/FroodController.html#__construct"><code>FroodController::__construct()</code></a> and call the <code>_requireHeader()</code> there. If only some of your actions need XOOPS, you can also just call <code>_requireHeader()</code> in the individual actions. The latter is the better solution, performance wise, as loading the whole header if you don't need it is unnecessary. The former is convenient if you know you need it for all your actions.</p>
 
-	/**
-	 * Include the header file for xoops specific includes
-	 *
-	 * @return void
-	 */
-	protected function _requireHeader() {
-		include_once dirname(__FILE__) . '/../../../header.php';
-	}
+<pre><code>    &lt;?php
+    abstract class SomeController extends FroodController {
 
-	/**
-	 * Set the output mode to image.
-	 *
-	 * @return void
-	 */
-	final public function doOutputImage() {
-		$this->_doOutput(self::_IMAGE);
-	}
+        /** @var string Output mode Image. */
+        const _IMAGE = 'Image';
 
-	/**
-	 * Render the output as an image.
-	 *
-	 * @param string $action The action to render the view for.
-	 *
-	 * @return string The rendered output.
-	 */
-	private function _renderImage($action) {
-		$image = new XphotoImage($this->_getValue('imageId'));
-		header('Content-Type: '.$image->getMimeType());
-		header("Content-Disposition: attachment; filename=\"".$this->_getValue('imageId').$image->getExtension()."\"");
-		header('Content-Length: '.filesize($image->getFile(true)));
-		echo file_get_contents($image->getFile(true));
-	}
-}
-]]></script>
+        /**
+         * Construct a new controller instance.
+         * This is automatically called from The Frood.
+         *
+         * @param string $module The module we're working with.
+         * @param string $app    Which application are we running?
+         *
+         * @return void
+         */
+        public function __construct($module, $app) {
+            parent::__construct($module, $app);
+            $this-&gt;_requireHeader();
+        }
+
+        /**
+         * Render the output.
+         * The Frood calls this when appropriate.
+         *
+         * @param string $action The action to render the view for.
+         *
+         * @return void
+         *
+         * @throws RuntimeException For undefined output modes.
+         */
+        public function render($action) {
+            switch ($this-&gt;_getOutputMode()) {
+                case self::_IMAGE:
+                    $this-&gt;_renderImage($action);
+                    break;
+                default:
+                    parent::render($action);
+                    break;
+            }
+        }
+
+        /**
+         * Include the module header file.
+         *
+         * @return void
+         */
+        protected function _requireHeader() {
+            include_once dirname(__FILE__) . '/../../../header.php';
+        }
+
+        /**
+         * Set the output mode to image.
+         *
+         * @return void
+         */
+        final public function doOutputImage() {
+            $this-&gt;_doOutput(self::_IMAGE);
+        }
+
+        /**
+         * Render the output as an image.
+         *
+         * @param string $action The action to render the view for.
+         *
+         * @return string The rendered output.
+         */
+        private function _renderImage($action) {
+            $image = new XphotoImage($this-&gt;_getValue('imageId'));
+            header('Content-Type: ' . $image-&gt;getMimeType());
+            header('Content-Disposition: attachment; filename="' . $this-&gt;_getValue('imageId') . $image-&gt;getExtension() . '"');
+            header('Content-Length: ' . filesize($image-&gt;getFile(true)));
+            echo file_get_contents($image-&gt;getFile(true));
+        }
+    }
+    ?&gt;
+</code></pre>
