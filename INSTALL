@@ -50,5 +50,9 @@ Commit.
 
 	svn ci -m "Soon The Frood will rule the world!"
 
+Update
+
+	svn up
+
 
 *That's it.*
