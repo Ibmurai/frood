@@ -16,7 +16,7 @@
  *
  * @category   Module
  * @package    Frood
- * @subpackage Class
+ * @subpackage Exception
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
 class FroodExceptionDispatch extends Exception {

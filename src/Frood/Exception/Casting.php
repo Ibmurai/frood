@@ -16,7 +16,7 @@
  *
  * @category   Test
  * @package    Frood
- * @subpackage Class
+ * @subpackage Exception
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
 class FroodExceptionCasting extends Exception {

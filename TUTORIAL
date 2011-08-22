@@ -55,7 +55,7 @@ ImageId | image_id
 <li><code>Xoops/Image/Something.php</code></li>
 </ul>
 
-<h2>File locations</h2>
+<h2>Class file locations</h2>
 
 <p>Frood will always autoload all classes in <code>class/</code>.</p>
 
@@ -75,21 +75,124 @@ ImageId | image_id
 <li>Controller classes should be placed in <code>class/controllers/</code>.</li>
 </ul>
 
+<h2>Template file locations</h2>
+
+<p>Templates are placed in <code>templates/[app]/[controller]/[action].tpl.html</code>, where <code>app</code>, <code>controller</code> and <code>action</code> are on LOW form.</p>
+
+<p>Example: <code>LolBananaController::kebabAction()</code>, in the <code>public</code> app would be rendered with the following template:</p>
+
+<pre><code>templates/public/lol/kebab.tpl.html
+</code></pre>
+
 <h1>Controllers and actions</h1>
 
-<p>TODO: Write this :)</p>
+<p>Controllers must extend <a href="Frood/Class/FroodController.html"><code>FroodController</code></a>. The class name must begin with the module name on CC form, and end with <code>Controller</code>. They should be placed in an apps <code>class/controllers</code> folder, to ensure that they only are accesible from a specific app.</p>
+
+<p>Controllers should implement some actions. These must be public methods, taking one parameter of the class, <a href="Frood/Class/FroodParameters.html"><code>FroodParameters</code></a>.</p>
+
+<p>Controller actions are invoked by http requesting a URI or by <a href="Frood/Class/FroodRemote.html"><code>FroodRemote</code></a></p>
+
+<p>Example: <code>LolBananaController::kebabAction()</code>, in the <code>public</code> app would be invoked with the following URI:</p>
+
+<pre><code>/modules/lol/public/banana/kebab
+</code></pre>
+
+<p>or</p>
+
+<pre><code>/modules/lol/banana/kebab
+</code></pre>
+
+<p>because the public app is default.</p>
+
+<p>The same action could be reached by <a href="Frood/Class/FroodRemote.html"><code>FroodRemote</code></a>, using this code:</p>
+
+<pre><code>    &lt;?php
+    $remote = new FroodRemote('lol');
+
+    $output = $remote-&gt;dispatch('banana', 'kebab');
+    ?&gt;
+</code></pre>
+
+<p>See the section called <code>FroodRemote</code> for more information.</p>
 
 <h1>Action output</h1>
 
-<p>TODO: Write this :)</p>
+<p>By default actions are rendered in a Xoops context. This means that <code>admin</code> pages will get the menu and look like admin pages, and that <code>public</code> pages will be rendered in the theme.</p>
+
+<p><a href="Frood/Class/FroodController.html"><code>FroodController</code></a> has three output modes, which can be changed in an action by calling any one of the following, anywhere in the action (or controller constructor):</p>
+
+<pre><code>    &lt;?php
+    // ...
+    $this-&gt;doOutputXoops();  // Default
+    $this-&gt;doOutputSmarty(); // Just smarty
+    $this-&gt;doOutputJson();   // JSON formatted output - ignores any template
+    // ...
+    ?&gt;
+</code></pre>
 
 <h1>Action parameters</h1>
 
-<p>TODO: Write this :)</p>
+<p>All actions take an instance of <a href="Frood/Class/FroodParameters.html"><code>FroodParameters</code></a> as the first, and often only, parameter.</p>
+
+<p>You should never access <code>$_GET</code>, <code>$_POST</code> and <code>$_FILES</code> directly. Instead you use the parameters instance, and call <code>getXxx()</code> methods on it:</p>
+
+<pre><code>    &lt;?php
+    // ...
+    public function someAction(FroodParameters $params) {
+        $id = $this-&gt;getId(); // Attempts to get the value of the get or post parameter, "id". Will throw an exception if this parameter is not set!
+        $id = $this-&gt;getId(FroodParameters::AS_INTEGER); // Same as above but will throw an exception if a given value cannot be casted to integer.
+        $id = $this-&gt;getId(FroodParameters::AS_INTEGER, 42); // Same as above, but instead of an exception you get 42.
+    }
+    // ...
+    ?&gt;
+</code></pre>
+
+<p>You can also test whether a given parameter is set, without having to catch an exception, by calling the <code>hasXxx()</code> functions:</p>
+
+<pre><code>    &lt;?php
+    // ...
+    public function someAction(FroodParameters $params) {
+        if ($this-&gt;hasBigSalmon()) {
+            // This is invoked if a parameter called, "big_salmon" is given.
+        }
+        if ($this-&gt;hasHugeStork(FroodParameters::AS_STRING)) {
+            // This is invoked if a parameter called, "huge_stork" is given, and it can be typecast as a string.
+        }
+    }
+    // ...
+    ?&gt;
+</code></pre>
+
+<p>There are various <code>AS_</code>-constants you can use. Find them on [the documentation page for <a href="Frood/Class/FroodParameters.html"><code>FroodParameters</code></a>.</p>
 
 <h2>File parameters</h2>
 
-<p>TODO: Write this :)</p>
+<p>Submitted files are accessed through the parameters instance, like other parameters, but instead of an integer, string or array, you get an instance of <a href="Frood/Class/FroodFileParameter.html"><code>FroodFileParameter</code></a>. See the documentation for the class, for a description of it's methods.</p>
+
+<h1><code>FroodRemote</code></h1>
+
+<p>The <a href="Frood/Class/FroodRemote.html"><code>FroodRemote</code></a> facilitates working with other modules Frood enabled modules, without the hassle of HTTP'ing yourself. As an added bonus, it will work directly with PHP when communicating with other local modules, eliminating the overhead of HTTP requests.</p>
+
+<p>To call an action on a local module, simply instantiate a <a href="Frood/Class/FroodRemote.html"><code>FroodRemote</code></a> and call <a href="Frood/Class/FroodRemote.html#dispatch"><code>dispatch</code></a>:</p>
+
+<pre><code>    &lt;?php
+    $remote = new FroodRemote('lol');
+
+    $output = $remote-&gt;dispatch('banana', 'kebab');
+
+    // And with some parameters:
+    $output = $remote-&gt;dispatch('banana', 'kebab', new FroodParameters(
+        array(
+            'id'         =&gt; 42,
+            'some_thing' =&gt; 'Meget hest',
+            'some_file'  =&gt; new FroodFileParameter(
+                '/path/to/local/file'
+            ),
+        )
+    ));
+
+    ?&gt;
+</code></pre>
 
 <h1>The apps</h1>
 

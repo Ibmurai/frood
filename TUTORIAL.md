@@ -60,8 +60,8 @@ Part of the file name may be the path to the file (confusing... see the examples
   * `Xoops/Image/Something.php`
 
 
-File locations
---------------
+Class file locations
+--------------------
 
 Frood will always autoload all classes in `class/`.
 
@@ -78,28 +78,127 @@ It will recursively scan all folders in the class folders, giving you the freedo
   * Controller classes should be placed in `class/controllers/`.
 
 
+Template file locations
+-----------------------
+
+Templates are placed in `templates/[app]/[controller]/[action].tpl.html`, where `app`, `controller` and `action` are on LOW form.
+
+Example: `LolBananaController::kebabAction()`, in the `public` app would be rendered with the following template:
+
+	templates/public/lol/kebab.tpl.html
+
+
 Controllers and actions
 =======================
 
-TODO: Write this :)
+Controllers must extend [`FroodController`](Frood/Class/FroodController.html). The class name must begin with the module name on CC form, and end with `Controller`. They should be placed in an apps `class/controllers` folder, to ensure that they only are accesible from a specific app.
+
+Controllers should implement some actions. These must be public methods, taking one parameter of the class, [`FroodParameters`](Frood/Class/FroodParameters.html).
+
+Controller actions are invoked by http requesting a URI or by [`FroodRemote`](Frood/Class/FroodRemote.html)
+
+Example: `LolBananaController::kebabAction()`, in the `public` app would be invoked with the following URI:
+
+	/modules/lol/public/banana/kebab
+
+or
+
+	/modules/lol/banana/kebab
+
+because the public app is default.
+
+The same action could be reached by [`FroodRemote`](Frood/Class/FroodRemote.html), using this code:
+
+		<?php
+		$remote = new FroodRemote('lol');
+
+		$output = $remote->dispatch('banana', 'kebab');
+		?>
+
+See the section called `FroodRemote` for more information.
 
 
 Action output
 =============
 
-TODO: Write this :)
+By default actions are rendered in a Xoops context. This means that `admin` pages will get the menu and look like admin pages, and that `public` pages will be rendered in the theme.
+
+[`FroodController`](Frood/Class/FroodController.html) has three output modes, which can be changed in an action by calling any one of the following, anywhere in the action (or controller constructor):
+
+		<?php
+		// ...
+		$this->doOutputXoops();  // Default
+		$this->doOutputSmarty(); // Just smarty
+		$this->doOutputJson();   // JSON formatted output - ignores any template
+		// ...
+		?>
 
 
 Action parameters
 =================
 
-TODO: Write this :)
+All actions take an instance of [`FroodParameters`](Frood/Class/FroodParameters.html) as the first, and often only, parameter.
+
+You should never access `$_GET`, `$_POST` and `$_FILES` directly. Instead you use the parameters instance, and call `getXxx()` methods on it:
+
+		<?php
+		// ...
+		public function someAction(FroodParameters $params) {
+			$id = $this->getId(); // Attempts to get the value of the get or post parameter, "id". Will throw an exception if this parameter is not set!
+			$id = $this->getId(FroodParameters::AS_INTEGER); // Same as above but will throw an exception if a given value cannot be casted to integer.
+			$id = $this->getId(FroodParameters::AS_INTEGER, 42); // Same as above, but instead of an exception you get 42.
+		}
+		// ...
+		?>
+
+You can also test whether a given parameter is set, without having to catch an exception, by calling the `hasXxx()` functions:
+
+		<?php
+		// ...
+		public function someAction(FroodParameters $params) {
+			if ($this->hasBigSalmon()) {
+				// This is invoked if a parameter called, "big_salmon" is given.
+			}
+			if ($this->hasHugeStork(FroodParameters::AS_STRING)) {
+				// This is invoked if a parameter called, "huge_stork" is given, and it can be typecast as a string.
+			}
+		}
+		// ...
+		?>
+
+There are various `AS_`-constants you can use. Find them on [the documentation page for [`FroodParameters`](Frood/Class/FroodParameters.html).
 
 
 File parameters
 ---------------
 
-TODO: Write this :)
+Submitted files are accessed through the parameters instance, like other parameters, but instead of an integer, string or array, you get an instance of [`FroodFileParameter`](Frood/Class/FroodFileParameter.html). See the documentation for the class, for a description of it's methods.
+
+
+`FroodRemote`
+=============
+
+The [`FroodRemote`](Frood/Class/FroodRemote.html) facilitates working with other modules Frood enabled modules, without the hassle of HTTP'ing yourself. As an added bonus, it will work directly with PHP when communicating with other local modules, eliminating the overhead of HTTP requests.
+
+To call an action on a local module, simply instantiate a [`FroodRemote`](Frood/Class/FroodRemote.html) and call [`dispatch`](Frood/Class/FroodRemote.html#dispatch):
+
+		<?php
+		$remote = new FroodRemote('lol');
+
+		$output = $remote->dispatch('banana', 'kebab');
+
+		// And with some parameters:
+		$output = $remote->dispatch('banana', 'kebab', new FroodParameters(
+			array(
+				'id'         => 42,
+				'some_thing' => 'Meget hest',
+				'some_file'  => new FroodFileParameter(
+					'/path/to/local/file'
+				),
+			)
+		));
+
+		?>
 
 
 The apps
@@ -115,7 +214,7 @@ If no action is given The Frood defaults to the `index` action.
 
 
 The `public` app
---------------
+----------------
 
 This app is what anonymous users will access from their browsers.
 
