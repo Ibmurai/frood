@@ -139,9 +139,16 @@ ImageId | image_id
 <pre><code>    &lt;?php
     // ...
     public function someAction(FroodParameters $params) {
-        $id = $this-&gt;getId(); // Attempts to get the value of the get or post parameter, "id". Will throw an exception if this parameter is not set!
-        $id = $this-&gt;getId(FroodParameters::AS_INTEGER); // Same as above but will throw an exception if a given value cannot be casted to integer.
-        $id = $this-&gt;getId(FroodParameters::AS_INTEGER, 42); // Same as above, but instead of an exception you get 42.
+        // Attempt to get the value of the get or post parameter, "id".
+        // Will throw an exception if this parameter is not set!
+        $id = $this-&gt;getId();
+
+        // Same as above but will throw an exception
+        // if a given value cannot be casted to integer.
+        $id = $this-&gt;getId(FroodParameters::AS_INTEGER);
+
+        // Same as above, but instead of an exception you get 42.
+        $id = $this-&gt;getId(FroodParameters::AS_INTEGER, 42);
     }
     // ...
     ?&gt;
@@ -156,7 +163,8 @@ ImageId | image_id
             // This is invoked if a parameter called, "big_salmon" is given.
         }
         if ($this-&gt;hasHugeStork(FroodParameters::AS_STRING)) {
-            // This is invoked if a parameter called, "huge_stork" is given, and it can be typecast as a string.
+            // This is invoked if a parameter called, "huge_stork" is given,
+            // and it can be typecast as a string.
         }
     }
     // ...
@@ -322,7 +330,9 @@ ImageId | image_id
         private function _renderImage($action) {
             $image = new XphotoImage($this-&gt;_getValue('imageId'));
             header('Content-Type: ' . $image-&gt;getMimeType());
-            header('Content-Disposition: attachment; filename="' . $this-&gt;_getValue('imageId') . $image-&gt;getExtension() . '"');
+            header('Content-Disposition: attachment; filename="'
+                . $this-&gt;_getValue('imageId')
+                . $image-&gt;getExtension() . '"');
             header('Content-Length: ' . filesize($image-&gt;getFile(true)));
             echo file_get_contents($image-&gt;getFile(true));
         }

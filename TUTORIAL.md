@@ -144,9 +144,16 @@ You should never access `$_GET`, `$_POST` and `$_FILES` directly. Instead you us
 		<?php
 		// ...
 		public function someAction(FroodParameters $params) {
-			$id = $this->getId(); // Attempts to get the value of the get or post parameter, "id". Will throw an exception if this parameter is not set!
-			$id = $this->getId(FroodParameters::AS_INTEGER); // Same as above but will throw an exception if a given value cannot be casted to integer.
-			$id = $this->getId(FroodParameters::AS_INTEGER, 42); // Same as above, but instead of an exception you get 42.
+			// Attempt to get the value of the get or post parameter, "id".
+			// Will throw an exception if this parameter is not set!
+			$id = $this->getId();
+
+			// Same as above but will throw an exception
+			// if a given value cannot be casted to integer.
+			$id = $this->getId(FroodParameters::AS_INTEGER);
+
+			// Same as above, but instead of an exception you get 42.
+			$id = $this->getId(FroodParameters::AS_INTEGER, 42);
 		}
 		// ...
 		?>
@@ -160,7 +167,8 @@ You can also test whether a given parameter is set, without having to catch an e
 				// This is invoked if a parameter called, "big_salmon" is given.
 			}
 			if ($this->hasHugeStork(FroodParameters::AS_STRING)) {
-				// This is invoked if a parameter called, "huge_stork" is given, and it can be typecast as a string.
+				// This is invoked if a parameter called, "huge_stork" is given,
+				// and it can be typecast as a string.
 			}
 		}
 		// ...
@@ -332,7 +340,9 @@ To make sure all our actions include the header we overwrite [`FroodController::
 			private function _renderImage($action) {
 				$image = new XphotoImage($this->_getValue('imageId'));
 				header('Content-Type: ' . $image->getMimeType());
-				header('Content-Disposition: attachment; filename="' . $this->_getValue('imageId') . $image->getExtension() . '"');
+				header('Content-Disposition: attachment; filename="'
+					. $this->_getValue('imageId')
+					. $image->getExtension() . '"');
 				header('Content-Length: ' . filesize($image->getFile(true)));
 				echo file_get_contents($image->getFile(true));
 			}
