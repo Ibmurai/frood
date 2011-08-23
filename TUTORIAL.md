@@ -146,14 +146,14 @@ You should never access `$_GET`, `$_POST` and `$_FILES` directly. Instead you us
 		public function someAction(FroodParameters $params) {
 			// Attempt to get the value of the get or post parameter, "id".
 			// Will throw an exception if this parameter is not set!
-			$id = $this->getId();
+			$id = $params->getId();
 
 			// Same as above but will throw an exception
 			// if a given value cannot be casted to integer.
-			$id = $this->getId(FroodParameters::AS_INTEGER);
+			$id = $params->getId(FroodParameters::AS_INTEGER);
 
 			// Same as above, but instead of an exception you get 42.
-			$id = $this->getId(FroodParameters::AS_INTEGER, 42);
+			$id = $params->getId(FroodParameters::AS_INTEGER, 42);
 		}
 		// ...
 		?>
@@ -163,10 +163,10 @@ You can also test whether a given parameter is set, without having to catch an e
 		<?php
 		// ...
 		public function someAction(FroodParameters $params) {
-			if ($this->hasBigSalmon()) {
+			if ($params->hasBigSalmon()) {
 				// This is invoked if a parameter called, "big_salmon" is given.
 			}
-			if ($this->hasHugeStork(FroodParameters::AS_STRING)) {
+			if ($params->hasHugeStork(FroodParameters::AS_STRING)) {
 				// This is invoked if a parameter called, "huge_stork" is given,
 				// and it can be typecast as a string.
 			}
