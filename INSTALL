@@ -29,15 +29,22 @@ Throw on a `.htaccess` file
 
 Edit `.htaccess` in the root of the module (Change `moduleName` to the actual dirname of the module):
 
+*THERE ARE TWO PLACES YOU NEED TO EDIT HERE!!!*
+
 	RewriteEngine on
 
-	# You need to change this to the correct module name
+	# !!! You need to change this to the correct module name.
 	RewriteBase /modules/moduleName/
 
-	# These rules exclude real files from the rewriting and lets them pass through unaffected
+	# This rule excludes real files from the rewriting and lets them pass through unaffected.
 	RewriteCond %{REQUEST_FILENAME} !-f
 
-	# Direct all requests to lib/frood/run/run.php, except specified file types
+	# !!! This rule excludes real folders from the rewriting and lets them pass through unaffected.
+	# !!! This line should ONLY be included in current modules which use index.php in the root of
+	# !!! the module.
+	RewriteCond %{REQUEST_FILENAME} !-d
+
+	# Direct all requests to lib/frood/run/run.php, except specified file types.
 	RewriteRule !\.(js|ico|txt|gif|jpg|png|css)$ lib/frood/run/run.php
 
 Now add the `.htaccess`:
