@@ -132,7 +132,7 @@ ImageId | image_id
 
 <h1>Action parameters</h1>
 
-<p>All actions take an instance of <a href="Frood/Class/FroodParameters.html"><code>FroodParameters</code></a> as the first, and often only, parameter.</p>
+<p>All actions take an instance of <a href="Frood/Class/FroodParameters.html"><code>FroodParameters</code></a> as only parameter.</p>
 
 <p>You should never access <code>$_GET</code>, <code>$_POST</code> and <code>$_FILES</code> directly. Instead you use the parameters instance, and call <code>getXxx()</code> methods on it:</p>
 
@@ -257,7 +257,7 @@ ImageId | image_id
 
 <p>In this example we overwrite the <a href="Frood/Class/FroodController.html#render"><code>FroodController::render()</code></a> method to add a new output method, <code>doOutputImage()</code> for outputting images. Additionally we need to create a method, <code>_renderImage()</code> and a constant <code>_IMAGE</code>.</p>
 
-<p>We also add a method, <code>_includeHeader()</code> for including the header file for the module, to support some legacy dependencies.</p>
+<p>We also add a method, <code>_requireHeader()</code> for including the header file for the module, to support some legacy dependencies.</p>
 
 <p>To make sure all our actions include the header we overwrite <a href="Frood/Class/FroodController.html#__construct"><code>FroodController::__construct()</code></a> and call the <code>_requireHeader()</code> there. If only some of your actions need XOOPS, you can also just call <code>_requireHeader()</code> in the individual actions. The latter is the better solution, performance wise, as loading the whole header if you don't need it is unnecessary. The former is convenient if you know you need it for all your actions.</p>
 
@@ -320,22 +320,30 @@ ImageId | image_id
             $this-&gt;_doOutput(self::_IMAGE);
         }
 
-        /**
-         * Render the output as an image.
-         *
-         * @param string $action The action to render the view for.
-         *
-         * @return string The rendered output.
-         */
-        private function _renderImage($action) {
-            $image = new XphotoImage($this-&gt;_getValue('imageId'));
-            header('Content-Type: ' . $image-&gt;getMimeType());
-            header('Content-Disposition: attachment; filename="'
-                . $this-&gt;_getValue('imageId')
-                . $image-&gt;getExtension() . '"');
-            header('Content-Length: ' . filesize($image-&gt;getFile(true)));
-            echo file_get_contents($image-&gt;getFile(true));
-        }
+		/**
+		 * Render the output as an image.
+		 *
+		 * @param string $action The action to render the view for.
+		 *
+		 * @return string The rendered output.
+		 */
+		private function _renderImage($action) {
+			try {
+				header('Content-Type: '.$this->_getValue('type'));
+				header("Content-Disposition: attachment; filename=\"".$this->_getValue('name')."\"");
+				if ($this->_getValue('download')) {
+					header('Content-Type: application/force-download');
+					header('Content-Type: application/octet-stream');
+					header('Content-Type: application/download');
+					header('Content-Description: File Transfer');
+					header('Content-Length: '.$this->_getValue('length'));
+				}
+			} catch(RuntimeException $e) {
+				header('Content-Type: '.$this->_getValue('type'));
+				header("Content-Disposition: attachment; filename=\"".$this->_getValue('name')."\"");
+			}
+			echo $this->_getValue('data');
+		}
     }
     ?&gt;
 </code></pre>
