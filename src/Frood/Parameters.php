@@ -100,7 +100,11 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 		$res = array();
 
 		foreach ($this->_values as $key => $value) {
-			$res[] = "$key=$value";
+			if ($value instanceof FroodFileParameter) {
+				$res[] = "$key={$value->getPath()}";
+			} else {
+				$res[] = "$key=$value";
+			}
 		}
 
 		return implode(', ', $res);
