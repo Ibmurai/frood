@@ -19,6 +19,8 @@
  * @subpackage Class
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  * @author     Johannes Frandsen <jsf@fynskemedier.dk>
+ *
+ * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 abstract class FroodController {
 	/** @var string Which application are we running? */
@@ -161,6 +163,17 @@ abstract class FroodController {
 		} else {
 			throw new RuntimeException("No value has been set for key, $key.");
 		}
+	}
+
+	/**
+	 * Check if a value has been assigned to $key.
+	 *
+	 * @param string $key The key to check.
+	 *
+	 * @return boolean True or false... Or maybe?!?
+	 */
+	final protected function _hasValue($key) {
+		return array_key_exists($key, $this->_values);
 	}
 
 	/**
