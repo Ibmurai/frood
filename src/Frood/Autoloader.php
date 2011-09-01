@@ -99,15 +99,21 @@ class FroodAutoloader {
 	private function _recursiveFileSearch($directory, $regex) {
 		$iterator = new DirectoryIterator($directory);
 
+		$subFolders = array();
+
 		foreach ($iterator as $finfo) {
 			if (substr($finfo->getBasename(), 0, 1) != '.') {
 				if ($finfo->isFile() && preg_match($regex, $finfo->getPathname())) {
 					return $finfo->getPathname();
 				} else if ($finfo->isDir()) {
-					if ($sub = $this->_recursiveFileSearch($finfo->getPathname(), $regex)) {
-						return $sub;
-					}
+					$subFolders[] = $finfo->getPathname();
 				}
+			}
+		}
+
+		foreach ($subFolders as $folder) {
+			if ($sub = $this->_recursiveFileSearch($folder, $regex)) {
+				return $sub;
 			}
 		}
 
