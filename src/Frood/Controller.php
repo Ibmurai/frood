@@ -98,8 +98,10 @@ abstract class FroodController {
 				break;
 			case self::_JSON:
 				$renderer = new FroodRendererJson($this->_module, $this->_app, get_class($this), $action);
+				break;
 			case self::_JSONAUTOUTF8:
 				$renderer = new FroodRendererJsonAutoUtf8($this->_module, $this->_app, get_class($this), $action);
+				break;
 			case self::_DISABLED:
 				$renderer = new FroodRendererDisabled($this->_module, $this->_app, get_class($this), $action);
 				break;
