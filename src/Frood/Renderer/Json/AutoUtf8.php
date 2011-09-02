@@ -12,14 +12,14 @@
  */
 
 /**
- * FroodRendererAutoUtf8Json - A Frood renderer for JSON output.
+ * FroodRendererJsonAutoUtf8 - A Frood renderer for JSON output.
  *
  * @category   Library
  * @package    Frood
  * @subpackage Renderer
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class FroodRendererAutoUtf8Json extends FroodRenderer {
+class FroodRendererJsonAutoUtf8 extends FroodRendererJson {
 	/**
 	 * Render the output as JSON.
 	 *
