@@ -1,4 +1,5 @@
 trunk:
+Added a doOutputAutoUtf8Json() to FroodController. @jers
 Added a _hasValue() function to FroodController. @jers
 Moved the string conversion methods from Frood to FroodUtil. @jers
 Refactored the autoloader to a seperate class. @jers

@@ -40,8 +40,8 @@ class Frood {
 	 * @throws RuntimeException If Xoops cannot be booted.
 	 */
 	public function __construct($module = null, $app = 'public', $bootXoops = true) {
-		$this->_module  = $module;
-		$this->_app     = $app;
+		$this->_module = $module;
+		$this->_app    = $app;
 
 		$this->_setupAutoloader();
 		$this->_buildUriFormat();

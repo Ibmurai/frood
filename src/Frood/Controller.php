@@ -39,10 +39,13 @@ abstract class FroodController {
 	const _XOOPS = 'Xoops';
 
 	/** @var string Output mode JSON. */
-	const _JSON = 'Json';
+	const _JSON = 'JSON';
 
 	/** @var string Output mode Smarty. */
 	const _SMARTY = 'Smarty';
+
+	/** @var string Output mode AutoUtf8Json. */
+	const _AUTOUTF8JSON = 'Automatically UTF8 encoded JSON array';
 
 	/**
 	 * Construct a new controller instance.
@@ -92,6 +95,8 @@ abstract class FroodController {
 				break;
 			case self::_JSON:
 				$renderer = new FroodRendererJson($this->_module, $this->_app, get_class($this), $action);
+			case self::_AUTOUTF8JSON:
+				$renderer = new FroodRendererAutoUtf8Json($this->_module, $this->_app, get_class($this), $action);
 				break;
 			default:
 				throw new RuntimeException("Undefined output mode: {$this->_outputMode}.");
@@ -126,6 +131,15 @@ abstract class FroodController {
 	 */
 	final public function doOutputSmarty() {
 		$this->_doOutput(self::_SMARTY);
+	}
+
+	/**
+	 * Set the output mode to Automatically UTF8 encoded JSON array.
+	 *
+	 * @return void
+	 */
+	final public function doOutputAutoUtf8Json() {
+		$this->_doOutput(self::_AUTOUTF8JSON);
 	}
 
 	/**
