@@ -35,18 +35,22 @@ class FroodExceptionDispatch extends Exception {
 	/**
 	 * Constructs the Exception.
 	 *
-	 * @param string          $controller The controller that Frood attempted to dispatch to.
-	 * @param string          $action     The action that Frood attempted to call on the controller.
-	 * @param FroodParameters $parameters The parameters that Frood attempted to pass to the action.
-	 * @param string          $app        Which app was The Frood running?
-	 * @param string          $message    The Exception message to throw.
-	 * @param int             $code       The Exception code.
+	 * @param string          $controller   The controller that Frood attempted to dispatch to.
+	 * @param string          $action       The action that Frood attempted to call on the controller.
+	 * @param FroodParameters $parameters   The parameters that Frood attempted to pass to the action.
+	 * @param string          $app          Which app was The Frood running?
+	 * @param string          $message      The Exception message to throw.
+	 * @param int             $code         The Exception code.
+	 * @param string          $messageExtra Any extra information to append to the message.
 	 *
 	 * @return void
 	 */
-	public function __construct($controller = '', $action = '', FroodParameters $parameters = null, $app = '', $message = '', $code = 0) {
+	public function __construct($controller = '', $action = '', FroodParameters $parameters = null, $app = '', $message = '', $code = 0, $messageExtra = '') {
 		if ($message == '') {
 			$message = "Frood could not call $controller::$action($parameters) [$app app]";
+		}
+		if ($messageExtra != '') {
+			$message .= " ($messageExtra)";
 		}
 
 		parent::__construct($message, $code);

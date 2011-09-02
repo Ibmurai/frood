@@ -81,11 +81,20 @@ class Frood {
 			$parameters = $this->_guessParameters();
 		}
 
-		if (class_exists($controller) && ($controllerInstance = new $controller($this->_module, $this->_app)) && method_exists($controllerInstance, $method)) {
+		if (!class_exists($controller)) {
+			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "Could not autoload $controller");
+		}
+
+		$controllerInstance = new $controller($this->_module, $this->_app);
+		if (!($controllerInstance instanceof FroodController)) {
+			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "$controller does not extend FroodController");
+		}
+
+		if (method_exists($controllerInstance, $method)) {
 			call_user_func(array($controllerInstance, $method), $parameters);
 			$controllerInstance->render($action);
 		} else {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app);
+			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "$controller has no $method method");
 		}
 	}
 
