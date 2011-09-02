@@ -25,6 +25,8 @@ class FroodRendererDisabled extends FroodRenderer {
 	 * @param array $values The values assigned to the controller.
 	 *
 	 * @return string
+	 *
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public function render(array $values) {
 		$GLOBALS['xoopsLogger']->activated = false;
