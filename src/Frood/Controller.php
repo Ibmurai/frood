@@ -47,6 +47,9 @@ abstract class FroodController {
 	/** @var string Output mode AutoUtf8Json. */
 	const _JSONAUTOUTF8 = 'Automatically UTF8 encoded JSON array';
 
+	/** @var string Output mode disabled. */
+	const _DISABLED = 'Output disabled';
+
 	/**
 	 * Construct a new controller instance.
 	 * This is automatically called from The Frood.
@@ -97,6 +100,8 @@ abstract class FroodController {
 				$renderer = new FroodRendererJson($this->_module, $this->_app, get_class($this), $action);
 			case self::_JSONAUTOUTF8:
 				$renderer = new FroodRendererJsonAutoUtf8($this->_module, $this->_app, get_class($this), $action);
+			case self::_DISABLED:
+				$renderer = new FroodRendererDisabled($this->_module, $this->_app, get_class($this), $action);
 				break;
 			default:
 				throw new RuntimeException("Undefined output mode: {$this->_outputMode}.");
@@ -140,6 +145,15 @@ abstract class FroodController {
 	 */
 	final public function doOutputJsonAutoUtf8() {
 		$this->_doOutput(self::_JSONAUTOUTF8);
+	}
+
+	/**
+	 * Set the output mode to disabled.
+	 *
+	 * @return void
+	 */
+	final public function doOutputDisabled() {
+		$this->_doOutput(self::_DISABLED);
 	}
 
 	/**
