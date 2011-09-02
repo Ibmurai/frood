@@ -119,7 +119,9 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *
 	 * @return mixed It's like a box of chocolates.
 	 *
-	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default is given for a missing parameter. Or if no default has been given for a parameter with a value of the wrong type.
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
