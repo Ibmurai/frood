@@ -15,22 +15,22 @@
  */
 
 if (!isset($_SERVER['REMOTE_ADDR'])) {
-	header("X-Frood-Message: No remote address detected.", false, 404);
+	header("X-Frood-Message: No remote address detected.", false, 403);
 	exit;
 }
 
 $matches = array();
 if (preg_match('/^10\.254\.0\.([0-9]+)/', $_SERVER['REMOTE_ADDR'], $matches)) {
 	if ($matches[1] <= 1) {
-		header("X-Frood-Message: Local app is not available from the desktop network.", false, 404);
+		header("X-Frood-Message: Local app is not available from the desktop network.", false, 403);
 		exit;
 	}
 } else {
 	if (!isset($_SERVER['X_FORWARDED_FOR'])) {
-		header("X-Frood-Message: Local app is not available.", false, 404);
+		header("X-Frood-Message: Local app is not available.", false, 403);
 		exit;
 	} else if (!preg_match('/(?:^|,| )10\.254\.0\.([0-9]+)$/', $_SERVER['X_FORWARDED_FOR'])) {
-		header("X-Frood-Message: Local app is not available.", false, 404);
+		header("X-Frood-Message: Local app is not available.", false, 403);
 		exit;
 	}
 }
