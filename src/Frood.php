@@ -157,6 +157,7 @@ class Frood {
 				foreach ($vararr as $varName => $varValue) {
 					$GLOBALS[$varName] = $varValue;
 				}
+				xoops_load_language('admin.php', array('module' => $this->_module));
 			} else {
 				throw new RuntimeException("Frood could not boot Xoops! [{$this->_app} app]");
 			}
