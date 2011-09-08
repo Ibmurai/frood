@@ -47,7 +47,7 @@ class FroodExceptionDispatch extends Exception {
 	 */
 	public function __construct($controller = '', $action = '', FroodParameters $parameters = null, $app = '', $message = '', $code = 0, $messageExtra = '') {
 		if ($message == '') {
-			$message = "Frood could not call $controller::$action($parameters) [$app app]";
+			$message = "Frood could not call $app/$controller::$action($parameters)";
 		}
 		if ($messageExtra != '') {
 			$message .= " ($messageExtra)";

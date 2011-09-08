@@ -34,11 +34,7 @@ foreach (array_slice($argv, 5) as $arg) {
 
 	switch (true) {
 		case preg_match('/([^=]+)=(.+)/', $arg, $matches):
-			if (substr($matches[2], 0, 7) == '_SERI_:') {
-				$args[$matches[1]] = unserialize(substr($matches[2], 7));
-			} else {
-				$args[$matches[1]] = $matches[2];
-			}
+			$args[$matches[1]] = $matches[2];
 			break;
 		default:
 			throw new Exception("Bogus parameter, $arg.");

@@ -32,23 +32,8 @@ abstract class FroodController {
 	/** @var array This associative array contains the key-value pairs to output. */
 	private $_values = array();
 
-	/** @var string The output mode. Should be one of the class constants. */
-	private $_outputMode = null;
-
-	/** @var string Output mode Xoops. */
-	const _XOOPS = 'Xoops';
-
-	/** @var string Output mode JSON. */
-	const _JSON = 'JSON';
-
-	/** @var string Output mode Smarty. */
-	const _SMARTY = 'Smarty';
-
-	/** @var string Output mode AutoUtf8Json. */
-	const _JSONAUTOUTF8 = 'Automatically UTF8 encoded JSON array';
-
-	/** @var string Output mode disabled. */
-	const _DISABLED = 'Output disabled';
+	/** @var string The output renderer class to use when render is called. */
+	private $_renderer = null;
 
 	/**
 	 * Construct a new controller instance.
@@ -88,27 +73,10 @@ abstract class FroodController {
 	 *
 	 * @throws RuntimeException For undefined output modes.
 	 */
-	public function render($action) {
-		switch ($this->_outputMode) {
-			case self::_XOOPS:
-				$renderer = new FroodRendererXoops($this->_module, $this->_app, get_class($this), $action);
-				break;
-			case self::_SMARTY:
-				$renderer = new FroodRendererSmarty($this->_module, $this->_app, get_class($this), $action);
-				break;
-			case self::_JSON:
-				$renderer = new FroodRendererJson($this->_module, $this->_app, get_class($this), $action);
-				break;
-			case self::_JSONAUTOUTF8:
-				$renderer = new FroodRendererJsonAutoUtf8($this->_module, $this->_app, get_class($this), $action);
-				break;
-			case self::_DISABLED:
-				$renderer = new FroodRendererDisabled($this->_module, $this->_app, get_class($this), $action);
-				break;
-			default:
-				throw new RuntimeException("Undefined output mode: {$this->_outputMode}.");
-				break;
-		}
+	final public function render($action) {
+		$renderer = new $this->_renderer($this->_module, $this->_app, get_class($this), $action);
+
+		header('Content-Type: ' . $renderer->getContentType());
 
 		$renderer->render($this->_values);
 	}
@@ -119,7 +87,7 @@ abstract class FroodController {
 	 * @return void
 	 */
 	final public function doOutputJson() {
-		$this->_doOutput(self::_JSON);
+		$this->_setRenderer('FroodRendererJson');
 	}
 
 	/**
@@ -128,7 +96,7 @@ abstract class FroodController {
 	 * @return void
 	 */
 	final public function doOutputXoops() {
-		$this->_doOutput(self::_XOOPS);
+		$this->_setRenderer('FroodRendererXoops');
 	}
 
 	/**
@@ -137,7 +105,7 @@ abstract class FroodController {
 	 * @return void
 	 */
 	final public function doOutputSmarty() {
-		$this->_doOutput(self::_SMARTY);
+		$this->_setRenderer('FroodRendererSmarty');
 	}
 
 	/**
@@ -146,7 +114,7 @@ abstract class FroodController {
 	 * @return void
 	 */
 	final public function doOutputJsonAutoUtf8() {
-		$this->_doOutput(self::_JSONAUTOUTF8);
+		$this->_setRenderer('FroodRendererJsonAutoUtf8');
 	}
 
 	/**
@@ -155,18 +123,18 @@ abstract class FroodController {
 	 * @return void
 	 */
 	final public function doOutputDisabled() {
-		$this->_doOutput(self::_DISABLED);
+		$this->_setRenderer('FroodRendererDisabled');
 	}
 
 	/**
-	 * Set the output mode.
+	 * Set the output renderer class.
 	 *
-	 * @param string $mode Should be one of the class constants.
+	 * @param string $renderer The name of the class to use for rendering output.
 	 *
 	 * @return void
 	 */
-	final protected function _doOutput($mode) {
-		$this->_outputMode = $mode;
+	final protected function _setRenderer($renderer) {
+		$this->_renderer = $renderer;
 	}
 
 	/**
@@ -211,7 +179,7 @@ abstract class FroodController {
 	 *
 	 * @return string The output mode.
 	 */
-	final protected function _getOutputMode() {
-		return $this->_outputMode;
+	final protected function _getRenderer() {
+		return $this->_renderer;
 	}
 }

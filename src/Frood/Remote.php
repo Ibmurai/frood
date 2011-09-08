@@ -53,7 +53,8 @@ class FroodRemote {
 	 *
 	 * @return string The response as a string.
 	 *
-	 * @throws FroodExceptionRemoteDispatch If Frood cannot dispatch.
+	 * @throws FroodExceptionRemoteDispatch If Frood cannot dispatch, or the remote
+	 *                                      action modifies HTTP headers illegally.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
@@ -63,23 +64,45 @@ class FroodRemote {
 		}
 
 		if ($this->_host === null) {
-			$runner          = realpath(dirname(__FILE__) . '/../run/shell.php');
-			$parameterString = self::_parametersToString($parameters);
+			ob_start();
 
-			return shell_exec("php $runner {$this->_module} {$this->_app} $controller $action " . $parameterString);
+			$headers = headers_list();
+
+			$extern = new Frood($this->_module, $this->_app, false);
+			$extern->dispatch($controller, $action, $parameters);
+			$extern->unregisterAutoloader();
+
+			foreach (array_diff(headers_list(), $headers) as $modifiedHeader) {
+				if (!preg_match('/^Content-Type:/', $modifiedHeader)) {
+					ob_end_clean();
+					throw new FroodExceptionRemoteDispatch(
+						$this->_host,
+						$this->_module,
+						$controller,
+						$action,
+						$parameters,
+						$this->_app,
+						'',
+						0,
+						"The remote action added or modified an illegal header: $modifiedHeader"
+					);
+				}
+			}
+
+			return ob_get_clean();
 		} else {
 			$request = $this->_getRequest($controller, $action, $parameters);
 
 			try {
 				$request->send();
 			} catch (HttpException $e) {
-				throw new FroodExceptionRemoteDispatch($this->_host, $controller, $action, $parameters);
+				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_app);
 			}
 
 			if ($request->getResponseCode() == 200) {
 				return $request->getResponseBody();
 			} else {
-				throw new FroodExceptionRemoteDispatch($this->_host, $controller, $action, $parameters);
+				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_app);
 			}
 		}
 	}
@@ -118,26 +141,5 @@ class FroodRemote {
 		$request->addPostFields($fields);
 
 		return $request;
-	}
-
-	/**
-	 * Convert a FroodParameters instance to a string usable for run/shell.php
-	 *
-	 * @param FroodParameters $parameters The parameters to convert.
-	 *
-	 * @return string
-	 */
-	private function _parametersToString(FroodParameters $parameters) {
-		$result = array();
-
-		foreach ($parameters as $key => $value) {
-			if ($value instanceof FroodFileParameter || is_array($value)) {
-				$result[] = FroodUtil::convertPhpNameToHtmlName($key) . '=' . escapeshellarg('_SERI_:' . serialize($value));
-			} else {
-				$result[] = FroodUtil::convertPhpNameToHtmlName($key) . '=' . escapeshellarg($value);
-			}
-		}
-
-		return implode(' ', $result);
 	}
 }

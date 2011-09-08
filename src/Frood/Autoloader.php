@@ -50,6 +50,19 @@ class FroodAutoloader {
 	}
 
 	/**
+	 * Unregister the autoloader.
+	 *
+	 * @return void
+	 *
+	 * @throws RumtimeException If the autoloader could not be unregistered.
+	 */
+	public function unregister() {
+		if (!spl_autoload_unregister(array($this, 'autoload'))) {
+			throw new RumtimeException('Could not unregister.');
+		}
+	}
+
+	/**
 	 * Register the autoloader.
 	 *
 	 * @return void

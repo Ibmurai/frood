@@ -27,10 +27,17 @@ class FroodRendererJson extends FroodRenderer {
 	 * @return string
 	 */
 	public function render(array $values) {
-		header('Content-type: application/json');
-
 		$GLOBALS['xoopsLogger']->activated = false;
 
 		echo json_encode($values);
+	}
+
+	/**
+	 * The Frood explicitly sets the HTTP header Content-Type to what this returns.
+	 *
+	 * @return string The Content-Type this renderer generates.
+	 */
+	public function getContentType() {
+		return 'application/json';
 	}
 }

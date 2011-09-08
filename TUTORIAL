@@ -119,20 +119,23 @@ ImageId | image_id
 
 <p>By default actions are rendered in a Xoops context. This means that <code>admin</code> pages will get the menu and look like admin pages, and that <code>public</code> pages will be rendered in the theme.</p>
 
-<p><a href="Frood/Class/FroodController.html"><code>FroodController</code></a> has three output modes, which can be changed in an action by calling any one of the following, anywhere in the action (or controller constructor):</p>
+<p><a href="Frood/Class/FroodController.html"><code>FroodController</code></a> has five output modes, which can be changed in an action by calling any one of the following, anywhere in the action (or controller constructor):</p>
 
 <pre><code>    &lt;?php
     // ...
-    $this-&gt;doOutputXoops();  // Default
-    $this-&gt;doOutputSmarty(); // Just smarty
-    $this-&gt;doOutputJson();   // JSON formatted output - ignores any template
+    $this-&gt;doOutputXoops();        // Default
+    $this-&gt;doOutputSmarty();       // Just plain smarty.
+    $this-&gt;doOutputJson();         // JSON formatted output - ignores any template.
+    $this-&gt;doOutputJsonAutoUtf8(); // Like -&gt;doOutputJson but recursively calls utf8_encode on all
+                                   // contained strings.
+    $this-&gt;doOutputDisabled();     // Outputs nothing, with content type text/plain.
     // ...
     ?&gt;
 </code></pre>
 
 <h1>Action parameters</h1>
 
-<p>All actions take an instance of <a href="Frood/Class/FroodParameters.html"><code>FroodParameters</code></a> as only parameter.</p>
+<p>All actions take an instance of <a href="Frood/Class/FroodParameters.html"><code>FroodParameters</code></a> as the only parameter.</p>
 
 <p>You should never access <code>$_GET</code>, <code>$_POST</code> and <code>$_FILES</code> directly. Instead you use the parameters instance, and call <code>getXxx()</code> methods on it:</p>
 
@@ -244,6 +247,12 @@ ImageId | image_id
 <pre><code>php shell.php [module] [app] [controller] [action] [parameter1]=[value1]...
 </code></pre>
 
+<h1>Custom output renderers</h1>
+
+<p>It is possible to implement your own custom output renderer.</p>
+
+<p>Example coming soon. For now, you can look at <a href="Frood/Class/FroodController.html"><code>FroodController</code></a> to see how to implement the <code>-&gt;doOutput</code> method, and probably guess how to do it.</p>
+
 <h1>Extending the Frood controller</h1>
 
 <p>It is not required to extend the <a href="Frood/Class/FroodController.html"><code>FroodController</code></a> to make use of Frood, but for various reasons it is usually a good idea:</p>
@@ -253,19 +262,31 @@ ImageId | image_id
 <li>You may need to output something which is not directly supported by Frood.</li>
 </ul>
 
+<p>You should generally have one base controller for each app. For the module <code>lol</code>, for example:</p>
+
+<ul>
+<li><code>/admin/class/controllers/LolController.php</code></li>
+<li><code>/public/class/controllers/LolController.php</code></li>
+<li><code>/local/class/controllers/LolController.php</code></li>
+<li><code>/cron/class/controllers/LolController.php</code></li>
+</ul>
+
+<p>If you need to share controller functionality across app base controllers, let them extend a controller in the shared class folder. For the module <code>lol</code>, for example:</p>
+
+<ul>
+<li><code>/class/LolControllerBase.php</code></li>
+</ul>
+
+<p><em>The naming conventions in the above examples should be adhered to.</em></p>
+
 <h2>Example</h2>
 
-<p>In this example we overwrite the <a href="Frood/Class/FroodController.html#render"><code>FroodController::render()</code></a> method to add a new output method, <code>doOutputImage()</code> for outputting images. Additionally we need to create a method, <code>_renderImage()</code> and a constant <code>_IMAGE</code>.</p>
+<p>In this example we add a method, <code>_includeHeader()</code> for including the header file for the module, to support some legacy dependencies.</p>
 
-<p>We also add a method, <code>_requireHeader()</code> for including the header file for the module, to support some legacy dependencies.</p>
-
-<p>To make sure all our actions include the header we overwrite <a href="Frood/Class/FroodController.html#__construct"><code>FroodController::__construct()</code></a> and call the <code>_requireHeader()</code> there. If only some of your actions need XOOPS, you can also just call <code>_requireHeader()</code> in the individual actions. The latter is the better solution, performance wise, as loading the whole header if you don't need it is unnecessary. The former is convenient if you know you need it for all your actions.</p>
+<p>To make sure all our actions include the header we overwrite <a href="Frood/Class/FroodController.html#__construct"><code>FroodController::__construct()</code></a> and call the <code>_includeHeader()</code> there. If only some of your actions need XOOPS, you can also just call <code>_includeHeader()</code> in the individual actions. The latter is the better solution, performance wise, as loading the whole header if you don't need it is unnecessary. The former is convenient if you know you need it for all your actions.</p>
 
 <pre><code>    &lt;?php
     abstract class SomeController extends FroodController {
-
-        /** @var string Output mode Image. */
-        const _IMAGE = 'Image';
 
         /**
          * Construct a new controller instance.
@@ -278,28 +299,7 @@ ImageId | image_id
          */
         public function __construct($module, $app) {
             parent::__construct($module, $app);
-            $this-&gt;_requireHeader();
-        }
-
-        /**
-         * Render the output.
-         * The Frood calls this when appropriate.
-         *
-         * @param string $action The action to render the view for.
-         *
-         * @return void
-         *
-         * @throws RuntimeException For undefined output modes.
-         */
-        public function render($action) {
-            switch ($this-&gt;_getOutputMode()) {
-                case self::_IMAGE:
-                    $this-&gt;_renderImage($action);
-                    break;
-                default:
-                    parent::render($action);
-                    break;
-            }
+            $this-&gt;_includeHeader();
         }
 
         /**
@@ -307,43 +307,10 @@ ImageId | image_id
          *
          * @return void
          */
-        protected function _requireHeader() {
+        protected function _includeHeader() {
             include_once dirname(__FILE__) . '/../../../header.php';
         }
 
-        /**
-         * Set the output mode to image.
-         *
-         * @return void
-         */
-        final public function doOutputImage() {
-            $this-&gt;_doOutput(self::_IMAGE);
-        }
-
-		/**
-		 * Render the output as an image.
-		 *
-		 * @param string $action The action to render the view for.
-		 *
-		 * @return string The rendered output.
-		 */
-		private function _renderImage($action) {
-			try {
-				header('Content-Type: '.$this->_getValue('type'));
-				header("Content-Disposition: attachment; filename=\"".$this->_getValue('name')."\"");
-				if ($this->_getValue('download')) {
-					header('Content-Type: application/force-download');
-					header('Content-Type: application/octet-stream');
-					header('Content-Type: application/download');
-					header('Content-Description: File Transfer');
-					header('Content-Length: '.$this->_getValue('length'));
-				}
-			} catch(RuntimeException $e) {
-				header('Content-Type: '.$this->_getValue('type'));
-				header("Content-Disposition: attachment; filename=\"".$this->_getValue('name')."\"");
-			}
-			echo $this->_getValue('data');
-		}
     }
     ?&gt;
 </code></pre>

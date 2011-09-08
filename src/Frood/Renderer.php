@@ -56,4 +56,11 @@ abstract class FroodRenderer {
 	 * @return string The rendered output.
 	 */
 	abstract public function render(array $values);
+
+	/**
+	 * The Frood explicitly sets the HTTP header Content-Type to what this returns.
+	 *
+	 * @return string The Content-Type this renderer generates.
+	 */
+	abstract public function getContentType();
 }

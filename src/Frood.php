@@ -99,6 +99,19 @@ class Frood {
 	}
 
 	/**
+	 * Unregister the autoloader.
+	 *
+	 * @return void
+	 *
+	 * @throws RumtimeException If the autoloader could not be unregistered.
+	 */
+	public function unregisterAutoloader() {
+		$this->_autoloader->unregister();
+		$this->_autoloader = null;
+	}
+
+
+	/**
 	 * Attempt to guess the controller to call, based on the request.
 	 *
 	 * @return null|string The name of a controller. Or null if it can't guess.

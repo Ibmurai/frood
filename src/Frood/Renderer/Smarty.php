@@ -43,6 +43,15 @@ class FroodRendererSmarty extends FroodRenderer {
 	}
 
 	/**
+	 * The Frood explicitly sets the HTTP header Content-Type to what this returns.
+	 *
+	 * @return string The Content-Type this renderer generates.
+	 */
+	public function getContentType() {
+		return 'text/html';
+	}
+
+	/**
 	 * Get the Smarty resource for a given action.
 	 *
 	 * @return string
