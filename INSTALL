@@ -19,7 +19,7 @@ From the command line:
 
 Add the following line:
 
-	frood svn://develop.fyens.dk/frood/tags/latest/src
+	frood svn://develop.fyens.dk/frood/tags/sweethorse/src
 
 Save, quit and...
 

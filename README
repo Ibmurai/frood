@@ -4,11 +4,11 @@ The Frood
 *Author* [Jens Riisom Schultz](mailto:jers@fynskemedier.dk)
 *Since*  2011-06-20
 
-The Frood standardizes MVC in Xoops.
+The Frood standardizes the VC in MVC for XOOPS.
 
 It will help you to:
 
-  * Add MVC code to existing modules without breaking existing functionality.
+  * Add VC code to existing modules without breaking existing functionality.
   * Refactor modules to MVC.
   * Create entirely new full fledged MVC modules.
   * Communicate with other Froody modules, using MVC without the overhead and
