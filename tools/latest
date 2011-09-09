@@ -3,6 +3,10 @@
 if [ -n "$1" ]; then
         ssh web@develop.fyens.dk "svn delete \$SVNROOT/$1/tags/latest -m 'Removed old latest tag from: $1'"
         ssh web@develop.fyens.dk "svn copy \$SVNROOT/$1/trunk \$SVNROOT/$1/tags/latest -m 'Tagged latest successful build: $1'"
+	if [ -n "$2" ]; then
+        	ssh web@develop.fyens.dk "svn delete \$SVNROOT/$1/tags/$2 -m 'Removed old $2 tag from: $1'"
+        	ssh web@develop.fyens.dk "svn copy \$SVNROOT/$1/trunk \$SVNROOT/$1/tags/$2 -m 'Tagged latest successful build as $2: $1'"
+	fi
 else
         echo 'Missing module'
 fi
