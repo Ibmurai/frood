@@ -214,6 +214,13 @@ A common use is to forward the index action to the list action:
 		// ...
 		?>
 
+Action redirecting
+==================
+
+This works exactly like action forwarding, except the browser is redirected, and you may redirect to a different host.
+
+See [`->_redirect`](Frood/Class/FroodController.html#_redirect)
+
 
 `FroodRemote`
 =============

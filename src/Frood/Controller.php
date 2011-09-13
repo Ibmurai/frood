@@ -167,6 +167,61 @@ abstract class FroodController {
 	}
 
 	/**
+	 * Forward to another action. This ends all local execution and displays the results of the remote action.
+	 *
+	 * @param FroodParameters $parameters The parameters for the action. Defaults to no parameters.
+	 * @param string          $action     The action to forward to. Defaults to current action.
+	 * @param string          $controller The controller to forward to. Defaults to current controller.
+	 * @param string          $module     The module to forward to. Defaults to current module.
+	 * @param string          $app        The app to forward to. Defaults to current app.
+	 * @param string          $host       The host to forward to. Remember to put the protocol in front (i.e. http://). Defaults to current host.
+	 *
+	 * @return void
+	 *
+	 * @throws RuntimeException If you attempt to redirect with a file parameter, or a multidimensional array.
+	 *
+	 * @SuppressWarnings(PHPMD.ExitExpression) Yeah, well I need an exit!
+	 * @SuppressWarnings(PHPMD.NPathComplexity) Just because you have nice default values, PMD hates you.
+	 */
+	final protected function _redirect(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $app = null, $host = null) {
+		if ($parameters === null) {
+			$parameters = new FroodParameters(array());
+		}
+		if ($action === null) {
+			$action = $this->_action;
+		}
+		if ($controller === null) {
+			$controller = $this->_getBasename();
+		}
+		if ($module === null) {
+			$module = $this->_module;
+		}
+		if ($app === null) {
+			$app = $this->_app;
+		}
+		if ($host === null) {
+			$host = XOOPS_URL;
+		}
+
+		$url = $host;
+		if (!preg_match('/\/$/', $url)) {
+			$url .= '/';
+		}
+
+		$url .= "modules/$module/$app/$controller/$action";
+
+		$getString = $parameters->toGetString();
+
+		if (strlen($getString) > 0) {
+			$url .= '?' . $getString;
+		}
+
+		header("Location: $url");
+
+		exit;
+	}
+
+	/**
 	 * Set the output renderer class.
 	 *
 	 * @param string $renderer The name of the class to use for rendering output.
