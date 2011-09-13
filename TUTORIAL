@@ -207,6 +207,12 @@ ImageId | image_id
     ?&gt;
 </code></pre>
 
+<h1>Action redirecting</h1>
+
+<p>This works exactly like action forwarding, except the browser is redirected, and you may redirect to a different host.</p>
+
+<p>See <a href="Frood/Class/FroodController.html#_redirect"><code>-&gt;_redirect</code></a></p>
+
 <h1><code>FroodRemote</code></h1>
 
 <p>The <a href="Frood/Class/FroodRemote.html"><code>FroodRemote</code></a> facilitates working with other modules Frood enabled modules, without the hassle of HTTP'ing yourself. As an added bonus, it will work directly with PHP when communicating with other local modules, eliminating the overhead of HTTP requests.</p>

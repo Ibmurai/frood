@@ -205,6 +205,42 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	}
 
 	/**
+	 * Get these parameters as a string of "key=value" strings which are seperated by &'s.
+	 * Used by FroodController::_redirect().
+	 *
+	 * @throws RuntimeException If you attempt to encode a file parameter, or a multidimensional array.
+	 *
+	 * @return string A string of "key=value" strings which are seperated by &'s.
+	 */
+	public function toGetString() {
+		$fields = array();
+		foreach ($this as $key => $value) {
+			if ($value instanceof FroodFileParameter) {
+				throw new RuntimeException("You cannot GET encode file parameters ($key).");
+			} else if (is_array($value)) {
+				foreach ($value as $subKey => $subValue) {
+					if ($subValue instanceof FroodFileParameter) {
+						throw new RuntimeException("You cannot GET encode file parameters ({$key}[{$subKey}]).");
+					} else if (is_array($subValue)) {
+						throw new RuntimeException("You cannot GET encode multidimensional arrays ({$key}[{$subKey}]).");
+					} else {
+						$fields[FroodUtil::convertPhpNameToHtmlName($key) . "[$subKey]"] = $subValue;
+					}
+				}
+			} else {
+				$fields[FroodUtil::convertPhpNameToHtmlName($key)] = rawurlencode($value);
+			}
+		}
+
+		$getParams = array();
+		foreach ($fields as $key => $value) {
+			$getParams[] = "$key=$value";
+		}
+
+		return implode('&', $getParams);
+	}
+
+	/**
 	 * Implementation of the Iterator interface.
 	 *
 	 * @return void
