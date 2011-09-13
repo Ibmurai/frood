@@ -19,7 +19,7 @@ From the command line:
 
 Add the following line:
 
-	frood svn://develop.fyens.dk/frood/tags/sweethorse/src
+	frood svn://develop.fyens.dk/frood/tags/whinyantelope/src
 
 Save, quit and...
 
@@ -56,7 +56,7 @@ Edit the CHANGELOG - type something clever like, "Added the potential to make th
 
 Commit.
 
-	svn ci -m "Soon The Frood will rule the world!"
+	svn ci -m "Soon The Frood will rule the world\!"
 
 Update
 

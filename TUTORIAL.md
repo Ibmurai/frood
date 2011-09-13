@@ -186,6 +186,35 @@ File parameters
 Submitted files are accessed through the parameters instance, like other parameters, but instead of an integer, string or array, you get an instance of [`FroodFileParameter`](Frood/Class/FroodFileParameter.html). See the documentation for the class, for a description of it's methods.
 
 
+Action forwarding
+=================
+
+You can forward an action to another action on the same host. Forwarding will not change the url in the browser.
+
+Forwarding is done by calling [`->_forward`](Frood/Class/FroodController.html#_forward) in an action. See the documentation for details on the parameters.
+
+_Forwarding ends all execution after the call to `->_forward`._
+
+Example
+-------
+
+A common use is to forward the index action to the list action:
+
+		<?php
+		// ...
+		public function indexAction(FroodParameters $params) {
+			$this->_forward($params, 'list');
+
+			echo "You'll never see this output!";
+		}
+
+		public function listAction(FroodParameters $params) {
+			// Fancy list code here.
+		}
+		// ...
+		?>
+
+
 `FroodRemote`
 =============
 
@@ -208,7 +237,6 @@ To call an action on a local module, simply instantiate a [`FroodRemote`](Frood/
 				),
 			)
 		));
-
 		?>
 
 
@@ -301,11 +329,13 @@ To make sure all our actions include the header we overwrite [`FroodController::
 			 *
 			 * @param string $module The module we're working with.
 			 * @param string $app    Which application are we running?
+			 * @param string $action Which action is Frood invoking?
 			 *
 			 * @return void
 			 */
-			public function __construct($module, $app) {
-				parent::__construct($module, $app);
+			public function __construct($module, $app, $action) {
+				parent::__construct($module, $app, $action);
+
 				$this->_includeHeader();
 			}
 

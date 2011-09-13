@@ -180,6 +180,33 @@ ImageId | image_id
 
 <p>Submitted files are accessed through the parameters instance, like other parameters, but instead of an integer, string or array, you get an instance of <a href="Frood/Class/FroodFileParameter.html"><code>FroodFileParameter</code></a>. See the documentation for the class, for a description of it's methods.</p>
 
+<h1>Action forwarding</h1>
+
+<p>You can forward an action to another action on the same host. Forwarding will not change the url in the browser.</p>
+
+<p>Forwarding is done by calling <a href="Frood/Class/FroodController.html#_forward"><code>-&gt;_forward</code></a> in an action. See the documentation for details on the parameters.</p>
+
+<p><em>Forwarding ends all execution after the call to <code>-&gt;_forward</code>.</em></p>
+
+<h2>Example</h2>
+
+<p>A common use is to forward the index action to the list action:</p>
+
+<pre><code>    &lt;?php
+    // ...
+    public function indexAction(FroodParameters $params) {
+        $this-&gt;_forward($params, 'list');
+
+        echo "You'll never see this output!";
+    }
+
+    public function listAction(FroodParameters $params) {
+        // Fancy list code here.
+    }
+    // ...
+    ?&gt;
+</code></pre>
+
 <h1><code>FroodRemote</code></h1>
 
 <p>The <a href="Frood/Class/FroodRemote.html"><code>FroodRemote</code></a> facilitates working with other modules Frood enabled modules, without the hassle of HTTP'ing yourself. As an added bonus, it will work directly with PHP when communicating with other local modules, eliminating the overhead of HTTP requests.</p>
@@ -201,7 +228,6 @@ ImageId | image_id
             ),
         )
     ));
-
     ?&gt;
 </code></pre>
 
@@ -294,11 +320,13 @@ ImageId | image_id
          *
          * @param string $module The module we're working with.
          * @param string $app    Which application are we running?
+         * @param string $action Which action is Frood invoking?
          *
          * @return void
          */
-        public function __construct($module, $app) {
-            parent::__construct($module, $app);
+        public function __construct($module, $app, $action) {
+            parent::__construct($module, $app, $action);
+
             $this-&gt;_includeHeader();
         }
 

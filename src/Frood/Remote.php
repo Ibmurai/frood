@@ -28,24 +28,30 @@ class FroodRemote {
 	/** @var string The name of the host to connect to. */
 	private $_host;
 
+	/** @var boolean If this is false (default) an exception is thrown if the remote action modifies the HTTP headers. */
+	private $_ignoreModifiedHeaders;
+
 	/**
 	 * Do initialization stuff.
 	 *
-	 * @param string $module The dirname of the module to work with.
-	 * @param string $app    Which application are we remoting to?
-	 * @param string $host   The name of the host to connect to. Don't specify this to work locally.
+	 * @param string  $module                The dirname of the module to work with.
+	 * @param string  $app                   Which application are we remoting to?
+	 * @param string  $host                  The name of the host to connect to. Don't specify this to work locally.
+	 * @param boolean $ignoreModifiedHeaders Set to true to ignore if the remote action modified the headers.
 	 *
 	 * @return void
+	 *
+	 * @SuppressWarnings(PHPMD.LongVariable) Stupid f'ing rule.
 	 */
-	public function __construct($module, $app = 'public', $host = null) {
-		$this->_module = $module;
-		$this->_app    = $app;
-		$this->_host   = $host;
+	public function __construct($module, $app = 'public', $host = null, $ignoreModifiedHeaders = false) {
+		$this->_module                = $module;
+		$this->_app                   = $app;
+		$this->_host                  = $host;
+		$this->_ignoreModifiedHeaders = $ignoreModifiedHeaders;
 	}
 
 	/**
 	 * Dispatch an action to a controller.
-	 * Call with no parameters to determine everything from the request.
 	 *
 	 * @param string          $controller The controller to call.
 	 * @param string          $action     The action to invoke.
@@ -72,20 +78,22 @@ class FroodRemote {
 			$extern->dispatch($controller, $action, $parameters);
 			$extern->unregisterAutoloader();
 
-			foreach (array_diff(headers_list(), $headers) as $modifiedHeader) {
-				if (!preg_match('/^Content-Type:/', $modifiedHeader)) {
-					ob_end_clean();
-					throw new FroodExceptionRemoteDispatch(
-						$this->_host,
-						$this->_module,
-						$controller,
-						$action,
-						$parameters,
-						$this->_app,
-						'',
-						0,
-						"The remote action added or modified an illegal header: $modifiedHeader"
-					);
+			if (!$this->_ignoreModifiedHeaders) {
+				foreach (array_diff(headers_list(), $headers) as $modifiedHeader) {
+					if (!preg_match('/^Content-Type:/', $modifiedHeader)) {
+						ob_end_clean();
+						throw new FroodExceptionRemoteDispatch(
+							$this->_host,
+							$this->_module,
+							$controller,
+							$action,
+							$parameters,
+							$this->_app,
+							'',
+							0,
+							"The remote action added or modified an illegal header: $modifiedHeader"
+						);
+					}
 				}
 			}
 
@@ -99,10 +107,10 @@ class FroodRemote {
 				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_app);
 			}
 
-			if ($request->getResponseCode() == 200) {
+			if (($code = $request->getResponseCode()) == 200) {
 				return $request->getResponseBody();
 			} else {
-				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_app);
+				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_app, '', $code, "HTTP code $code received");
 			}
 		}
 	}

@@ -85,14 +85,14 @@ class Frood {
 			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "Could not autoload $controller");
 		}
 
-		$controllerInstance = new $controller($this->_module, $this->_app);
+		$controllerInstance = new $controller($this->_module, $this->_app, $action);
 		if (!($controllerInstance instanceof FroodController)) {
 			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "$controller does not extend FroodController");
 		}
 
 		if (method_exists($controllerInstance, $method)) {
 			call_user_func(array($controllerInstance, $method), $parameters);
-			$controllerInstance->render($action);
+			$controllerInstance->render();
 		} else {
 			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "$controller has no $method method");
 		}

@@ -1,4 +1,6 @@
 trunk:
+Breaking change, new tag is whinyantelope. The signature for FroodController::__construct() has changed. @jers
+Added ->_forward() method to FroodController. #6973 @jers
 Breaking change for custom output modes. @jers
 Optimal local remoting! @jers
 Added a doOutputDisabled() to FroodController. @jers
