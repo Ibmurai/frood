@@ -19,10 +19,10 @@ $regex = '/^
 	(
 		\/modules
 		\/' . $module . '   # 1 : start of uri
-		\/
 	)
-	([a-z]*)                # 2 : app
-	(.*)                    # 3 : the rest
+	\/?([a-z_0-9]+)?        # 2 : app or public controller
+	\/?([a-z_0-9]+)?        # 3 : public action or we dont care
+	\/?(.*)                 # 4 : the rest or we dont care
 /x';
 
 if (preg_match($regex, $requestUri, $matches)) {
@@ -33,13 +33,13 @@ if (preg_match($regex, $requestUri, $matches)) {
 	} else {
 		$appRunFile = dirname(__FILE__) . '/apps/public.php';
 		if (file_exists($appRunFile)) {
-			$_SERVER['REQUEST_URI'] = preg_replace($regex, '$1public/$2$3', $requestUri);
-			if ($matches[3] == '') {
-				if ($matches[2] == '') {
-					$_SERVER['REQUEST_URI'] .= 'index';
-				} else {
-					$_SERVER['REQUEST_URI'] .= '/index';
-				}
+			if ($matches[2] != '') {
+				$_SERVER['REQUEST_URI'] = $matches[1] . '/public/' . $matches[2];
+			} else {
+				$_SERVER['REQUEST_URI'] = $matches[1] . '/public/index';
+			}
+			if ($matches[3] != '') {
+				$_SERVER['REQUEST_URI'] .= '/' . $matches[3];
 			}
 			header("X-Frood-Uri-Rewrite: {$_SERVER['REQUEST_URI']}");
 			include_once $appRunFile;
