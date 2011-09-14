@@ -1,4 +1,5 @@
 trunk:
+Added AS_BOOLEAN casting. #6978 @jers
 AS_FILE casts will now behave as you would expect #7180 @jers
 Added ->_redirect() method to FroodController. #6973 @jers
 Breaking change, new tag is whinyantelope. The signature for FroodController::__construct() has changed. @jers
