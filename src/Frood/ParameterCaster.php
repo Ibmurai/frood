@@ -263,7 +263,11 @@ abstract class FroodParameterCaster {
 	 */
 	private static function _castAsFile($value) {
 		if ($value instanceof FroodFileParameter) {
-			return $value;
+			if ($value->getError() === 0 || $value->getError() === null) {
+				return $value;
+			} else {
+				throw new FroodExceptionCasting($value, self::AS_FILE, '', $value->getError(), $value->getErrorMessage());
+			}
 		} else {
 			throw new FroodExceptionCasting($value, self::AS_FILE);
 		}

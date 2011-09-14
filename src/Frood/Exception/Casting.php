@@ -29,16 +29,20 @@ class FroodExceptionCasting extends Exception {
 	/**
 	 * Constructs the Exception.
 	 *
-	 * @param mixed  $value   The value that could not be cast.
-	 * @param string $type    The type that Frood attempted to cast to.
-	 * @param string $message The Exception message to throw.
-	 * @param int    $code    The Exception code.
+	 * @param mixed  $value        The value that could not be cast.
+	 * @param string $type         The type that Frood attempted to cast to.
+	 * @param string $message      The Exception message to throw.
+	 * @param int    $code         The Exception code.
+	 * @param string $extraMessage An optional extra string to append to the $message.
 	 *
 	 * @return void
 	 */
-	public function __construct($value = null, $type = '', $message = '', $code = 0) {
+	public function __construct($value = null, $type = '', $message = '', $code = 0, $extraMessage = '') {
 		if ($message == '') {
 			$message = 'Parameter value, ' . var_export($value, true) . ", could not be cast as $type.";
+		}
+		if ($extraMessage != '') {
+			$message .= " ($extraMessage)";
 		}
 
 		parent::__construct($message, $code);
