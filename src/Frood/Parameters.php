@@ -172,7 +172,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *
 	 * @param array $file An element from the PHP $_FILES array.
 	 *
-	 * @return FroodParametersFile|FroodParametersFile[]
+	 * @return FroodFileParameter|FroodFileParameter[]
 	 */
 	private static function _parseFile(array $file) {
 		$result = array();

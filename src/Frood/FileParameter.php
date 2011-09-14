@@ -56,7 +56,7 @@ class FroodFileParameter implements Serializable {
 			$size = filesize($path);
 		}
 
-		if ($type === null) {
+		if ($type === null && ($error === 0 || $error === null)) {
 			$matches = array();
 			if (preg_match('/^(\S+)/', exec('file -bi ' . escapeshellarg($path)), $matches)) {
 				$type = $matches[1];
@@ -114,6 +114,51 @@ class FroodFileParameter implements Serializable {
 	 */
 	public function getError() {
 		return $this->_error;
+	}
+
+	/**
+	 * Get a string describing the error code.
+	 *
+	 * @return string A string describing the error code.
+	 *
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity) PHPMD hates switch statements.
+	 */
+	public function getErrorMessage() {
+		if ($this->_error === null) {
+			$message = 'Unknown error.';
+		} else switch ($this->_error) {
+			case UPLOAD_ERR_OK:
+				$message = 'There is no error, the file uploaded with success.';
+				break;
+			case UPLOAD_ERR_INI_SIZE:
+				$message = 'The uploaded file exceeds the upload_max_filesize directive in php.ini.';
+				break;
+			case UPLOAD_ERR_FORM_SIZE:
+				$message = 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.';
+				break;
+			case UPLOAD_ERR_PARTIAL:
+				$message = 'The uploaded file was only partially uploaded.';
+				break;
+			case UPLOAD_ERR_NO_FILE:
+				$message = 'No file was uploaded.';
+				break;
+			case UPLOAD_ERR_NO_TMP_DIR:
+				$message = 'Missing a temporary folder.';
+				break;
+			case UPLOAD_ERR_CANT_WRITE:
+				$message = 'Failed to write file to disk.';
+				break;
+			case UPLOAD_ERR_EXTENSION:
+				$message  = 'A PHP extension stopped the file upload. PHP does not provide a way to ';
+				$message .= 'ascertain which extension caused the file upload to stop; examining the ';
+				$message .= 'list of loaded extensions with phpinfo() may help.';
+				break;
+			default:
+				$message = 'Unknown error.';
+				break;
+		}
+
+		return $message;
 	}
 
 	/**
