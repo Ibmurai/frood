@@ -454,6 +454,97 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test boolean conversion of parameter values.
+	 *
+	 * @return void
+	 */
+	public function testBooleanConversion() {
+		$params = new FroodParameters(
+			array(
+				'one'                    => 'true',
+				'two'                    => 'TRUE',
+				'three'                  => 'on',
+				'four'                   => 'ON',
+				'five'                   => 'checked',
+				'five_and_a_half'        => 'CHECKED',
+				'six'                    => true,
+				'six_and_a_quarter'      => '1',
+				'six_and_a_half'         => 1,
+				'six_and_three_quarters' => 42,
+				'six_and_four_fifths'    => -21,
+				'seven'                  => 'false',
+				'eight'                  => 'FALSE',
+				'nine'                   => 'off',
+				'ten'                    => 'OFF',
+				'eleven'                 => '',
+				'twelve'                 => 0,
+				'thirteen'               => false,
+				'fourteen'               => '0',
+			)
+		);
+
+		$this->assertTrue($params->getOne(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getTwo(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getThree(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getFour(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getFive(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getFiveAndAHalf(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getSix(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getSixAndAQuarter(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getSixAndAHalf(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getSixAndThreeQuarters(FroodParameters::AS_BOOLEAN));
+		$this->assertTrue($params->getSixAndFourFifths(FroodParameters::AS_BOOLEAN));
+		$this->assertFalse($params->getSeven(FroodParameters::AS_BOOLEAN));
+		$this->assertFalse($params->getEight(FroodParameters::AS_BOOLEAN));
+		$this->assertFalse($params->getNine(FroodParameters::AS_BOOLEAN));
+		$this->assertFalse($params->getTen(FroodParameters::AS_BOOLEAN));
+		$this->assertFalse($params->getEleven(FroodParameters::AS_BOOLEAN));
+		$this->assertFalse($params->getTwelve(FroodParameters::AS_BOOLEAN));
+		$this->assertFalse($params->getThirteen(FroodParameters::AS_BOOLEAN));
+		$this->assertFalse($params->getFourteen(FroodParameters::AS_BOOLEAN));
+	}
+
+	/**
+	 * Provides data for testBooleanConversionException.
+	 *
+	 * @return array
+	 */
+	public function providerBooleanConversionException() {
+		return array(
+			array('a string'),
+			array(array(42)),
+			array(new FroodParameters(array())),
+			array(new FroodFileParameter(__FILE__)),
+			array('hello world'),
+			array('TRU'),
+			array('Nay'),
+			array(0.42),
+			array(null),
+		);
+	}
+
+	/**
+	 * Test boolean conversion exceptions when parameter value cannot be
+	 * interpreted as boolean.
+	 *
+	 * @param mixed $value The value to fail casting to a boolean.
+	 *
+	 * @dataProvider      providerBooleanConversionException
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testBooleanConversionException($value) {
+		$params = new FroodParameters(
+			array(
+				'value' => $value,
+			)
+		);
+
+		$params->getValue(FroodParameters::AS_BOOLEAN);
+	}
+
+	/**
 	 * Provides data for testFileConversionException.
 	 *
 	 * @return array

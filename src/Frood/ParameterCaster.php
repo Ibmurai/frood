@@ -20,6 +20,7 @@
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  *
  * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 abstract class FroodParameterCaster {
 	/** @var string The constant to tell the get function that you want an integer. */
@@ -45,6 +46,9 @@ abstract class FroodParameterCaster {
 
 	/** @var string The constant to tell the get function that you want a file. */
 	const AS_FILE = 'file';
+
+	/** @var string The constant to tell the get function that you want a boolean. */
+	const AS_BOOLEAN = 'boolean';
 
 	/**
 	 * Attempt to cast a value as the given type.
@@ -79,6 +83,8 @@ abstract class FroodParameterCaster {
 				return self::_castAsJson($value);
 			case self::AS_FILE:
 				return self::_castAsFile($value);
+			case self::AS_BOOLEAN:
+				return self::_castAsBoolean($value);
 			default:
 				throw new RuntimeException('Unknown type, ' . $type . '.');
 		}
@@ -271,6 +277,42 @@ abstract class FroodParameterCaster {
 		} else {
 			throw new FroodExceptionCasting($value, self::AS_FILE);
 		}
+	}
+
+	/**
+	 * Attempt to cast a value as boolean.
+	 *
+	 * "true", "on", "checked" are incasesensitivily cast to true.
+	 * "false", "off", "" are incasesensitivily cast to false.
+	 * Any integer not equal to 0 is cast to true.
+	 * An integer 0 is cast to false.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodExceptionCasting If the value could not be cast.
+	 *
+	 * @return boolean
+	 */
+	private static function _castAsBoolean($value) {
+		if ($value === true || $value === false) {
+			return $value;
+		} else try {
+			$value = self::_castAsInteger($value);
+			return $value !== 0;
+		} catch (FroodExceptionCasting $e) {
+			try {
+				$value = self::_castAsString($value);
+				if (preg_match('/^(true|on|checked)$/i', $value)) {
+					return true;
+				} else if (preg_match('/^(false|off|)$/i', $value)) {
+					return false;
+				}
+			} catch (FroodExceptionCasting $e) {
+				throw new FroodExceptionCasting($value, self::AS_BOOLEAN);
+			}
+		}
+
+		throw new FroodExceptionCasting($value, self::AS_BOOLEAN);
 	}
 
 	/**
