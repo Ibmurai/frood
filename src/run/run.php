@@ -22,7 +22,7 @@ $regex = '/^
 	)
 	\/?([a-z_0-9]+)?        # 2 : app or public controller
 	\/?([a-z_0-9]+)?        # 3 : public action or we dont care
-	\/?(.*)                 # 4 : the rest or we dont care
+	(.*)                    # 4 : the rest or we dont care
 /x';
 
 if (preg_match($regex, $requestUri, $matches)) {
@@ -41,6 +41,7 @@ if (preg_match($regex, $requestUri, $matches)) {
 			if ($matches[3] != '') {
 				$_SERVER['REQUEST_URI'] .= '/' . $matches[3];
 			}
+			$_SERVER['REQUEST_URI'] .= $matches[4];
 			header("X-Frood-Uri-Rewrite: {$_SERVER['REQUEST_URI']}");
 			include_once $appRunFile;
 		} else {
