@@ -1,4 +1,5 @@
 trunk:
+Better exception handling + the ability to auto json decode remote dispatches. #6997 @jers
 Rewrote run.php. This SHOULD not break anything. Please... #7183 @jers
 Added AS_BOOLEAN casting. #6978 @jers
 AS_FILE casts will now behave as you would expect #7180 @jers
