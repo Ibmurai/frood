@@ -237,6 +237,27 @@ ImageId | image_id
     ?&gt;
 </code></pre>
 
+<p>It is also possible to remote to other Froody sites:</p>
+
+<pre><code>    &lt;?php
+    $remote = new FroodRemote('fsArticle', 'public', 'http://fyens.dk');
+
+    $articles = $remote-&gt;dispatch('articles', 'list');
+
+    // Set the fourth argument to true, to enable automatic json decoding of the result:
+    $articleArray = $remote-&gt;dispatch(
+        'articles',
+        'listJson',
+        new FroodParameters(
+            array(
+                'limit' =&gt; 10,
+            )
+        ),
+        true // Enable json decoding
+    );
+    ?&gt;
+</code></pre>
+
 <h1>The apps</h1>
 
 <p>The Frood makes 4 distinctively different apps available for implementation. Every app is optional.</p>

@@ -18,7 +18,7 @@ $frood = new Frood(
 
 try {
 	$frood->dispatch();
-} catch (FroodExceptionDispatch $e) {
-	header("X-Frood-Message: {$e->getMessage()}", false, 404);
+} catch (Exception $e) {
+	header('X-Frood-Exception: ' . get_class($e) . ', ' . $e->getMessage(), false, 404);
 	exit;
 }

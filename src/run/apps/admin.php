@@ -18,8 +18,8 @@ $frood = new Frood(
 
 try {
 	$frood->dispatch();
-} catch (FroodExceptionDispatch $e) {
+} catch (Exception $e) {
 	echo '<h1>Frood error</h1>';
-	echo $e->getMessage();
+	echo '<p>' . get_class($e) . ': ' . $e->getMessage() . '</p>';
 	exit;
 }

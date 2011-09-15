@@ -246,6 +246,26 @@ To call an action on a local module, simply instantiate a [`FroodRemote`](Frood/
 		));
 		?>
 
+It is also possible to remote to other Froody sites:
+
+		<?php
+		$remote = new FroodRemote('fsArticle', 'public', 'http://fyens.dk');
+
+		$articles = $remote->dispatch('articles', 'list');
+
+		// Set the fourth argument to true, to enable automatic json decoding of the result:
+		$articleArray = $remote->dispatch(
+			'articles',
+			'listJson',
+			new FroodParameters(
+				array(
+					'limit' => 10,
+				)
+			),
+			true // Enable json decoding
+		);
+		?>
+
 
 The apps
 ========

@@ -56,15 +56,19 @@ class FroodRemote {
 	 * @param string          $controller The controller to call.
 	 * @param string          $action     The action to invoke.
 	 * @param FroodParameters $parameters The parameters for the action.
+	 * @param boolean         $jsonDecode Set this to true, to automatically attempt to
+	 *                                    json decode the result.
 	 *
-	 * @return string The response as a string.
+	 * @return string|array The response as a string or as decoded json (array).
 	 *
 	 * @throws FroodExceptionRemoteDispatch If Frood cannot dispatch, or the remote
-	 *                                      action modifies HTTP headers illegally.
+	 *                                      action modifies HTTP headers illegally, or
+	 *                                      json decoding fails.
 	 *
 	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
 	 */
-	public function dispatch($controller, $action, FroodParameters $parameters = null) {
+	public function dispatch($controller, $action, FroodParameters $parameters = null, $jsonDecode = false) {
 		if ($parameters === null) {
 			$parameters = new FroodParameters(array());
 		}
@@ -97,7 +101,7 @@ class FroodRemote {
 				}
 			}
 
-			return ob_get_clean();
+			$result = ob_get_clean();
 		} else {
 			$request = $this->_getRequest($controller, $action, $parameters);
 
@@ -108,10 +112,21 @@ class FroodRemote {
 			}
 
 			if (($code = $request->getResponseCode()) == 200) {
-				return $request->getResponseBody();
+				$result = $request->getResponseBody();
 			} else {
 				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_app, '', $code, "HTTP code $code received");
 			}
+		}
+
+		if ($jsonDecode) {
+			// TODO: Do better than this regex, to determine valid JSON.
+			if (preg_match('/^(?:{|\[)/s', $result)) {
+				return json_decode($result, true);
+			} else {
+				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_app, '', null, "Invalid JSON received");
+			}
+		} else {
+			return $result;
 		}
 	}
 
