@@ -84,6 +84,8 @@ ImageId | image_id
 <pre><code>templates/public/lol/kebab.tpl.html
 </code></pre>
 
+<p>The XML renderer, <a href="Frood/Class/FroodRendererXml.html"><code>FroodRendererXml</code></a> uses templates with the extension, <code>.tpl.xml</code>.</p>
+
 <h1>Controllers and actions</h1>
 
 <p>Controllers must extend <a href="Frood/Class/FroodController.html"><code>FroodController</code></a>. The class name must begin with the module name on CC form, and end with <code>Controller</code>. They should be placed in an apps <code>class/controllers</code> folder, to ensure that they only are accesible from a specific app.</p>
@@ -129,6 +131,7 @@ ImageId | image_id
     $this-&gt;doOutputJsonAutoUtf8(); // Like -&gt;doOutputJson but recursively calls utf8_encode on all
                                    // contained strings.
     $this-&gt;doOutputDisabled();     // Outputs nothing, with content type text/plain.
+    $this-&gt;doOutputXml();          // Outputs a smarty rendered template, with content type text/xml.
     // ...
     ?&gt;
 </code></pre>
