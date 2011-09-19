@@ -40,6 +40,7 @@ class FroodRendererXoops extends FroodRendererSmarty {
 			extract($GLOBALS, EXTR_REFS);
 
 			$xoopsOption['template_main'] = $this->_getSmartyResource();
+			$xoopsLogger->activated = true;
 
 			include_once XOOPS_ROOT_PATH . "/header.php";
 
