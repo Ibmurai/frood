@@ -19,6 +19,6 @@ $frood = new Frood(
 try {
 	$frood->dispatch();
 } catch (Exception $e) {
-	header('X-Frood-Exception: ' . get_class($e) . ', ' . $e->getMessage(), false, 404);
+	header('X-Frood-Exception: ' . get_class($e) . ', ' . preg_replace('/[^a-zA-Z0-9. _:()-]/', '', $e->getMessage()), false, 404);
 	exit;
 }

@@ -1,4 +1,5 @@
 trunk:
+Null is now allowed as a default value for any type parameter. #7199 @jers
 Better exception handling + the ability to auto json decode remote dispatches. #6997 @jers
 Rewrote run.php. This SHOULD not break anything. Please... #7183 @jers
 Added AS_BOOLEAN casting. #6978 @jers
