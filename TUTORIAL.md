@@ -87,6 +87,8 @@ Example: `LolBananaController::kebabAction()`, in the `public` app would be rend
 
 	templates/public/lol/kebab.tpl.html
 
+The XML renderer, [`FroodRendererXml`](Frood/Class/FroodRendererXml.html) uses templates with the extension, `.tpl.xml`.
+
 
 Controllers and actions
 =======================
@@ -133,6 +135,7 @@ By default actions are rendered in a Xoops context. This means that `admin` page
 		$this->doOutputJsonAutoUtf8(); // Like ->doOutputJson but recursively calls utf8_encode on all
 		                               // contained strings.
 		$this->doOutputDisabled();     // Outputs nothing, with content type text/plain.
+		$this->doOutputXml();          // Outputs a smarty rendered template, with content type text/xml.
 		// ...
 		?>
 

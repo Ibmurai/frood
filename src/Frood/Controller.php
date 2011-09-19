@@ -130,6 +130,15 @@ abstract class FroodController {
 	}
 
 	/**
+	 * Set the output mode to xml. The template should end with .tpl.xml
+	 *
+	 * @return void
+	 */
+	final public function doOutputXml() {
+		$this->_setRenderer('FroodRendererXml');
+	}
+
+	/**
 	 * Forward to another action. This ends all local execution and displays the results of the remote action.
 	 *
 	 * @param FroodParameters $parameters The parameters for the action. Defaults to no parameters.
