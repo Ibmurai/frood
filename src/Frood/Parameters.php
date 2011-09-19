@@ -138,7 +138,11 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 			}
 		} else {
 			if ($default !== FroodNullParameter::getInstance()) {
-				return self::_cast($type, $default);
+				if ($default !== null) {
+					return self::_cast($type, $default);
+				} else {
+					return null;
+				}
 			} else {
 				throw new RuntimeException("Attempting to retrieve parameter, $name, which has not been set and has no default value.");
 			}
