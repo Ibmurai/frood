@@ -19,6 +19,9 @@
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
 class FroodRendererSmarty extends FroodRenderer {
+	/** string The extension to use for template files. */
+	protected $_fileExtension = 'tpl.html';
+
 	/** @var boolean Enable or disable the XoopsLogger. */
 	private $_xoopsLoggerActivated = false;
 
@@ -70,7 +73,7 @@ class FroodRendererSmarty extends FroodRenderer {
 
 		$action = FroodUtil::convertPhpNameToHtmlName($this->_action);
 
-		return "blief:{$this->_module}/{$this->_app}/$controller/$action.tpl.html";
+		return "blief:{$this->_module}/{$this->_app}/$controller/$action.{$this->_fileExtension}";
 	}
 
 	/**
