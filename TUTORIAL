@@ -136,7 +136,9 @@ ImageId | image_id
     ?&gt;
 </code></pre>
 
-<h1>Action parameters</h1>
+<h1>Legacy action parameters</h1>
+
+<p>*This is still supported but you probably don't want to write your actions like this - read the next section instead ;) *</p>
 
 <p>All actions take an instance of <a href="Frood/Class/FroodParameters.html"><code>FroodParameters</code></a> as the only parameter.</p>
 
@@ -177,7 +179,35 @@ ImageId | image_id
     ?&gt;
 </code></pre>
 
-<p>There are various <code>AS_</code>-constants you can use. Find them on [the documentation page for <a href="Frood/Class/FroodParameters.html"><code>FroodParameters</code></a>.</p>
+<p>There are various <code>AS_</code>-constants you can use. Find them on [the documentation page for <a href="Frood/Class/FroodParameterCaster.html"><code>FroodParameterCaster</code></a>.</p>
+
+<h1>Action parameters</h1>
+
+<p>Parameters for an action are specified and annotated like you're use to, with one addition to the <code>@param</code> annotation: What is normally the description of the parameter is interpreted as the default value for the parameter, up to and excluding the first <code>~</code>.</p>
+
+<p>This is best illustrated with an example:</p>
+
+<pre><code>    &lt;?php
+    // ...
+    /**
+     * A nifty description of what this action does.
+     *
+     * @param boolean $bool       true ~ A boolean with a default value of true.
+     * @param integer $int             ~ An integer with no default value.
+     * @param float   $aFloat     42.0
+     * @param string  $someString I'm a nifty default for a string parameter.
+     * @param json    $array      null ~ A json encoded string, decoded to an associative array.
+     * @param array   $anArray    null
+     * @param file    $imAFile    null ~ A FroodFileParameter instance or null.
+     *
+     * @return void
+     */
+    public function someAction($bool, $int, $aFloat, $someString, $array, $anArray, $imAFile) {
+        // ...
+    }
+</code></pre>
+
+<p>The various supported types can be found in the documentation for <a href="Frood/Class/FroodParameterCaster.html"><code>FroodParameterCaster</code></a> (The <code>AS_</code>-constants).</p>
 
 <h2>File parameters</h2>
 
