@@ -91,7 +91,9 @@ class Frood {
 		}
 
 		if (method_exists($controllerInstance, $method)) {
-			$controllerInstance->$method($parameters);
+			$methodReflection = new FroodReflectionMethod($controllerInstance, $method);
+			$methodReflection->call($parameters);
+
 			$controllerInstance->render();
 		} else {
 			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "$controller has no $method method");

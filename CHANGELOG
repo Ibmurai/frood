@@ -1,4 +1,5 @@
 trunk:
+A new, awesome, way of specifying action parameters. See the documentation. #7298 @jers
 Added a FroodRendererXml. It really doesn't do that much... #7194 @jers
 Null is now allowed as a default value for any type parameter. #7199 @jers
 Better exception handling + the ability to auto json decode remote dispatches. #6997 @jers

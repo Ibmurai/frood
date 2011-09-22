@@ -140,8 +140,10 @@ By default actions are rendered in a Xoops context. This means that `admin` page
 		?>
 
 
-Action parameters
-=================
+Legacy action parameters
+========================
+
+*This is still supported but you probably don't want to write your actions like this - read the next section instead ;) *
 
 All actions take an instance of [`FroodParameters`](Frood/Class/FroodParameters.html) as the only parameter.
 
@@ -180,7 +182,36 @@ You can also test whether a given parameter is set, without having to catch an e
 		// ...
 		?>
 
-There are various `AS_`-constants you can use. Find them on [the documentation page for [`FroodParameters`](Frood/Class/FroodParameters.html).
+There are various `AS_`-constants you can use. Find them on [the documentation page for [`FroodParameterCaster`](Frood/Class/FroodParameterCaster.html).
+
+
+Action parameters
+=================
+
+Parameters for an action are specified and annotated like you're use to, with one addition to the `@param` annotation: What is normally the description of the parameter is interpreted as the default value for the parameter, up to and excluding the first `~`.
+
+This is best illustrated with an example:
+
+		<?php
+		// ...
+		/**
+		 * A nifty description of what this action does.
+		 *
+		 * @param boolean $bool       true ~ A boolean with a default value of true.
+		 * @param integer $int             ~ An integer with no default value.
+		 * @param float   $aFloat     42.0
+		 * @param string  $someString I'm a nifty default for a string parameter.
+		 * @param json    $array      null ~ A json encoded string, decoded to an associative array.
+		 * @param array   $anArray    null
+		 * @param file    $imAFile    null ~ A FroodFileParameter instance or null.
+		 *
+		 * @return void
+		 */
+		public function someAction($bool, $int, $aFloat, $someString, $array, $anArray, $imAFile) {
+			// ...
+		}
+
+The various supported types can be found in the documentation for [`FroodParameterCaster`](Frood/Class/FroodParameterCaster.html) (The `AS_`-constants).
 
 
 File parameters

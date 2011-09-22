@@ -36,13 +36,13 @@ abstract class FroodParameterCaster {
 	const AS_STRING = 'string';
 
 	/** @var string The constant to tell the get function that you want a ISO-8859-1 encoded string. */
-	const AS_ISO = 'ISO-8859-1 encoded string';
+	const AS_ISO = 'string/ISO-8859-1';
 
 	/** @var string The constant to tell the get function that you want a UTF-8 encoded string. */
-	const AS_UTF8 = 'UTF-8 encoded string';
+	const AS_UTF8 = 'string/UTF-8';
 
 	/** @var string The constant to tell the get function that you want a json decoded string (i.e. an array). */
-	const AS_JSON = 'JSON formatted string';
+	const AS_JSON = 'json';
 
 	/** @var string The constant to tell the get function that you want a file. */
 	const AS_FILE = 'file';
