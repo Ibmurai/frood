@@ -183,7 +183,7 @@ ImageId | image_id
 
 <h1>Action parameters</h1>
 
-<p>Parameters for an action are specified and annotated like you're use to, with one addition to the <code>@param</code> annotation: What is normally the description of the parameter is interpreted as the default value for the parameter, up to and excluding the first <code>~</code>.</p>
+<p>Parameters for an action are specified and annotated like you're use to, with one addition to the <code>@param</code> annotation: The comment may begin with a default value wrapped in &lt;&gt;'s.</p>
 
 <p>This is best illustrated with an example:</p>
 
@@ -192,13 +192,13 @@ ImageId | image_id
     /**
      * A nifty description of what this action does.
      *
-     * @param boolean $bool       true ~ A boolean with a default value of true.
-     * @param integer $int             ~ An integer with no default value.
-     * @param float   $aFloat     42.0
-     * @param string  $someString I'm a nifty default for a string parameter.
-     * @param json    $array      null ~ A json encoded string, decoded to an associative array.
-     * @param array   $anArray    null
-     * @param file    $imAFile    null ~ A FroodFileParameter instance or null.
+     * @param boolean $bool       <true> A boolean with a default value of true.
+     * @param integer $int               An integer with no default value.
+     * @param float   $aFloat     <42.0>
+     * @param string  $someString <I'm a nifty default for a string parameter.>
+     * @param json    $array      <null> A json encoded string, decoded to an associative array.
+     * @param array   $anArray    <null>
+     * @param file    $imAFile    <null> A FroodFileParameter instance or null.
      *
      * @return void
      */

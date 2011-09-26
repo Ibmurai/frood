@@ -113,11 +113,8 @@ class FroodReflectionMethod {
 				\s+
 				\$(?<name>[^\s]+)
 				[ \t]*
-				(?<default>[^~\r\n]*?)
-				\s*
-				(?:~\s*|$|\r|\n)
-				(?<comment>.*)
-			$/xm',
+				(?:\<(?<default>[^><\r\n]*?)\>)?
+			/xm',
 			$this->_reflectionMethod->getDocComment(),
 			$matches
 		);
@@ -130,7 +127,6 @@ class FroodReflectionMethod {
 					'type'    => $matches['type'][$i],
 					'name'    => $matches['name'][$i],
 					'default' => $matches['default'][$i],
-					'comment' => $matches['comment'][$i],
 				);
 			}
 		}
