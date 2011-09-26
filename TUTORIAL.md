@@ -197,13 +197,13 @@ This is best illustrated with an example:
 		/**
 		 * A nifty description of what this action does.
 		 *
-		 * @param boolean $bool       true ~ A boolean with a default value of true.
-		 * @param integer $int             ~ An integer with no default value.
-		 * @param float   $aFloat     42.0
-		 * @param string  $someString I'm a nifty default for a string parameter.
-		 * @param json    $array      null ~ A json encoded string, decoded to an associative array.
-		 * @param array   $anArray    null
-		 * @param file    $imAFile    null ~ A FroodFileParameter instance or null.
+		 * @param boolean $bool       <true> A boolean with a default value of true.
+		 * @param integer $int               An integer with no default value.
+		 * @param float   $aFloat     <42.0>
+		 * @param string  $someString <I'm a nifty default for a string parameter.>
+		 * @param json    $array      <null> A json encoded string, decoded to an associative array.
+		 * @param array   $anArray    <null>
+		 * @param file    $imAFile    <null> A FroodFileParameter instance or null.
 		 *
 		 * @return void
 		 */

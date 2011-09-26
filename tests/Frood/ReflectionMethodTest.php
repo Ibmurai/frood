@@ -60,7 +60,8 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 				true,
 				'bo',
 				42,
-				42.42
+				42.42,
+				null
 			)
 		);
 	}
@@ -138,19 +139,21 @@ class StupidController extends FroodController {
 	/**
 	 * A newschool awesome action with docblock params oh yeah.
 	 *
-	 * @param boolean $bool     true    ~ Some comment here.
-	 * @param string  $string   default
-	 * @param integer $int      101010  ~ 101010 is 42...
-	 * @param float   $required ~ This param is required.
+	 * @param boolean $bool     <true>    Some comment here.
+	 * @param string  $string   <default>
+	 * @param integer $int      <101010>  101010 is 42...
+	 * @param float   $required <>        This param is required.
+	 * @param file    $file     <null>
 	 *
 	 * @return array Yes it's an action that returns something. It's a test. Relax man.
 	 */
-	public function awesomeAction($bool, $string, $int, $required) {
+	public function awesomeAction($bool, $string, $int, $required, $file) {
 		return array(
 			$bool,
 			$string,
 			$int,
 			$required,
+			$file,
 		);
 	}
 
@@ -158,7 +161,7 @@ class StupidController extends FroodController {
 	/**
 	 * This action has an incorrect docblock.
 	 *
-	 * @param integer $skolemad 42 ~ Bras.
+	 * @param integer $skolemad <42> Bras.
 	 *
 	 * @return void
 	 */
