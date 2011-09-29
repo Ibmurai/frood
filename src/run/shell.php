@@ -34,7 +34,15 @@ foreach (array_slice($argv, 5) as $arg) {
 
 	switch (true) {
 		case preg_match('/([^=]+)=(.+)/', $arg, $matches):
-			$args[$matches[1]] = $matches[2];
+			if (preg_match('/^array\(.*\)$/', $matches[2])) {
+				if (($value = eval("return {$matches[2]};")) !== false) {
+					$args[$matches[1]] = $value;
+				} else {
+					$args[$matches[1]] = $matches[2];
+				}
+			} else {
+				$args[$matches[1]] = $matches[2];
+			}
 			break;
 		default:
 			throw new Exception("Bogus parameter, $arg.");
