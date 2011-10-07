@@ -38,12 +38,31 @@ class FroodRendererJsonAutoUtf8 extends FroodRendererJson {
 	 *
 	 * @return array The array of UTF8 encoded strings.
 	 */
-	public function _utf8EncodeStrings(array $values) {
+	protected static function _utf8EncodeStrings(array $values) {
 		foreach ($values as &$value) {
 			if (is_string($value)) {
 				$value = utf8_encode($value);
 			} else if (is_array($value)) {
 				$value = self::_utf8EncodeStrings($value);
+			}
+		}
+
+		return $values;
+	}
+
+	/**
+	 * Recursively UTF8 decode strings in an array.
+	 *
+	 * @param array $values The array to decode.
+	 *
+	 * @return array The array of UTF8 decoded strings. (ISO, then...)
+	 */
+	public static function utf8DecodeStrings(array $values) {
+		foreach ($values as &$value) {
+			if (is_string($value)) {
+				$value = utf8_decode($value);
+			} else if (is_array($value)) {
+				$value = self::utf8DecodeStrings($value);
 			}
 		}
 
