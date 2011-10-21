@@ -1,7 +1,9 @@
 The Frood
 =========
 
-*Author* [Jens Riisom Schultz](mailto:jers@fynskemedier.dk)
+*DISCLAIMER: This is an attempt to open source this internally used VC framework. It is not yet usable.*
+
+*Author* [Jens Riisom Schultz](mailto:ibber_of_crew42@hotmail.com)
 *Since*  2011-06-20
 
 The Frood standardizes the VC in MVC for XOOPS.
@@ -18,9 +20,9 @@ It will help you to:
 Documentation
 -------------
 
-All of the compiled documentation for The Frood can be found
-[here](http://vserver10.fynskemedier.dk:8080/cruisecontrol/buildresults/frood?tab=documentation)
+Coming soon... ;)
 
   * See INSTALL for installation instructions.
   * See TUTORIAL for instructions on how to code with The Frood.
   * See CHANGELOG for a change log.
+
