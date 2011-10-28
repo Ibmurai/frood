@@ -32,23 +32,14 @@ class Frood {
 	 * Do initialization stuff.
 	 *
 	 * @param string  $module    The dirname of the module to work with.
-	 * @param string  $app       Which application are we running?
-	 * @param boolean $bootXoops Boot Xoops? The answer is probably only no for tests.
 	 *
 	 * @return void
-	 *
-	 * @throws RuntimeException If Xoops cannot be booted.
 	 */
-	public function __construct($module = null, $app = 'public', $bootXoops = true) {
+	public function __construct($module = null) {
 		$this->_module = $module;
-		$this->_app    = $app;
 
 		$this->_setupAutoloader();
 		$this->_buildUriFormat();
-
-		if ($bootXoops) {
-			$this->_bootXoops();
-		}
 	}
 
 	/**
@@ -158,38 +149,6 @@ class Frood {
 	}
 
 	/**
-	 * Boot Xoops or die trying!
-	 *
-	 * @return void
-	 *
-	 * @throws RuntimeException If Xoops cannot be booted.
-	 */
-	private function _bootXoops() {
-		if ($this->_app == 'admin') {
-			if (($cpHeader = realpath(dirname(__FILE__) . '/../../../../include/cp_header.php')) && file_exists($cpHeader)) {
-				include_once $cpHeader;
-				$vararr = get_defined_vars();
-				foreach ($vararr as $varName => $varValue) {
-					$GLOBALS[$varName] = $varValue;
-				}
-				xoops_load_language('admin.php', array('module' => $this->_module));
-			} else {
-				throw new RuntimeException("Frood could not boot Xoops! [{$this->_app} app]");
-			}
-		} else {
-			if (($xoopsMainfile = realpath(dirname(__FILE__) . '/../../../../mainfile.php')) && file_exists($xoopsMainfile)) {
-				include_once $xoopsMainfile;
-				$vararr = get_defined_vars();
-				foreach ($vararr as $varName => $varValue) {
-					$GLOBALS[$varName] = $varValue;
-				}
-			} else {
-				throw new RuntimeException("Frood could not boot Xoops! [{$this->_app} app]");
-			}
-		}
-	}
-
-	/**
 	 * Set the autoloader up.
 	 *
 	 * @return void
@@ -202,13 +161,8 @@ class Frood {
 			dirname(__FILE__) . '/Frood',
 		);
 
-		// ...And in the [app]/class folder...
-		if ($folder = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/' . $this->_app . '/class')) {
-			$classPaths[] = $folder;
-		}
-
 		// ...And in the modules class folder.
-		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../../' . $this->_module . '/class'))) {
+		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../' . $this->_module . '/class'))) {
 			$classPaths[] = $folder;
 		}
 
@@ -223,9 +177,7 @@ class Frood {
 	 */
 	private function _buildUriFormat() {
 		$this->_uriFormat = '/^
-			\/modules
 			\/' . $this->_module . '   #     module name
-			\/' . $this->_app . '      #     the app name
 			\/([a-z][a-z0-9_]*)        # 1 : controller
 			(?:\/([a-z][a-z0-9_]*))?   # 2 : action
 		/x';
@@ -237,10 +189,6 @@ class Frood {
 	 * @return string The real request URI.
 	 */
 	private static function _getRequestUri() {
-		if (isset($_SERVER['ORIGINAL_REQUEST_URI'])) {
-			return $_SERVER['ORIGINAL_REQUEST_URI'];
-		} else {
-			return $_SERVER['REQUEST_URI'];
-		}
+		return $_SERVER['REQUEST_URI'];
 	}
 }
