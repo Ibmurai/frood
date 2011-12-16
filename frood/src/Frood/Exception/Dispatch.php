@@ -19,7 +19,7 @@
  * @subpackage Exception
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class FroodExceptionDispatch extends Exception {
+class FroodExceptionDispatch extends FroodException {
 	/** @var string The controller that Frood attempted to dispatch to. */
 	protected $_controller;
 

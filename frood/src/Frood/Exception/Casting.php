@@ -19,7 +19,7 @@
  * @subpackage Exception
  * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
  */
-class FroodExceptionCasting extends Exception {
+class FroodExceptionCasting extends FroodException {
 	/** @var mixed The value that could not be cast. */
 	protected $_value;
 
