@@ -9,7 +9,7 @@
  * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
  * @since    2011-06-09
  */
-
+require_once dirname(__FILE__) . '/Frood/Autoloader.php';
 /**
  * The Frood!
  *
@@ -22,11 +22,20 @@ class Frood {
 	/** @var string The module we're working with. */
 	private $_module;
 
-	/** @var string Which application are we running? */
-	private $_app;
+	/** @var string Which sub module are we running? */
+	private $_subModule;
 
-	/** @var FroodAutoloader The autoloader instance. */
-	private $_autoloader;
+	/** @var FroodAutoloader The module autoloader instance. */
+	private $_moduleAutoloader;
+	
+	/** @var FroodAutoloader The Frood autoloader instance. */
+	private $_froodAutoloader;
+	
+	/** @var FroodModuleConfiguration The module configuration */
+	private $_moduleConfig;
+	
+	/** @var FroodConfiguration The Frood configuration */
+	private $_froodConfig;
 
 	/**
 	 * Do initialization stuff.
@@ -35,10 +44,25 @@ class Frood {
 	 *
 	 * @return void
 	 */
-	public function __construct($module = null) {
-		$this->_module = $module;
-
-		$this->_setupAutoloader();
+	public function __construct($module = null, $subModule = null) {
+		$this->_setupFroodAutoloader();
+		
+		$this->_module    = $module;
+		$this->_subModule = $subModule;
+		
+		$this->_froodConfig  = new FroodConfiguration();
+		
+		$moduleConfigPath = dirname(__FILE__) . '/' . $this->_froodConfig->getRootPath() . 'Configuration.php';
+		
+		if (file_exists($moduleConfigPath)) {
+			include_once($moduleConfigPath);
+			$moduleConfigClassName = $this->_module . 'Configuration';
+			$this->_moduleConfig   = new $moduleConfigClassName();
+		}
+		
+		$this->_moduleConfig = new FroodModuleConfiguration();
+		
+		$this->_setupModuleAutoloader();
 		$this->_buildUriFormat();
 	}
 
@@ -58,7 +82,7 @@ class Frood {
 		if ($controller === null) {
 			$controller = $this->_guessController();
 		} else {
-			$controller = FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$controller}_controller");
+			$controller = FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$this->_subModule}_controller_{$controller}");
 		}
 
 		if ($action === null) {
@@ -73,12 +97,12 @@ class Frood {
 		}
 
 		if (!class_exists($controller)) {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "Could not autoload $controller");
+			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_subModule, '', 0, "Could not autoload $controller");
 		}
 
-		$controllerInstance = new $controller($this->_module, $this->_app, $action);
+		$controllerInstance = new $controller($this->_module, $this->_subModule, $action);
 		if (!($controllerInstance instanceof FroodController)) {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "$controller does not extend FroodController");
+			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_subModule, '', 0, "$controller does not extend FroodController");
 		}
 
 		if (method_exists($controllerInstance, $method)) {
@@ -87,7 +111,7 @@ class Frood {
 
 			$controllerInstance->render();
 		} else {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_app, '', 0, "$controller has no $method method");
+			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_subModule, '', 0, "$controller has no $method method");
 		}
 	}
 
@@ -99,8 +123,8 @@ class Frood {
 	 * @throws RumtimeException If the autoloader could not be unregistered.
 	 */
 	public function unregisterAutoloader() {
-		$this->_autoloader->unregister();
-		$this->_autoloader = null;
+		$this->_moduleAutoloader->unregister();
+		$this->_moduleAutoloader = null;
 	}
 
 
@@ -114,7 +138,7 @@ class Frood {
 
 		$matches = array();
 		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
-			return FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$matches[1]}_controller");
+			return FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$this->_subModule}_controller_{$matches[1]}");
 		}
 
 		return null;
@@ -147,26 +171,34 @@ class Frood {
 	private function _guessParameters() {
 		return new FroodParameters();
 	}
-
+	
 	/**
-	 * Set the autoloader up.
+	 * Set the Frood autoloader up.
 	 *
 	 * @return void
 	 */
-	private function _setupAutoloader() {
-		include_once dirname(__FILE__) . '/Frood/Autoloader.php';
-
-		// Search for classes in Frood...
+	private function _setupFroodAutoloader() {
 		$classPaths = array(
 			dirname(__FILE__) . '/Frood',
 		);
 
-		// ...And in the modules class folder.
-		if (($this->_module !== null) && ($folder = realpath(dirname(__FILE__) . '/../../' . $this->_module . '/class'))) {
-			$classPaths[] = $folder;
-		}
+		$this->_froodAutoloader = new FroodAutoloader($classPaths);
+	}
 
-		$this->_autoloader = new FroodAutoloader($classPaths);
+	/**
+	 * Set the module autoloader up.
+	 *
+	 * @return void
+	 */
+	private function _setupModuleAutoloader() {
+		$modulePath = $this->_froodConfig->getRootPath() . $this->_module . '/';
+		
+		$classPaths = array(
+			$modulePath . $this->_moduleConfig->getAutoloadBasePath($this->_subModule),
+			$modulePath . $this->_moduleConfig->getAutoloadBasePath('shared'),
+		);
+
+		$this->_moduleAutoloader = new FroodAutoloader($classPaths);
 	}
 
 
@@ -177,7 +209,6 @@ class Frood {
 	 */
 	private function _buildUriFormat() {
 		$this->_uriFormat = '/^
-			\/' . $this->_module . '   #     module name
 			\/([a-z][a-z0-9_]*)        # 1 : controller
 			(?:\/([a-z][a-z0-9_]*))?   # 2 : action
 		/x';
