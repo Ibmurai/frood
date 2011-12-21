@@ -114,7 +114,14 @@ class FroodRemote {
 			if (($code = $request->getResponseCode()) == 200) {
 				$result = $request->getResponseBody();
 			} else {
-				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_app, '', $code, "HTTP code $code received");
+				$information = array();
+				foreach ($request->getResponseHeader() as $name => $value) {
+					$matches = array();
+					if (preg_match('/X-Frood-(.*)$/', $name, $matches)) {
+						$information[] = "{$matches[1]}: $value";
+					}
+				}
+				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_app, '', $code, "HTTP code $code received" . ($information ? '. Header information: ' . implode(', ', $information) : ''));
 			}
 		}
 
