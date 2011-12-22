@@ -1,22 +1,18 @@
 <?php
 /**
- * The Frood autoloader.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @since    2011-08-10
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodAutoloader - The Frood autoloader.
  *
- * @category   Library
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category Frood
+ * @package  Autoloader
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodAutoloader {
 	/** @var array An array of paths to use as the base of autoloading. */
@@ -27,8 +23,6 @@ class FroodAutoloader {
 	 * It will automatically register itself.
 	 *
 	 * @param array $classPaths An array of paths to use as the base of autoloading.
-	 *
-	 * @return void
 	 */
 	public function __construct(array $classPaths) {
 		$this->_classPaths = $classPaths;
@@ -40,8 +34,6 @@ class FroodAutoloader {
 	 * Attempts to load the given class.
 	 *
 	 * @param string $name The name of the class to load.
-	 *
-	 * @return void
 	 */
 	public function autoload($name) {
 		if ($filePath = $this->_classNameToPath($name)) {
@@ -51,8 +43,6 @@ class FroodAutoloader {
 
 	/**
 	 * Unregister the autoloader.
-	 *
-	 * @return void
 	 *
 	 * @throws RumtimeException If the autoloader could not be unregistered.
 	 */
@@ -64,8 +54,6 @@ class FroodAutoloader {
 
 	/**
 	 * Register the autoloader.
-	 *
-	 * @return void
 	 */
 	private function _register() {
 		if (false === spl_autoload_functions()) {
@@ -110,6 +98,10 @@ class FroodAutoloader {
 	 * @return null|string null if no match was found.
 	 */
 	private function _recursiveFileSearch($directory, $regex) {
+		if (!is_dir($directory)) {
+			return null;
+		}
+
 		$iterator = new DirectoryIterator($directory);
 
 		$subFolders = array();

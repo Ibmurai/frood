@@ -1,22 +1,11 @@
 <?php
-/**
- * The base class for The Frood.
- *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @since    2011-06-09
- */
 require_once dirname(__FILE__) . '/Frood/Autoloader.php';
 /**
  * The Frood!
  *
- * @category   Library
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category Frood
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class Frood {
 	/** @var string The module we're working with. */
@@ -27,13 +16,13 @@ class Frood {
 
 	/** @var FroodAutoloader The module autoloader instance. */
 	private $_moduleAutoloader;
-	
+
 	/** @var FroodAutoloader The Frood autoloader instance. */
 	private $_froodAutoloader;
-	
+
 	/** @var FroodModuleConfiguration The module configuration */
 	private $_moduleConfig;
-	
+
 	/** @var FroodConfiguration The Frood configuration */
 	private $_froodConfig;
 
@@ -41,27 +30,25 @@ class Frood {
 	 * Do initialization stuff.
 	 *
 	 * @param string  $module    The dirname of the module to work with.
-	 *
-	 * @return void
 	 */
 	public function __construct($module = null, $subModule = null) {
 		$this->_setupFroodAutoloader();
-		
+
 		$this->_module    = $module;
 		$this->_subModule = $subModule;
-		
+
 		$this->_froodConfig  = new FroodConfiguration();
-		
-		$moduleConfigPath = dirname(__FILE__) . '/' . $this->_froodConfig->getRootPath() . 'Configuration.php';
-		
+
+		$moduleConfigPath = dirname(__FILE__) . '/' . $this->_froodConfig->getModulesPath() . 'Configuration.php';
+
 		if (file_exists($moduleConfigPath)) {
 			include_once($moduleConfigPath);
 			$moduleConfigClassName = $this->_module . 'Configuration';
 			$this->_moduleConfig   = new $moduleConfigClassName();
 		}
-		
+
 		$this->_moduleConfig = new FroodModuleConfiguration();
-		
+
 		$this->_setupModuleAutoloader();
 		$this->_buildUriFormat();
 	}
@@ -73,8 +60,6 @@ class Frood {
 	 * @param string          $controller The controller to call.
 	 * @param string          $action     The action to invoke.
 	 * @param FroodParameters $parameters The parameters for the action.
-	 *
-	 * @return void
 	 *
 	 * @throws FroodExceptionDispatch If Frood cannot dispatch.
 	 */
@@ -117,8 +102,6 @@ class Frood {
 
 	/**
 	 * Unregister the autoloader.
-	 *
-	 * @return void
 	 *
 	 * @throws RumtimeException If the autoloader could not be unregistered.
 	 */
@@ -171,11 +154,9 @@ class Frood {
 	private function _guessParameters() {
 		return new FroodParameters();
 	}
-	
+
 	/**
 	 * Set the Frood autoloader up.
-	 *
-	 * @return void
 	 */
 	private function _setupFroodAutoloader() {
 		$classPaths = array(
@@ -187,12 +168,10 @@ class Frood {
 
 	/**
 	 * Set the module autoloader up.
-	 *
-	 * @return void
 	 */
 	private function _setupModuleAutoloader() {
-		$modulePath = $this->_froodConfig->getRootPath() . $this->_module . '/';
-		
+		$modulePath = dirname(__FILE__) . '/' . $this->_froodConfig->getModulesPath() . $this->_module . '/';
+
 		$classPaths = array(
 			$modulePath . $this->_moduleConfig->getAutoloadBasePath($this->_subModule),
 			$modulePath . $this->_moduleConfig->getAutoloadBasePath('shared'),
@@ -204,8 +183,6 @@ class Frood {
 
 	/**
 	 * Builds the regex to parse the uri.
-	 *
-	 * @return void
 	 */
 	private function _buildUriFormat() {
 		$this->_uriFormat = '/^

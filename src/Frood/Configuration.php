@@ -21,7 +21,7 @@
  * @author     Bo Thinggaard <both@fynskemedier.dk>
  */
 class FroodConfiguration {
-	public function getRootPath () {
-		return '../modules/';
+	public function getModulesPath () {
+		return '../../../modules/';
 	}
 }
