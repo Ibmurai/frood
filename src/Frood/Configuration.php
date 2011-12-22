@@ -1,27 +1,41 @@
 <?php
 /**
- * The Frood configuration.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @author   Bo Thinggaard <both@fynskemedier.dk>
- * @since    2011-08-10
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodConfiguration - The Frood configuration.
  *
- * @category   Library
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
- * @author     Bo Thinggaard <both@fynskemedier.dk>
+ * @category   Frood
+ * @package    Configuration
+ * @author     Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author     Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodConfiguration {
+	/**
+	 * Get the path, relative to Frood.php, where modules reside.
+	 *
+	 * @return string
+	 */
 	public function getModulesPath () {
 		return '../../../modules/';
+	}
+
+	/**
+	 * Get the rexex format used to parse the URI.
+	 *
+	 * @return string
+	 */
+	public function getUriFormat() {
+		return '/
+			^
+			\/([a-z][a-z0-9_]*) # 1 : module
+			\/([a-z][a-z0-9_]*) # 2 : subModule
+			\/([a-z][a-z0-9_]*) # 3 : controller
+			\/([a-z][a-z0-9_]*) # 4 : action
+		/x';
 	}
 }

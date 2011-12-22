@@ -24,22 +24,28 @@ class Frood {
 	private $_moduleConfig;
 
 	/** @var FroodConfiguration The Frood configuration */
-	private $_froodConfig;
+	private $_froodConfiguration;
+
+	/** @var FroodUriParser The Frood URI parser */
+	private $_froodUriParser;
 
 	/**
-	 * Do initialization stuff.
+	 * Initialize The Frood.
 	 *
-	 * @param string  $module    The dirname of the module to work with.
+	 * @param string $module    The module to work with.
+	 * @param string $subModule The sub module to work with.
 	 */
 	public function __construct($module = null, $subModule = null) {
 		$this->_setupFroodAutoloader();
 
-		$this->_module    = $module;
-		$this->_subModule = $subModule;
+		$this->_froodConfiguration = new FroodConfiguration();
 
-		$this->_froodConfig  = new FroodConfiguration();
+		$this->_froodUriParser = new FroodParserUri($this->_froodConfiguration);
 
-		$moduleConfigPath = dirname(__FILE__) . '/' . $this->_froodConfig->getModulesPath() . 'Configuration.php';
+		$this->_module    = $module ? $module : $this->_froodUriParser->getModule();
+		$this->_subModule = $module ? $subModule : $this->_froodUriParser->getSubModule();
+
+		$moduleConfigPath = dirname(__FILE__) . '/' . $this->_froodConfiguration->getModulesPath() . 'Configuration.php';
 
 		if (file_exists($moduleConfigPath)) {
 			include_once($moduleConfigPath);
@@ -50,7 +56,6 @@ class Frood {
 		$this->_moduleConfig = new FroodModuleConfiguration();
 
 		$this->_setupModuleAutoloader();
-		$this->_buildUriFormat();
 	}
 
 	/**
@@ -109,7 +114,6 @@ class Frood {
 		$this->_moduleAutoloader->unregister();
 		$this->_moduleAutoloader = null;
 	}
-
 
 	/**
 	 * Attempt to guess the controller to call, based on the request.
@@ -170,7 +174,7 @@ class Frood {
 	 * Set the module autoloader up.
 	 */
 	private function _setupModuleAutoloader() {
-		$modulePath = dirname(__FILE__) . '/' . $this->_froodConfig->getModulesPath() . $this->_module . '/';
+		$modulePath = dirname(__FILE__) . '/' . $this->_froodConfiguration->getModulesPath() . $this->_module . '/';
 
 		$classPaths = array(
 			$modulePath . $this->_moduleConfig->getAutoloadBasePath($this->_subModule),
@@ -178,17 +182,6 @@ class Frood {
 		);
 
 		$this->_moduleAutoloader = new FroodAutoloader($classPaths);
-	}
-
-
-	/**
-	 * Builds the regex to parse the uri.
-	 */
-	private function _buildUriFormat() {
-		$this->_uriFormat = '/^
-			\/([a-z][a-z0-9_]*)        # 1 : controller
-			(?:\/([a-z][a-z0-9_]*))?   # 2 : action
-		/x';
 	}
 
 	/**
