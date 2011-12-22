@@ -34,16 +34,16 @@ class FroodExceptionRemoteDispatch extends FroodExceptionDispatch {
 	 * @param string          $controller   The controller that Frood attempted to dispatch to.
 	 * @param string          $action       The action that Frood attempted to call on the controller.
 	 * @param FroodParameters $parameters   The parameters that Frood attempted to pass to the action.
-	 * @param string          $app          Which app was The Frood running?
+	 * @param string          $subModule    Which sub module was The Frood running?
 	 * @param string          $message      The Exception message to throw.
 	 * @param int             $code         The Exception code.
 	 * @param string          $messageExtra Any extra information to append to the message.
 	 *
 	 * @return void
 	 */
-	public function __construct($host = '', $module = '', $controller = '', $action = '', FroodParameters $parameters = null, $app = '', $message = '', $code = 0, $messageExtra = '') {
+	public function __construct($host = '', $module = '', $controller = '', $action = '', FroodParameters $parameters = null, $subModule = '', $message = '', $code = 0, $messageExtra = '') {
 		if ($message == '') {
-			$message = "Frood could not call $module/$app/$controller/$action($parameters)";
+			$message = "Frood could not call $module/$subModule/$controller/$action($parameters)";
 			if ($host != '') {
 				$message .= " on the host, $host.";
 			} else {
@@ -51,7 +51,7 @@ class FroodExceptionRemoteDispatch extends FroodExceptionDispatch {
 			}
 		}
 
-		parent::__construct($controller, $action, $parameters, $app, $message, $code, $messageExtra);
+		parent::__construct($controller, $action, $parameters, $message, $code, $messageExtra);
 
 		$this->_host   = $host;
 		$this->_module = $module;

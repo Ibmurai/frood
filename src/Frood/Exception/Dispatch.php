@@ -29,25 +29,21 @@ class FroodExceptionDispatch extends FroodException {
 	/** @var FroodParameters The parameters that Frood attempted to pass to the action. */
 	protected $_parameters;
 
-	/** @var string Which app was The Frood running? */
-	protected $_app;
-
 	/**
 	 * Constructs the Exception.
 	 *
 	 * @param string          $controller   The controller that Frood attempted to dispatch to.
 	 * @param string          $action       The action that Frood attempted to call on the controller.
 	 * @param FroodParameters $parameters   The parameters that Frood attempted to pass to the action.
-	 * @param string          $app          Which app was The Frood running?
 	 * @param string          $message      The Exception message to throw.
 	 * @param int             $code         The Exception code.
 	 * @param string          $messageExtra Any extra information to append to the message.
 	 *
 	 * @return void
 	 */
-	public function __construct($controller = '', $action = '', FroodParameters $parameters = null, $app = '', $message = '', $code = 0, $messageExtra = '') {
+	public function __construct($controller = '', $action = '', FroodParameters $parameters = null, $message = '', $code = 0, $messageExtra = '') {
 		if ($message == '') {
-			$message = "Frood could not call $app/$controller::$action($parameters)";
+			$message = "Frood could not call $controller::$action($parameters)";
 		}
 		if ($messageExtra != '') {
 			$message .= " ($messageExtra)";
@@ -58,7 +54,6 @@ class FroodExceptionDispatch extends FroodException {
 		$this->_controller = $controller;
 		$this->_action     = $action;
 		$this->_parameters = $parameters;
-		$this->_app        = $app;
 	}
 
 	/**
@@ -86,14 +81,5 @@ class FroodExceptionDispatch extends FroodException {
 	 */
 	public function getParameters() {
 		return $this->_parameters;
-	}
-
-	/**
-	 * Which app was The Frood running?
-	 *
-	 * @return string
-	 */
-	public function getApp() {
-		return $this->_app;
 	}
 }

@@ -1,33 +1,26 @@
 <?php
 /**
- * An abstract controller class to use as a base for Frood controllers.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @author   Johannes Frandsen <jsf@fynskemedier.dk>
- * @since    2011-06-16
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodController - An abstract controller class to use as a base for Frood controllers.
  *
- * @category   Library
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category   Frood
+ * @package    Controller
+ * @author     Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author     Bo Thinggaard <akimsko@tnactas.dk>
  * @author     Johannes Frandsen <jsf@fynskemedier.dk>
- *
- * @SuppressWarnings(PHPMD.TooManyMethods)
  */
 abstract class FroodController {
 	/** @var string Which action is Frood invoking? */
 	private $_action;
 
 	/** @var string Which application are we running? */
-	private $_app;
+	private $_subModule;
 
 	/** @var string The module we're working with. */
 	private $_module = null;
@@ -42,18 +35,14 @@ abstract class FroodController {
 	 * Construct a new controller instance.
 	 * This is automatically called from The Frood.
 	 *
-	 * @param string $module The module we're working with.
-	 * @param string $app    Which application are we running?
-	 * @param string $action Which action is Frood invoking?
-	 *
-	 * @return void
+	 * @param string $module    The module we're working with.
+	 * @param string $subModule Which sub module are we running?
+	 * @param string $action    Which action is Frood invoking?
 	 */
-	public function __construct($module, $app, $action) {
-		$this->_module = $module;
-		$this->_app    = $app;
-		$this->_action = $action;
-
-		$this->doOutputXoops();
+	public function __construct($module, $subModule, $action) {
+		$this->_module    = $module;
+		$this->_subModule = $subModule;
+		$this->_action    = $action;
 	}
 
 	/**
@@ -77,7 +66,7 @@ abstract class FroodController {
 	 * @throws RuntimeException For undefined output modes.
 	 */
 	final public function render() {
-		$renderer = new $this->_renderer($this->_module, $this->_app, get_class($this), $this->_action);
+		$renderer = new $this->_renderer($this->_module, $this->_subModule, get_class($this), $this->_action);
 
 		header('Content-Type: ' . $renderer->getContentType());
 
@@ -94,33 +83,6 @@ abstract class FroodController {
 	}
 
 	/**
-	 * Set the output mode to Xoops.
-	 *
-	 * @return void
-	 */
-	final public function doOutputXoops() {
-		$this->_setRenderer('FroodRendererXoops');
-	}
-
-	/**
-	 * Set the output mode to Smarty.
-	 *
-	 * @return void
-	 */
-	final public function doOutputSmarty() {
-		$this->_setRenderer('FroodRendererSmarty');
-	}
-
-	/**
-	 * Set the output mode to Automatically UTF8 encoded JSON array.
-	 *
-	 * @return void
-	 */
-	final public function doOutputJsonAutoUtf8() {
-		$this->_setRenderer('FroodRendererJsonAutoUtf8');
-	}
-
-	/**
 	 * Set the output mode to disabled.
 	 *
 	 * @return void
@@ -130,28 +92,19 @@ abstract class FroodController {
 	}
 
 	/**
-	 * Set the output mode to xml. The template should end with .tpl.xml
-	 *
-	 * @return void
-	 */
-	final public function doOutputXml() {
-		$this->_setRenderer('FroodRendererXml');
-	}
-
-	/**
 	 * Forward to another action. This ends all local execution and displays the results of the remote action.
 	 *
 	 * @param FroodParameters $parameters The parameters for the action. Defaults to no parameters.
 	 * @param string          $action     The action to forward to. Defaults to current action.
 	 * @param string          $controller The controller to forward to. Defaults to current controller.
 	 * @param string          $module     The module to forward to. Defaults to current module.
-	 * @param string          $app        The app to forward to. Defaults to current app.
+	 * @param string          $subModule  The sub module to forward to. Defaults to current sub module.
 	 *
 	 * @return void
 	 *
 	 * @SuppressWarnings(PHPMD.ExitExpression) Yeah, well I need an exit!
 	 */
-	final protected function _forward(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $app = null) {
+	final protected function _forward(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $subModule = null) {
 		if ($parameters === null) {
 			$parameters = new FroodParameters(array());
 		}
@@ -164,11 +117,11 @@ abstract class FroodController {
 		if ($module === null) {
 			$module = $this->_module;
 		}
-		if ($app === null) {
-			$app = $this->_app;
+		if ($subModule === null) {
+			$subModule = $this->_subModule;
 		}
 
-		$remote = new FroodRemote($module, $app, null, true);
+		$remote = new FroodRemote($module, $subModule, null, true);
 
 		echo $remote->dispatch($controller, $action, $parameters);
 
@@ -206,7 +159,7 @@ abstract class FroodController {
 			$module = $this->_module;
 		}
 		if ($app === null) {
-			$app = $this->_app;
+			$app = $this->_subModule;
 		}
 		if ($host === null) {
 			$host = XOOPS_URL;
