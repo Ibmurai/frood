@@ -26,34 +26,32 @@ class Frood {
 	/** @var FroodConfiguration The Frood configuration */
 	private $_froodConfiguration;
 
-	/** @var FroodUriParser The Frood URI parser */
-	private $_froodUriParser;
-
 	/**
 	 * Initialize The Frood.
 	 *
-	 * @param string $module    The module to work with.
-	 * @param string $subModule The sub module to work with.
+	 * @param string             $module        The module to work with.
+	 * @param string             $subModule     The sub module to work with.
+	 * @param FroodConfiguration $configuration The configuration.
+	 * 
+	 * @throws FroodException
 	 */
-	public function __construct($module = null, $subModule = null) {
+	public function __construct($module = null, $subModule = null, FroodConfiguration $configuration = null) {
 		$this->_setupFroodAutoloader();
 
-		$this->_froodConfiguration = new FroodConfiguration();
+		$this->_froodConfiguration = $configuration ? $configuration : new FroodConfiguration();
+		$this->_froodConfiguration->getUriParser()->parse($this->_froodConfiguration->getRequestUri());
 
-		$this->_froodUriParser = new FroodParserUri($this->_froodConfiguration);
+		$this->_module    = $module ? $module    : $this->_froodConfiguration->getUriParser()->getModule();
+		$this->_subModule = $module ? $subModule : $this->_froodConfiguration->getUriParser()->getSubModule();
 
-		$this->_module    = $module ? $module : $this->_froodUriParser->getModule();
-		$this->_subModule = $module ? $subModule : $this->_froodUriParser->getSubModule();
+		$moduleConfigPath = dirname(__FILE__) . '/' . $this->_froodConfiguration->getModuleBasePath($this->_module) . 'Configuration.php';
 
-		$moduleConfigPath = dirname(__FILE__) . '/' . $this->_froodConfiguration->getModulesPath() . 'Configuration.php';
-
+		$moduleConfigClassName = 'FroodModuleConfiguration';
 		if (file_exists($moduleConfigPath)) {
 			include_once($moduleConfigPath);
-			$moduleConfigClassName = $this->_module . 'Configuration';
-			$this->_moduleConfig   = new $moduleConfigClassName();
+			$moduleConfigClassName = FroodUtil::convertHtmlNameToPhpName("{$this->_module}_configuration");
 		}
-
-		$this->_moduleConfig = new FroodModuleConfiguration();
+		$this->_moduleConfig = new $moduleConfigClassName();
 
 		$this->_setupModuleAutoloader();
 	}
@@ -87,12 +85,12 @@ class Frood {
 		}
 
 		if (!class_exists($controller)) {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_subModule, '', 0, "Could not autoload $controller");
+			throw new FroodExceptionDispatch($controller, $method, $parameters, '', 0, "Could not autoload $controller");
 		}
 
 		$controllerInstance = new $controller($this->_module, $this->_subModule, $action);
 		if (!($controllerInstance instanceof FroodController)) {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_subModule, '', 0, "$controller does not extend FroodController");
+			throw new FroodExceptionDispatch($controller, $method, $parameters, '', 0, "$controller does not extend FroodController");
 		}
 
 		if (method_exists($controllerInstance, $method)) {
@@ -101,7 +99,7 @@ class Frood {
 
 			$controllerInstance->render();
 		} else {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, $this->_subModule, '', 0, "$controller has no $method method");
+			throw new FroodExceptionDispatch($controller, $method, $parameters, '', 0, "$controller has no $method method");
 		}
 	}
 
@@ -121,14 +119,10 @@ class Frood {
 	 * @return null|string The name of a controller. Or null if it can't guess.
 	 */
 	private function _guessController() {
-		$requestUri = self::_getRequestUri();
-
-		$matches = array();
-		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
-			return FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$this->_subModule}_controller_{$matches[1]}");
+		if (!($controller = $this->_froodConfiguration->getUriParser()->getController())) {
+			return null;
 		}
-
-		return null;
+		return FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$this->_subModule}_controller_$controller");
 	}
 
 	/**
@@ -137,17 +131,10 @@ class Frood {
 	 * @return null|string The name of an action. 'index' if it can't guess. null if the URI isn't up to snuff.
 	 */
 	private function _guessAction() {
-		$requestUri = self::_getRequestUri();
-
-		$matches = array();
-		if (preg_match($this->_uriFormat, $requestUri, $matches)) {
-			$action = isset($matches[2]) ? $matches[2] : 'index';
-			$action = FroodUtil::convertHtmlNameToPhpName($action, false);
-
-			return $action;
+		if (!($action = $this->_froodConfiguration->getUriParser()->getAction())) {
+			return null;
 		}
-
-		return null;
+		return FroodUtil::convertHtmlNameToPhpName($action, false);
 	}
 
 	/**
@@ -174,7 +161,7 @@ class Frood {
 	 * Set the module autoloader up.
 	 */
 	private function _setupModuleAutoloader() {
-		$modulePath = dirname(__FILE__) . '/' . $this->_froodConfiguration->getModulesPath() . $this->_module . '/';
+		$modulePath = dirname(__FILE__) . '/' . $this->_froodConfiguration->getModuleBasePath($this->_module);
 
 		$classPaths = array(
 			$modulePath . $this->_moduleConfig->getAutoloadBasePath($this->_subModule),
