@@ -1,4 +1,11 @@
 <?php
+/**
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
+ *
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
+ */
 require_once dirname(__FILE__) . '/Frood/Autoloader.php';
 /**
  * The Frood!
