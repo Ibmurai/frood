@@ -15,6 +15,13 @@
  * @author     Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodConfiguration {
+	/** @var FroodParserUri */
+	private $_uriParser = null;
+	
+	public function getModuleBasePath($module) {
+		return $this->getModulesPath() . FroodUtil::convertHtmlNameToPhpName($module) . '/';
+	}
+	
 	/**
 	 * Get the path, relative to Frood.php, where modules reside.
 	 *
@@ -25,11 +32,11 @@ class FroodConfiguration {
 	}
 
 	/**
-	 * Get the rexex format used to parse the URI.
+	 * Get the regex format used to parse the URI.
 	 *
 	 * @return string
 	 */
-	public function getUriFormat() {
+	protected function _getUriFormat() {
 		return '/
 			^
 			\/([a-z][a-z0-9_]*) # 1 : module
@@ -37,5 +44,23 @@ class FroodConfiguration {
 			\/([a-z][a-z0-9_]*) # 3 : controller
 			\/([a-z][a-z0-9_]*) # 4 : action
 		/x';
+	}
+	
+	/**
+	 * Get the request URI.
+	 *
+	 * @return string
+	 */
+	public function getRequestUri() {
+		return $_SERVER['REQUEST_URI'];
+	}
+	
+	/**
+	 * Get the URI parser
+	 * 
+	 * @return FroodParserUri
+	 */
+	public function getUriParser() {
+		return $this->_uriParser ? $this->_uriParser : $this->_uriParser = new FroodParserUri($this->_getUriFormat());
 	}
 }

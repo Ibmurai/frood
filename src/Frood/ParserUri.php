@@ -16,34 +16,76 @@
  * @author     Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodParserUri {
-	/** @var FroodConfiguration The Frood configuration */
-	private $_froodConfiguration;
+	/** @var string */
+	private $_uriFormat;
+	
+	/** @var string */
+	private $_module = null;
 
 	/** @var string */
-	private $_module;
+	private $_subModule = null;
 
 	/** @var string */
-	private $_subModule;
+	private $_controller = null;
 
 	/** @var string */
-	private $_controller;
-
-	/** @var string */
-	private $_action;
+	private $_action = null;
 
 	/**
 	 * Constructor.
+	 *
+	 * @param string $uriFormat The URI format.
+	 * 
+	 * @throws FroodException
 	 */
-	public function __construct(FroodConfiguration $froodConfiguration) {
-		$this->_froodConfiguration = $froodConfiguration;
+	public function __construct($uriFormat) {
+		$this->_uriFormat = $uriFormat;
+	}
+	
+	/**
+	 * Parse the URI.
+	 *
+	 * @param string $uri 
+	 * 
+	 * @throws FroodException
+	 */
+	public function parse($uri) {
+		$matches = array();
+		preg_match($this->_uriFormat, $uri, $matches);
+		if (count($matches) != 5) {
+			throw new FroodException(sprintf('Could not parse the URI: %s', $uri));
+		}
+		$this->_module     = $matches[1];
+		$this->_subModule  = $matches[2];
+		$this->_controller = $matches[3];
+		$this->_action     = $matches[4];
+	}
+	
+	/**
+	 * @return string|null 
+	 */
+	public function getModule() {
+		return $this->_module;
 	}
 
 	/**
-	 * Parse the given URI.
-	 *
-	 * @param string $uri The URI to parse.
+	 * @return string|null 
 	 */
-	private function _parse($uri) {
+	public function getSubModule() {
+		return $this->_subModule;
+	}
 
+	/**
+	 * @return string|null 
+	 */
+	public function getController() {
+		return $this->_controller;
+	}
+
+	/**
+	 * @return string|null 
+	 */
+	public function getAction() {
+		return $this->_action;
 	}
 }

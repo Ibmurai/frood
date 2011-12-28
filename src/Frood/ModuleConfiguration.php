@@ -28,8 +28,8 @@ class FroodModuleConfiguration {
 	 */
 	protected function getAutoloadBasePaths() {
 		return array(
-			'public' => 'Public',
-			'shared' => 'Shared',
+			'public' => 'Public/',
+			'shared' => 'Shared/',
 		);
 	}
 	
