@@ -131,14 +131,14 @@ abstract class FroodController {
 	 * @param string          $action     The action to forward to. Defaults to current action.
 	 * @param string          $controller The controller to forward to. Defaults to current controller.
 	 * @param string          $module     The module to forward to. Defaults to current module.
-	 * @param string          $app        The app to forward to. Defaults to current app.
+	 * @param string          $submodule  The submodule to forward to. Defaults to current submodule.
 	 * @param string          $host       The host to forward to. Remember to put the protocol in front (i.e. http://). Defaults to current host.
 	 *
 	 * @return null
 	 *
 	 * @throws RuntimeException If you attempt to redirect with a file parameter, or a multidimensional array.
 	 */
-	final protected function _redirect(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $app = null, $host = null) {
+	final protected function _redirect(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $submodule = null, $host = null) {
 		if ($parameters === null) {
 			$parameters = new FroodParameters(array());
 		}
@@ -151,8 +151,8 @@ abstract class FroodController {
 		if ($module === null) {
 			$module = $this->_module;
 		}
-		if ($app === null) {
-			$app = $this->_subModule;
+		if ($submodule === null) {
+			$submodule = $this->_subModule;
 		}
 		if ($host === null) {
 			$host = XOOPS_URL;
@@ -162,8 +162,8 @@ abstract class FroodController {
 		if (!preg_match('/\/$/', $url)) {
 			$url .= '/';
 		}
-
-		$url .= "modules/$module/$app/$controller/$action";
+		
+		$url .= "$module/$submodule/$controller/$action";
 
 		$getString = $parameters->toGetString();
 
