@@ -6,15 +6,14 @@ The Frood
 *Author* [Jens Riisom Schultz](mailto:ibber_of_crew42@hotmail.com)
 *Since*  2011-06-20
 
-The Frood standardizes the VC in MVC for XOOPS.
+The Frood is a simple VC framework library (The VC from MVC).
 
 It will help you to:
 
-  * Add VC code to existing modules without breaking existing functionality.
-  * Refactor modules to MVC.
-  * Create entirely new full fledged MVC modules.
-  * Communicate with other Froody modules, using MVC without the overhead and
-    hassle of http requests.
+  * Structure your code in controllers and actions.
+  * Structure your template files, in a consistent way.
+  * Create entirely new full fledged (M)VC modules.
+  * Communicate with other Froody modules without the overhead and hassle of http requests.
 
 
 Documentation
@@ -24,7 +23,6 @@ Coming soon... ;)
 
   * See INSTALL for installation instructions.
   * See TUTORIAL for instructions on how to code with The Frood.
-  * See CHANGELOG for a change log.
 
 
 License
@@ -43,4 +41,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
