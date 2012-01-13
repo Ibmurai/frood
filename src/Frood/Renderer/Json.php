@@ -19,12 +19,14 @@ class FroodRendererJson extends FroodRenderer {
 	 *
 	 * @param array $values The values assigned to the controller.
 	 *
-	 * @return string
+	 * @return null
 	 */
-	public function render(array $values) {
-		$GLOBALS['xoopsLogger']->activated = false;
-
-		echo json_encode($values);
+	public function render(array &$values) {
+		if (empty($values)) {
+			echo '{}';
+		} else {
+			echo json_encode($values);
+		}
 	}
 
 	/**

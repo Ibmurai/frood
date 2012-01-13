@@ -31,7 +31,7 @@ class Frood {
 	private $_moduleConfig;
 
 	/** @var FroodConfiguration The Frood configuration */
-	private $_froodConfiguration;
+	private static $_froodConfiguration;
 
 	/**
 	 * Initialize The Frood.
@@ -39,28 +39,32 @@ class Frood {
 	 * @param string             $module        The module to work with.
 	 * @param string             $subModule     The sub module to work with.
 	 * @param FroodConfiguration $configuration The configuration.
-	 * 
+	 *
 	 * @throws FroodException
 	 */
 	public function __construct($module = null, $subModule = null, FroodConfiguration $configuration = null) {
 		$this->_setupFroodAutoloader();
 
-		$this->_froodConfiguration = $configuration ? $configuration : new FroodConfiguration();
-		$this->_froodConfiguration->getUriParser()->parse($this->_froodConfiguration->getRequestUri());
-
-		$this->_module    = $module ? $module    : $this->_froodConfiguration->getUriParser()->getModule();
-		$this->_subModule = $module ? $subModule : $this->_froodConfiguration->getUriParser()->getSubModule();
-
-		$moduleConfigPath = dirname(__FILE__) . '/' . $this->_froodConfiguration->getModuleBasePath($this->_module) . 'Configuration.php';
-
-		$moduleConfigClassName = 'FroodModuleConfiguration';
-		if (file_exists($moduleConfigPath)) {
-			include_once($moduleConfigPath);
-			$moduleConfigClassName = FroodUtil::convertHtmlNameToPhpName("{$this->_module}_configuration");
+		if ($configuration) {
+			self::$_froodConfiguration = $configuration;
 		}
-		$this->_moduleConfig = new $moduleConfigClassName();
+
+		self::getFroodConfiguration()->getUriParser()->parse(self::getFroodConfiguration()->getRequestUri());
+
+		$this->_module    = $module ? $module    : self::getFroodConfiguration()->getUriParser()->getModule();
+		$this->_subModule = $module ? $subModule : self::getFroodConfiguration()->getUriParser()->getSubModule();
+		$this->_moduleConfig = self::getFroodConfiguration()->getModuleConfiguration($module);
 
 		$this->_setupModuleAutoloader();
+	}
+
+	/**
+	 * Get the Frood configuration
+	 *
+	 * @return FroodConfiguration
+	 */
+	public static function getFroodConfiguration() {
+		return self::$_froodConfiguration ? self::$_froodConfiguration : (self::$_froodConfiguration = new FroodConfiguration());
 	}
 
 	/**
@@ -121,12 +125,21 @@ class Frood {
 	}
 
 	/**
+	 * Get the full path to Frood.php, not including Frood.php.
+	 *
+	 * @return string
+	 */
+	public static function getFroodPath() {
+		return dirname(__FILE__) . '/';
+	}
+
+	/**
 	 * Attempt to guess the controller to call, based on the request.
 	 *
 	 * @return null|string The name of a controller. Or null if it can't guess.
 	 */
 	private function _guessController() {
-		if (!($controller = $this->_froodConfiguration->getUriParser()->getController())) {
+		if (!($controller = self::$_froodConfiguration->getUriParser()->getController())) {
 			return null;
 		}
 		return FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$this->_subModule}_controller_$controller");
@@ -138,7 +151,7 @@ class Frood {
 	 * @return null|string The name of an action. 'index' if it can't guess. null if the URI isn't up to snuff.
 	 */
 	private function _guessAction() {
-		if (!($action = $this->_froodConfiguration->getUriParser()->getAction())) {
+		if (!($action = self::$_froodConfiguration->getUriParser()->getAction())) {
 			return null;
 		}
 		return FroodUtil::convertHtmlNameToPhpName($action, false);
@@ -158,7 +171,7 @@ class Frood {
 	 */
 	private function _setupFroodAutoloader() {
 		$classPaths = array(
-			dirname(__FILE__) . '/Frood',
+			self::getFroodPath() . 'Frood/',
 		);
 
 		$this->_froodAutoloader = new FroodAutoloader($classPaths);
@@ -168,7 +181,7 @@ class Frood {
 	 * Set the module autoloader up.
 	 */
 	private function _setupModuleAutoloader() {
-		$modulePath = dirname(__FILE__) . '/' . $this->_froodConfiguration->getModuleBasePath($this->_module);
+		$modulePath = self::$_froodConfiguration->getModuleBasePath($this->_module);
 
 		$classPaths = array(
 			$modulePath . $this->_moduleConfig->getAutoloadBasePath($this->_subModule),

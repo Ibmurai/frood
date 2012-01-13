@@ -66,11 +66,9 @@ abstract class FroodController {
 	 * @throws RuntimeException For undefined output modes.
 	 */
 	final public function render() {
-		$renderer = new $this->_renderer($this->_module, $this->_subModule, get_class($this), $this->_action);
+		header('Content-Type: ' . $this->_renderer->getContentType());
 
-		header('Content-Type: ' . $renderer->getContentType());
-
-		$renderer->render($this->_values);
+		$this->_renderer->render($this->_values);
 	}
 
 	/**
@@ -186,7 +184,7 @@ abstract class FroodController {
 	 * @return null
 	 */
 	final protected function _setRenderer($renderer) {
-		$this->_renderer = $renderer;
+		$this->_renderer = new $renderer($this->_module, $this->_subModule, $this->_getBasename(), $this->_action);
 	}
 
 	/**
@@ -227,9 +225,9 @@ abstract class FroodController {
 	}
 
 	/**
-	 * Get the output mode.
+	 * Get the output renderer instance.
 	 *
-	 * @return string The output mode.
+	 * @return FroodRenderer
 	 */
 	final protected function _getRenderer() {
 		return $this->_renderer;
@@ -240,16 +238,34 @@ abstract class FroodController {
 	 *
 	 * @return string The lowercased_with_underscores name of this controller.
 	 */
-	public function _getBasename() {
+	protected function _getBasename() {
 		return FroodUtil::convertPhpNameToHtmlName(
 			preg_replace(
-				array(
-					'/^' . FroodUtil::convertHtmlNameToPhpName($this->_module) . '/',
-					'/Controller$/',
-				),
-				array('', ''),
+				'/^' .
+					FroodUtil::convertHtmlNameToPhpName($this->_module) .
+					FroodUtil::convertHtmlNameToPhpName($this->_subModule) .
+					'Controller' .
+				'/',
+				'',
 				get_class($this)
 			)
 		);
+	}
+
+	/**
+	 * Map doOutput calls to attempt to use external renderers.
+	 *
+	 * @param string $name      The name of the method being called.
+	 * @param array  $arguments An enumerated array containing the parameters passed to the $name'ed method.
+	 *
+	 * @return null
+	 */
+	public function __call($name, array $arguments) {
+		$matches = array();
+		if (preg_match('/^doOutput(.+)$/', $name, $matches)) {
+			$this->_setRenderer("FroodRenderer{$matches[1]}");
+		} else {
+			trigger_error('Call to undefined method ' . get_class($this) . "::$name()", E_USER_ERROR);
+		}
 	}
 }

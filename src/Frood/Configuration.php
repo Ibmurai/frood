@@ -17,18 +17,35 @@
 class FroodConfiguration {
 	/** @var FroodParserUri */
 	private $_uriParser = null;
-	
+
+	/**
+	 * Get the full path to a template.
+	 *
+	 * @param string $module       The module to get a template for.
+	 * @param string $templateFile The partial path to the template file to use, as returned by FroodRendererTemplate::_getTemplateFile().
+	 *
+	 * @return string
+	 */
+	public function getTemplateFile($module, $templateFile) {
+		return "{$this->getModuleBasePath($module)}templates/$templateFile";
+	}
+
+	/**
+	 * Get the root path of a given module.
+	 *
+	 * @return string
+	 */
 	public function getModuleBasePath($module) {
 		return $this->getModulesPath() . FroodUtil::convertHtmlNameToPhpName($module) . '/';
 	}
-	
+
 	/**
 	 * Get the path, relative to Frood.php, where modules reside.
 	 *
 	 * @return string
 	 */
 	public function getModulesPath () {
-		return '../../../modules/';
+		return realpath(Frood::getFroodPath() . '../../../modules') . '/';
 	}
 
 	/**
@@ -45,7 +62,7 @@ class FroodConfiguration {
 			\/([a-z][a-z0-9_]*) # 4 : action
 		/x';
 	}
-	
+
 	/**
 	 * Get the request URI.
 	 *
@@ -54,13 +71,39 @@ class FroodConfiguration {
 	public function getRequestUri() {
 		return $_SERVER['REQUEST_URI'];
 	}
-	
+
 	/**
 	 * Get the URI parser
-	 * 
+	 *
 	 * @return FroodParserUri
 	 */
 	public function getUriParser() {
 		return $this->_uriParser ? $this->_uriParser : $this->_uriParser = new FroodParserUri($this->_getUriFormat());
+	}
+
+	/**
+	 * Get the module configuration for a given module.
+	 *
+	 * @param string $module The module to get configuration for.
+	 *
+	 * @return FroodModuleConfiguration
+	 */
+	public function getModuleConfiguration($module) {
+		/** @var FroodModuleConfiguration[] */
+		static $moduleConfigurations = array();
+
+		if (array_key_exists($module, $moduleConfigurations)) {
+			return $moduleConfigurations[$module];
+		}
+
+		$moduleConfigurationPath = $this->getModuleBasePath($module) . 'Configuration.php';
+
+		$moduleConfigurationClassName = 'FroodModuleConfiguration';
+		if (file_exists($moduleConfigurationPath)) {
+			include_once($moduleConfigurationPath);
+			$moduleConfigurationClassName = FroodUtil::convertHtmlNameToPhpName("{$module}_configuration");
+		}
+
+		return $moduleConfigurations[$module] = new $moduleConfigurationClassName();
 	}
 }

@@ -19,10 +19,9 @@ class FroodRendererDisabled extends FroodRenderer {
 	 *
 	 * @param array $values The values assigned to the controller.
 	 *
-	 * @return string
+	 * @return null
 	 */
-	public function render(array $values) {
-		return '';
+	public function render(array &$values) {
 	}
 
 	/**
