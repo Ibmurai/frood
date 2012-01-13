@@ -29,7 +29,7 @@ class FroodExceptionCasting extends FroodException {
 	 * @param int    $code         The Exception code.
 	 * @param string $extraMessage An optional extra string to append to the $message.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function __construct($value = null, $type = '', $message = '', $code = 0, $extraMessage = '') {
 		if ($message == '') {

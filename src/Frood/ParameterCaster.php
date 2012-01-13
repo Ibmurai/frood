@@ -14,9 +14,6 @@
  * @category Frood
  * @package  Parameters
  * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
- *
- * @SuppressWarnings(PHPMD.TooManyMethods)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
 abstract class FroodParameterCaster {
 	/** @var string The constant to tell the get function that you want an integer. */
@@ -56,8 +53,6 @@ abstract class FroodParameterCaster {
 	 *
 	 * @throws FroodExceptionCasting If the value could not be cast.
 	 * @throws RuntimeException      If the type is unknown.
-	 *
-	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
 	 */
 	protected static function _cast($type, $value) {
 		switch ($type) {
@@ -131,8 +126,6 @@ abstract class FroodParameterCaster {
 	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return float
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	private static function _castAsFloat($value) {
 		if (is_float($value)) {
@@ -172,9 +165,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
-	 * @return array
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 * @return string
 	 */
 	private static function _castAsIso($value) {
 		try {
@@ -191,9 +182,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
-	 * @return array
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 * @return string
 	 */
 	private static function _castAsUtf8($value) {
 		try {
@@ -213,8 +202,6 @@ abstract class FroodParameterCaster {
 	 * @throws FroodExceptionCasting If the value could not be cast.
 	 *
 	 * @return array
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	private static function _castAsJson($value) {
 		try {

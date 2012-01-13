@@ -33,7 +33,7 @@ class FroodExceptionDispatch extends FroodException {
 	 * @param int             $code         The Exception code.
 	 * @param string          $messageExtra Any extra information to append to the message.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function __construct($controller = '', $action = '', FroodParameters $parameters = null, $message = '', $code = 0, $messageExtra = '') {
 		if ($message == '') {

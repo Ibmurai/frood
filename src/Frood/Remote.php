@@ -34,9 +34,7 @@ class FroodRemote {
 	 * @param string  $host                  The name of the host to connect to. Don't specify this to work locally.
 	 * @param boolean $ignoreModifiedHeaders Set to true to ignore if the remote action modified the headers.
 	 *
-	 * @return void
-	 *
-	 * @SuppressWarnings(PHPMD.LongVariable) Stupid f'ing rule.
+	 * @return null
 	 */
 	public function __construct($module, $app = 'public', $host = null, $ignoreModifiedHeaders = false) {
 		$this->_module                = $module;
@@ -59,9 +57,6 @@ class FroodRemote {
 	 * @throws FroodExceptionRemoteDispatch If Frood cannot dispatch, or the remote
 	 *                                      action modifies HTTP headers illegally, or
 	 *                                      json decoding fails.
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
 	 */
 	public function dispatch($controller, $action, FroodParameters $parameters = null, $jsonDecode = false) {
 		if ($parameters === null) {

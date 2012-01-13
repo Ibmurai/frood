@@ -26,7 +26,7 @@ class FroodReflectionMethod {
 	 * @param string|object $instance Either a string containing the name of the class to reflect, or an object.
 	 * @param string        $method   The method name to reflect.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function __construct(FroodController $instance, $method) {
 		$reflectionClass = new ReflectionClass($instance);
@@ -66,7 +66,7 @@ class FroodReflectionMethod {
 	 *
 	 * @param FroodParameters $params The parameters for the action.
 	 *
-	 * @return void
+	 * @return null
 	 *
 	 * @throws RuntimeException If the docblock params do not match the method signature.
 	 */

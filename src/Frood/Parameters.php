@@ -26,7 +26,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *
 	 * @param array $from An associative array to generate parameters from.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function __construct(array $from = null) {
 		if ($from === null) {
@@ -114,8 +114,6 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	private function _getParameter($name, $type, $default) {
 		if ($this->_hasParameter($name)) {
@@ -148,8 +146,6 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 * @param string $type The type to ensure the parameter is of. One of the AS_ constants.
 	 *
 	 * @return boolean True if the named parameter is set.
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
 	 */
 	private function _hasParameter($name, $type = null) {
 		if ($type !== null && array_key_exists($name, $this->_values)) {
@@ -239,7 +235,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	/**
 	 * Implementation of the Iterator interface.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function rewind() {
 		reset($this->_values);

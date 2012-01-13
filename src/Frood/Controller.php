@@ -51,7 +51,7 @@ abstract class FroodController {
 	 * @param string $key   The key to assign.
 	 * @param mixed  $value The value to assign.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	final public function assign($key, $value) {
 		$this->_values[$key] = $value;
@@ -61,7 +61,7 @@ abstract class FroodController {
 	 * Render the output.
 	 * The Frood calls this when appropriate.
 	 *
-	 * @return void
+	 * @return null
 	 *
 	 * @throws RuntimeException For undefined output modes.
 	 */
@@ -76,7 +76,7 @@ abstract class FroodController {
 	/**
 	 * Set the output mode to Json.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	final public function doOutputJson() {
 		$this->_setRenderer('FroodRendererJson');
@@ -85,7 +85,7 @@ abstract class FroodController {
 	/**
 	 * Set the output mode to disabled.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	final public function doOutputDisabled() {
 		$this->_setRenderer('FroodRendererDisabled');
@@ -100,9 +100,7 @@ abstract class FroodController {
 	 * @param string          $module     The module to forward to. Defaults to current module.
 	 * @param string          $subModule  The sub module to forward to. Defaults to current sub module.
 	 *
-	 * @return void
-	 *
-	 * @SuppressWarnings(PHPMD.ExitExpression) Yeah, well I need an exit!
+	 * @return null
 	 */
 	final protected function _forward(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $subModule = null) {
 		if ($parameters === null) {
@@ -138,12 +136,9 @@ abstract class FroodController {
 	 * @param string          $app        The app to forward to. Defaults to current app.
 	 * @param string          $host       The host to forward to. Remember to put the protocol in front (i.e. http://). Defaults to current host.
 	 *
-	 * @return void
+	 * @return null
 	 *
 	 * @throws RuntimeException If you attempt to redirect with a file parameter, or a multidimensional array.
-	 *
-	 * @SuppressWarnings(PHPMD.ExitExpression) Yeah, well I need an exit!
-	 * @SuppressWarnings(PHPMD.NPathComplexity) Just because you have nice default values, PMD hates you.
 	 */
 	final protected function _redirect(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $app = null, $host = null) {
 		if ($parameters === null) {
@@ -188,7 +183,7 @@ abstract class FroodController {
 	 *
 	 * @param string $renderer The name of the class to use for rendering output.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	final protected function _setRenderer($renderer) {
 		$this->_renderer = $renderer;

@@ -34,7 +34,7 @@ abstract class FroodRenderer {
 	 * @param string $controller The controller we're rendering for.
 	 * @param string $action     The action invoked.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function __construct($module, $app, $controller, $action) {
 		$this->_module     = $module;

@@ -38,7 +38,7 @@ class FroodFileParameter implements Serializable {
 	 * @param string  $type  The MIME-type of the file.
 	 * @param integer $error The PHP file upload error code.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function __construct($path, $name = null, $size = null, $type = null, $error = null) {
 		$this->_path = $path;
@@ -115,8 +115,6 @@ class FroodFileParameter implements Serializable {
 	 * Get a string describing the error code.
 	 *
 	 * @return string A string describing the error code.
-	 *
-	 * @SuppressWarnings(PHPMD.CyclomaticComplexity) PHPMD hates switch statements.
 	 */
 	public function getErrorMessage() {
 		if ($this->_error === null) {
@@ -178,7 +176,7 @@ class FroodFileParameter implements Serializable {
 	 *
 	 * @param string $data The serialized string.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function unserialize($data) {
 		$array = unserialize($data);
