@@ -7,18 +7,17 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 /**
- * The Frood URI parser.
+ * FroodParserUri - The Frood URI parser.
  *
- * @category   Frood
- * @package    Parser
- * @subpackage Uri
- * @author     Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
- * @author     Bo Thinggaard <akimsko@tnactas.dk>
+ * @category Frood
+ * @package  Parser
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodParserUri {
 	/** @var string */
 	private $_uriFormat;
-	
+
 	/** @var string */
 	private $_module = null;
 
@@ -35,18 +34,18 @@ class FroodParserUri {
 	 * Constructor.
 	 *
 	 * @param string $uriFormat The URI format.
-	 * 
+	 *
 	 * @throws FroodException
 	 */
 	public function __construct($uriFormat) {
 		$this->_uriFormat = $uriFormat;
 	}
-	
+
 	/**
 	 * Parse the URI.
 	 *
-	 * @param string $uri 
-	 * 
+	 * @param string $uri
+	 *
 	 * @throws FroodException
 	 */
 	public function parse($uri) {
@@ -60,30 +59,30 @@ class FroodParserUri {
 		$this->_controller = $matches[3];
 		$this->_action     = $matches[4];
 	}
-	
+
 	/**
-	 * @return string|null 
+	 * @return string|null
 	 */
 	public function getModule() {
 		return $this->_module;
 	}
 
 	/**
-	 * @return string|null 
+	 * @return string|null
 	 */
 	public function getSubModule() {
 		return $this->_subModule;
 	}
 
 	/**
-	 * @return string|null 
+	 * @return string|null
 	 */
 	public function getController() {
 		return $this->_controller;
 	}
 
 	/**
-	 * @return string|null 
+	 * @return string|null
 	 */
 	public function getAction() {
 		return $this->_action;

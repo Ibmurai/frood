@@ -9,11 +9,11 @@
 /**
  * FroodController - An abstract controller class to use as a base for Frood controllers.
  *
- * @category   Frood
- * @package    Controller
- * @author     Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
- * @author     Bo Thinggaard <akimsko@tnactas.dk>
- * @author     Johannes Frandsen <jsf@fynskemedier.dk>
+ * @category Frood
+ * @package  Controller
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
+ * @author   Johannes Frandsen <jsf@fynskemedier.dk>
  */
 abstract class FroodController {
 	/** @var string Which action is Frood invoking? */

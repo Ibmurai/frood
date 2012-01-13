@@ -1,22 +1,17 @@
 <?php
 /**
- * A Frood renderer for no rendered output.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @since    2011-09-02
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodRendererDisabled - A Frood renderer for no rendered output.
  *
- * @category   Library
- * @package    Frood
- * @subpackage Renderer
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category Frood
+ * @package  Renderer
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class FroodRendererDisabled extends FroodRenderer {
 	/**

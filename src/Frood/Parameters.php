@@ -1,25 +1,17 @@
 <?php
 /**
- * The parameters class for The Frood.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @since    2011-06-09
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
- * FroodParameters - All controller actions are called with an
- * instance of this class.
+ * FroodParameters - Controller actions may be called with an instance of this class.
  *
- * @category   Library
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
- *
- * @SuppressWarnings(PHPMD.TooManyMethods) It's because of the two interfaces.
+ * @category Frood
+ * @package  Parameters
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class FroodParameters extends FroodParameterCaster implements Iterator, Countable {
 	/** @var array This associative array contains the actual parameter values. */

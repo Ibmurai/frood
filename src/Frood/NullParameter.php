@@ -1,22 +1,17 @@
 <?php
 /**
- * FroodNullParameter.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @since    2011-06-30
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodNullParameter - FroodParameters uses this singleton internally to indicate a true "no value".
  *
- * @category   Library
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category Frood
+ * @package  Parameters
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class FroodNullParameter {
 	/** @var FroodNullParameter FroodParameters uses this instance internally to indicate a true "no value". */

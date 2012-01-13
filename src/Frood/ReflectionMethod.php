@@ -1,22 +1,17 @@
 <?php
 /**
- * Analyzes an action signature and docblock to enable actions with real signatures.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @since    2011-09-20
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodReflectionMethod - Analyzes an action signature and docblock to enable actions with real signatures.
  *
- * @category   Library
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category Frood
+ * @package  Reflection
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class FroodReflectionMethod {
 	/** @var ReflectionMethod The reflection of the method we're reflecting ;) */

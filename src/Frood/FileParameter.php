@@ -1,22 +1,17 @@
 <?php
 /**
- * FroodFileParameter.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @since    2011-07-04
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodFileParameter - Frood uses this to represent file parameters.
  *
- * @category   Library
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category Frood
+ * @package  Parameters
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class FroodFileParameter implements Serializable {
 	/** @var string The path to the actual file. */

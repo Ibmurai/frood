@@ -1,24 +1,18 @@
 <?php
 /**
- * A custom Exception for configuration exceptions.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Module
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @author   Bo Thinggaard <both@fynskemedier.dk>
- * @since    2011-06-14
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodExceptionConfiguration - A custom Exception for configuration exceptions.
  *
- * @category   Module
- * @package    Frood
- * @subpackage Exception
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
- * @author     Bo Thinggaard <both@fynskemedier.dk>
+ * @category Frood
+ * @package  Exception
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <both@fynskemedier.dk>
  */
 class FroodExceptionConfiguration extends FroodException {
 }

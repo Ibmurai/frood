@@ -1,24 +1,18 @@
 <?php
 /**
- * FroodModuleConfiguration.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Library
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @author   Bo Thinggaard <both@fynskemedier.dk>
- * @since    2011-12-16
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodModuleConfiguration - Base module configuration.
  *
- * @category   Library
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
- * @author     Bo Thinggaard <both@fynskemedier.dk>
+ * @category Frood
+ * @package  Module
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <both@fynskemedier.dk>
  */
 class FroodModuleConfiguration {
 	/**
@@ -32,23 +26,23 @@ class FroodModuleConfiguration {
 			'shared' => 'Shared/',
 		);
 	}
-	
+
 	/**
 	 * Get module autoload base path relative to the module root.
-	 * 
+	 *
 	 * @param string $subModule Sub module name.
-	 * 
+	 *
 	 * @return string Path if found.
-	 * 
+	 *
 	 * @throws FroodExceptionConfiguration Module configuration missing sub module path.
 	 */
 	final public function getAutoloadBasePath($subModule) {
 		$paths = $this->getAutoloadBasePaths();
-		
+
 		if (!array_key_exists($subModule, $paths)) {
 			throw new FroodExceptionConfiguration("Module configuration missing $subModule path.");
 		}
-		
+
 		return $paths[$subModule];
 	}
 }
