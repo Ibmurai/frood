@@ -28,7 +28,7 @@ class Frood {
 	private $_froodAutoloader;
 
 	/** @var FroodModuleConfiguration The module configuration */
-	private $_moduleConfig;
+	private $_moduleConfiguration;
 
 	/** @var FroodConfiguration The Frood configuration */
 	private static $_froodConfiguration;
@@ -53,7 +53,7 @@ class Frood {
 
 		$this->_module    = $module ? $module    : self::getFroodConfiguration()->getUriParser()->getModule();
 		$this->_subModule = $module ? $subModule : self::getFroodConfiguration()->getUriParser()->getSubModule();
-		$this->_moduleConfig = self::getFroodConfiguration()->getModuleConfiguration($module);
+		$this->_moduleConfiguration = self::getFroodConfiguration()->getModuleConfiguration($module);
 
 		$this->_setupModuleAutoloader();
 	}
@@ -139,7 +139,7 @@ class Frood {
 	 * @return null|string The name of a controller. Or null if it can't guess.
 	 */
 	private function _guessController() {
-		if (!($controller = self::$_froodConfiguration->getUriParser()->getController())) {
+		if (!($controller = self::getFroodConfiguration()->getUriParser()->getController())) {
 			return null;
 		}
 		return FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$this->_subModule}_controller_$controller");
@@ -151,7 +151,7 @@ class Frood {
 	 * @return null|string The name of an action. 'index' if it can't guess. null if the URI isn't up to snuff.
 	 */
 	private function _guessAction() {
-		if (!($action = self::$_froodConfiguration->getUriParser()->getAction())) {
+		if (!($action = self::getFroodConfiguration()->getUriParser()->getAction())) {
 			return null;
 		}
 		return FroodUtil::convertHtmlNameToPhpName($action, false);
@@ -181,22 +181,13 @@ class Frood {
 	 * Set the module autoloader up.
 	 */
 	private function _setupModuleAutoloader() {
-		$modulePath = self::$_froodConfiguration->getModuleBasePath($this->_module);
+		$modulePath = self::getFroodConfiguration()->getModuleBasePath($this->_module);
 
 		$classPaths = array(
-			$modulePath . $this->_moduleConfig->getAutoloadBasePath($this->_subModule),
-			$modulePath . $this->_moduleConfig->getAutoloadBasePath('shared'),
+			$modulePath . $this->_moduleConfiguration->getAutoloadBasePath($this->_subModule),
+			$modulePath . $this->_moduleConfiguration->getAutoloadBasePath('shared'),
 		);
 
 		$this->_moduleAutoloader = new FroodAutoloader($classPaths);
-	}
-
-	/**
-	 * Get the real request URI.
-	 *
-	 * @return string The real request URI.
-	 */
-	private static function _getRequestUri() {
-		return $_SERVER['REQUEST_URI'];
 	}
 }
