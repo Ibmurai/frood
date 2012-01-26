@@ -15,6 +15,17 @@
  * @author   Bo Thinggaard <both@fynskemedier.dk>
  */
 class FroodModuleConfiguration {
+	private $_module;
+	
+	public function __construct($module) {
+		$this->_module = $module;
+	}
+
+	public function getModule() {
+		return $this->_module;
+	}
+
+		
 	/**
 	 * Get module autoload base paths relative to the module root.
 	 *
@@ -44,5 +55,9 @@ class FroodModuleConfiguration {
 		}
 
 		return $paths[$subModule];
+	}
+	
+	public function getRouter() {
+		return new FroodModuleRouter($this->_module);
 	}
 }

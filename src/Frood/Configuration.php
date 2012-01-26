@@ -29,6 +29,12 @@ class FroodConfiguration {
 	public function getTemplateFile($module, $templateFile) {
 		return "{$this->getModuleBasePath($module)}templates/$templateFile";
 	}
+	
+	public function getBaseRoutes() {
+		return array(
+			'/' => array('Lolmodule'),
+		);
+	}
 
 	/**
 	 * Get the root path of a given module.
@@ -49,36 +55,12 @@ class FroodConfiguration {
 	}
 
 	/**
-	 * Get the regex format used to parse the URI.
-	 *
-	 * @return string
-	 */
-	protected function _getUriFormat() {
-		return '/
-			^
-			\/([a-z][a-z0-9_]*) # 1 : module
-			\/([a-z][a-z0-9_]*) # 2 : subModule
-			\/([a-z][a-z0-9_]*) # 3 : controller
-			\/([a-z][a-z0-9_]*) # 4 : action
-		/x';
-	}
-
-	/**
 	 * Get the request URI.
 	 *
 	 * @return string
 	 */
 	public function getRequestUri() {
 		return $_SERVER['REQUEST_URI'];
-	}
-
-	/**
-	 * Get the URI parser
-	 *
-	 * @return FroodParserUri
-	 */
-	public function getUriParser() {
-		return $this->_uriParser ? $this->_uriParser : $this->_uriParser = new FroodParserUri($this->_getUriFormat());
 	}
 
 	/**

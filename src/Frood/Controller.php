@@ -16,20 +16,13 @@
  * @author   Johannes Frandsen <jsf@fynskemedier.dk>
  */
 abstract class FroodController {
-	/** @var string Which action is Frood invoking? */
-	private $_action;
-
-	/** @var string Which application are we running? */
-	private $_subModule;
-
-	/** @var string The module we're working with. */
-	private $_module = null;
-
 	/** @var array This associative array contains the key-value pairs to output. */
 	private $_values = array();
 
 	/** @var string The output renderer class to use when render is called. */
 	private $_renderer = null;
+	
+	private $_request;
 
 	/**
 	 * Construct a new controller instance.
@@ -39,10 +32,8 @@ abstract class FroodController {
 	 * @param string $subModule Which sub module are we running?
 	 * @param string $action    Which action is Frood invoking?
 	 */
-	public function __construct($module, $subModule, $action) {
-		$this->_module    = $module;
-		$this->_subModule = $subModule;
-		$this->_action    = $action;
+	public function __construct(FroodRequest $request) {
+		$this->_request = $request;
 	}
 
 	/**
@@ -105,16 +96,16 @@ abstract class FroodController {
 			$parameters = new FroodParameters(array());
 		}
 		if ($action === null) {
-			$action = $this->_action;
+			$action = $this->_request->getAction();
 		}
 		if ($controller === null) {
 			$controller = $this->_getBasename();
 		}
 		if ($module === null) {
-			$module = $this->_module;
+			$module = $this->_request->getModule();
 		}
 		if ($subModule === null) {
-			$subModule = $this->_subModule;
+			$subModule = $this->_request->getSubModule();
 		}
 
 		$remote = new FroodRemote($module, $subModule, null, true);
@@ -143,16 +134,16 @@ abstract class FroodController {
 			$parameters = new FroodParameters(array());
 		}
 		if ($action === null) {
-			$action = $this->_action;
+			$action = $this->_request->getAction();
 		}
 		if ($controller === null) {
 			$controller = $this->_getBasename();
 		}
 		if ($module === null) {
-			$module = $this->_module;
+			$module = $this->_request->getModule();
 		}
 		if ($submodule === null) {
-			$submodule = $this->_subModule;
+			$submodule = $this->_request->getSubModule();
 		}
 		if ($host === null) {
 			$host = XOOPS_URL;
@@ -184,7 +175,7 @@ abstract class FroodController {
 	 * @return null
 	 */
 	final protected function _setRenderer($renderer) {
-		$this->_renderer = new $renderer($this->_module, $this->_subModule, $this->_getBasename(), $this->_action);
+		$this->_renderer = new $renderer($this->_request->getModule(), $this->_request->getSubModule(), $this->_getBasename(), $this->_request->getAction());
 	}
 
 	/**
@@ -242,8 +233,8 @@ abstract class FroodController {
 		return FroodUtil::convertPhpNameToHtmlName(
 			preg_replace(
 				'/^' .
-					FroodUtil::convertHtmlNameToPhpName($this->_module) .
-					FroodUtil::convertHtmlNameToPhpName($this->_subModule) .
+					FroodUtil::convertHtmlNameToPhpName($this->_request->getModule()) .
+					FroodUtil::convertHtmlNameToPhpName($this->_request->getSubModule()) .
 					'Controller' .
 				'/',
 				'',

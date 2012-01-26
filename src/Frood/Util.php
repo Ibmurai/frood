@@ -45,4 +45,8 @@ abstract class FroodUtil {
 		// Second replace _ followed by a letter with capital letters.
 		return preg_replace('/(_[a-z0-9])/e', "substr(strtoupper('\\1'),1)", $name);
 	}
+	
+	public static function cmplen($a, $b) {
+		return strlen($a) - strlen($b);
+	}
 }

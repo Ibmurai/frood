@@ -15,12 +15,6 @@ require_once dirname(__FILE__) . '/Frood/Autoloader.php';
  * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class Frood {
-	/** @var string The module we're working with. */
-	private $_module;
-
-	/** @var string Which sub module are we running? */
-	private $_subModule;
-
 	/** @var FroodAutoloader The module autoloader instance. */
 	private $_moduleAutoloader;
 
@@ -32,30 +26,23 @@ class Frood {
 
 	/** @var FroodConfiguration The Frood configuration */
 	private static $_froodConfiguration;
+	
+	/** @var FroodRouterChain The Frood router chain */
+	private $_routerChain;
 
 	/**
 	 * Initialize The Frood.
 	 *
-	 * @param string             $module        The module to work with.
-	 * @param string             $subModule     The sub module to work with.
 	 * @param FroodConfiguration $configuration The configuration.
 	 *
 	 * @throws FroodException
 	 */
-	public function __construct($module = null, $subModule = null, FroodConfiguration $configuration = null) {
+	public function __construct(FroodConfiguration $configuration = null) {
 		$this->_setupFroodAutoloader();
-
 		if ($configuration) {
 			self::$_froodConfiguration = $configuration;
 		}
-
-		self::getFroodConfiguration()->getUriParser()->parse(self::getFroodConfiguration()->getRequestUri());
-
-		$this->_module    = $module ? $module    : self::getFroodConfiguration()->getUriParser()->getModule();
-		$this->_subModule = $module ? $subModule : self::getFroodConfiguration()->getUriParser()->getSubModule();
-		$this->_moduleConfiguration = self::getFroodConfiguration()->getModuleConfiguration($module);
-
-		$this->_setupModuleAutoloader();
+		$this->_routerChain = new FroodRouterChain();
 	}
 
 	/**
@@ -65,6 +52,20 @@ class Frood {
 	 */
 	public static function getFroodConfiguration() {
 		return self::$_froodConfiguration ? self::$_froodConfiguration : (self::$_froodConfiguration = new FroodConfiguration());
+	}
+	
+	private function _route(FroodRequest $request) {
+		$baseRoutes = self::getFroodConfiguration()->getBaseRoutes();
+		uksort($baseRoutes, array('FroodUtil', 'cmplen'));
+		foreach ($baseRoutes as $prefix => $modules) {
+			if ($request->matchPrefix($prefix)) {
+				foreach ($modules as $module) {
+					$this->_routerChain->add(self::getFroodConfiguration()->getModuleConfiguration($module)->getRouter());
+				}
+				$this->_routerChain->route($request);
+				return;
+			}
+		}
 	}
 
 	/**
@@ -77,18 +78,17 @@ class Frood {
 	 *
 	 * @throws FroodExceptionDispatch If Frood cannot dispatch.
 	 */
-	public function dispatch($controller = null, $action = null, FroodParameters $parameters = null) {
-		if ($controller === null) {
-			$controller = $this->_guessController();
-		} else {
-			$controller = FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$this->_subModule}_controller_{$controller}");
+	public function dispatch(FroodRequest $request = null, FroodParameters $parameters = null) {
+		if (!$request) {
+			$request = new FroodRequest(self::getFroodConfiguration()->getRequestUri());
 		}
-
-		if ($action === null) {
-			$action = $this->_guessAction();
-		} else {
-			$action = FroodUtil::convertHtmlNameToPhpName($action, false);
-		}
+		
+		$this->_route($request);
+		$this->_moduleConfiguration = self::getFroodConfiguration()->getModuleConfiguration($request->getModule());
+		$this->_setupModuleAutoloader($request);
+		
+		$controller = FroodUtil::convertHtmlNameToPhpName("{$request->getModule()}_{$request->getSubModule()}_controller_{$request->getController()}");
+		$action = FroodUtil::convertHtmlNameToPhpName($request->getAction(), false);
 		$method = $action . 'Action';
 
 		if ($parameters === null) {
@@ -99,7 +99,7 @@ class Frood {
 			throw new FroodExceptionDispatch($controller, $method, $parameters, '', 0, "Could not autoload $controller");
 		}
 
-		$controllerInstance = new $controller($this->_module, $this->_subModule, $action);
+		$controllerInstance = new $controller($request);
 		if (!($controllerInstance instanceof FroodController)) {
 			throw new FroodExceptionDispatch($controller, $method, $parameters, '', 0, "$controller does not extend FroodController");
 		}
@@ -134,30 +134,6 @@ class Frood {
 	}
 
 	/**
-	 * Attempt to guess the controller to call, based on the request.
-	 *
-	 * @return null|string The name of a controller. Or null if it can't guess.
-	 */
-	private function _guessController() {
-		if (!($controller = self::getFroodConfiguration()->getUriParser()->getController())) {
-			return null;
-		}
-		return FroodUtil::convertHtmlNameToPhpName("{$this->_module}_{$this->_subModule}_controller_$controller");
-	}
-
-	/**
-	 * Attempt to guess the action to call, based on the request.
-	 *
-	 * @return null|string The name of an action. 'index' if it can't guess. null if the URI isn't up to snuff.
-	 */
-	private function _guessAction() {
-		if (!($action = self::getFroodConfiguration()->getUriParser()->getAction())) {
-			return null;
-		}
-		return FroodUtil::convertHtmlNameToPhpName($action, false);
-	}
-
-	/**
 	 * Generate a FroodParameters instance, based on the request.
 	 *
 	 * @return FroodParameters Parameters for a controller action.
@@ -180,11 +156,11 @@ class Frood {
 	/**
 	 * Set the module autoloader up.
 	 */
-	private function _setupModuleAutoloader() {
-		$modulePath = self::getFroodConfiguration()->getModuleBasePath($this->_module);
+	private function _setupModuleAutoloader(FroodRequest $request) {
+		$modulePath = self::getFroodConfiguration()->getModuleBasePath($request->getModule());
 
 		$classPaths = array(
-			$modulePath . $this->_moduleConfiguration->getAutoloadBasePath($this->_subModule),
+			$modulePath . $this->_moduleConfiguration->getAutoloadBasePath($request->getSubModule()),
 			$modulePath . $this->_moduleConfiguration->getAutoloadBasePath('shared'),
 		);
 
