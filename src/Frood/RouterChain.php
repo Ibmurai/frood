@@ -34,8 +34,16 @@ class FroodRouterChain {
 	 */
 	public function route(FroodRequest $request) {
 		$routerIterator = new ArrayIterator($this->_routers);
-		while (!$request->isComplete()) {
-			$routerIterator->next()->route($request);
+		$router = $routerIterator->current();
+		while (!$request->isComplete() && $router) {
+			$router->route($request);
+			$router = $routerIterator->next();
+		}
+
+		if (!$request->isComplete()) {
+			echo "Could not route the following request:"; var_dump($request);
+			echo "Router chain dump:"; var_dump($this);
+			die;
 		}
 	}
 }

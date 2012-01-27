@@ -55,7 +55,7 @@ class FroodRequest {
 	 * @return boolean True if the prefix matched.
 	 */
 	public function matchPrefix($prefix) {
-		if (strpos($request->_requestString, $prefix) === 0) {
+		if (strpos($this->_requestString, $prefix) === 0) {
 			$this->_requestString = substr($this->_requestString, strlen($prefix));
 			return true;
 		}
@@ -144,5 +144,14 @@ class FroodRequest {
 	public function setAction($action) {
 		$this->_action = $action;
 		return $this;
+	}
+
+	/**
+	 * Get the request string.
+	 *
+	 * @return string The request string.
+	 */
+	public function getRequestString() {
+		return $this->_requestString;
 	}
 }

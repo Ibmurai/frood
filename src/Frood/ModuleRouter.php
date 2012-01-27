@@ -35,7 +35,7 @@ class FroodModuleRouter extends FroodRouter {
 	public function route(FroodRequest $request) {
 		$exp = '/
 			^
-			\/([a-z][a-z0-9_]*) # 3 : controller
+			([a-z][a-z0-9_]*) # 3 : controller
 			\/([a-z][a-z0-9_]*) # 4 : action
 		/x';
 		$matches = array();

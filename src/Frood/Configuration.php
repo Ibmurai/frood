@@ -91,6 +91,6 @@ class FroodConfiguration {
 			$moduleConfigurationClassName = FroodUtil::convertHtmlNameToPhpName("{$module}_configuration");
 		}
 
-		return $moduleConfigurations[$module] = new $moduleConfigurationClassName();
+		return $moduleConfigurations[$module] = new $moduleConfigurationClassName($module);
 	}
 }
