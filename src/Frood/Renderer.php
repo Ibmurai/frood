@@ -12,35 +12,22 @@
  * @category Frood
  * @package  Renderer
  * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 abstract class FroodRenderer {
-	/** @var string The module we're working with. */
-	protected $_module;
+	/** @var string The content type. */
+	protected $_contentType = null;
 
-	/** @var string Which sub module are we running? */
-	protected $_subModule;
-
-	/** @var string The controller we're rendering for. */
-	protected $_controller;
-
-	/** @var string The action invoked. */
-	protected $_action;
-
+	/** @var FroodRequest The request we're working with. */
+	protected $_request;
+	
 	/**
 	 * The constructor.
 	 *
-	 * @param string $module     The dirname of the module to work with.
-	 * @param string $subModule  The sub module to work with.
-	 * @param string $controller The controller we're rendering for.
-	 * @param string $action     The action invoked.
-	 *
-	 * @return null
+	 * @param string $request
 	 */
-	public function __construct($module, $subModule, $controller, $action) {
-		$this->_module     = $module;
-		$this->_subModule  = $subModule;
-		$this->_controller = $controller;
-		$this->_action     = $action;
+	public function __construct(FroodRequest $request) {
+		$this->_request = $request;
 	}
 
 	/**
@@ -48,8 +35,6 @@ abstract class FroodRenderer {
 	 * It should output directly.
 	 *
 	 * @param array $values The values assigned to the controller.
-	 *
-	 * @return null
 	 */
 	abstract public function render(array &$values);
 
@@ -58,5 +43,16 @@ abstract class FroodRenderer {
 	 *
 	 * @return string The Content-Type this renderer generates.
 	 */
-	abstract public function getContentType();
+	public function getContentType() {
+		return $this->_contentType;
+	}
+	
+	/**
+	 * Override the default content type set by this renderer.
+	 * 
+	 * @param string $contentType
+	 */
+	public function setContentType($contentType) {
+		$this->_contentType = $contentType;
+	}
 }

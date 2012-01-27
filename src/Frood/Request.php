@@ -29,13 +29,37 @@ class FroodRequest {
 	/** @var string The current request string. This will be modified, stripping the base route. */
 	private $_requestString;
 
+	/** @var FroodParameters The Frood parameters. */
+	private $_parameters;
+
 	/**
 	 * Construct a new request.
 	 *
 	 * @param string $requestString The request string.
 	 */
-	public function __construct($requestString) {
+	public function __construct($requestString = '') {
 		$this->_requestString = $requestString;
+	}
+
+	/**
+	 * Get the Frood parameters.
+	 *
+	 * @return FroodParameters
+	 */
+	public function getParameters() {
+		return $this->_parameters ? $this->_parameters : $this->_parameters = new FroodParameters();
+	}
+
+	/**
+	 * Set the Frood parameters
+	 *
+	 * @param FroodParameters $parameters
+	 *
+	 * @return FroodRequest This.
+	 */
+	public function setParameters($parameters) {
+		$this->_parameters = $parameters;
+		return $this;
 	}
 
 	/**
@@ -44,7 +68,7 @@ class FroodRequest {
 	 * @return boolean
 	 */
 	public function isComplete() {
-		return (isset($this->_module) && isset($this->_subModule) && isset($this->_controller) && isset($this->_action));
+		return $this->_module && $this->_subModule && $this->_controller && $this->_action;
 	}
 
 	/**
@@ -155,5 +179,18 @@ class FroodRequest {
 	 */
 	public function getRequestString() {
 		return $this->_requestString;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		$string = '';
+		$string .= $this->_module     ? "Module: {$this->_module}"         : '';
+		$string .= $this->_subModule  ? "Sub module: {$this->_subModule}"  : '';
+		$string .= $this->_controller ? "Controller: {$this->_controller}" : '';
+		$string .= $this->_action     ? "Action: {$this->_action}"         : '';
+		
+		return $string;
 	}
 }

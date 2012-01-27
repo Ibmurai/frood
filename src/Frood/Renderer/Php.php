@@ -16,27 +16,21 @@
  * @author     Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodRendererPhp extends FroodRendererTemplate {
+	/** @var string The content type. */
+	protected $_contentType = 'text/html';
+
 	/**
 	 * The Frood calls this when appropriate.
 	 *
 	 * @param array $values The values assigned to the controller. (By reference)
-	 *
-	 * @return null
 	 */
 	public function render(array &$values) {
-		$templateFile = Frood::getFroodConfiguration()->getTemplateFile($this->_module, $this->_getTemplateFile());
+		$templateFile = Frood::getFroodConfiguration()->getTemplateFile($this->_request->getModule(), $this->_getTemplateFile());
 		if (file_exists($templateFile)) {
 			new FroodRendererPhpTemplateScoper($templateFile, $values);
 		} else {
 			throw new FroodExceptionRenderer("Template file not found: $templateFile.");
 		}
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getContentType() {
-		return 'text/html';
 	}
 
 	/**
@@ -65,8 +59,6 @@ final class FroodRendererPhpTemplateScoper {
 	/**
 	 * @param string $templateFile The full path to the php template to render.
 	 * @param array  $values       The values assigned to the controller.
-	 *
-	 * @return null
 	 */
 	public function __construct($templateFile, $values) {
 		self::$_values       = $values;

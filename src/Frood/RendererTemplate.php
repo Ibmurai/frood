@@ -21,7 +21,7 @@ abstract class FroodRendererTemplate extends FroodRenderer {
 	 * @return string The partial path to a template file.
 	 */
 	protected function _getTemplateFile() {
-		return "{$this->_subModule}/{$this->_controller}/{$this->_action}.{$this->_getTemplateFileExtension()}";
+		return "{$this->_request->getSubModule()}/{$this->_request->getController()}/{$this->_request->getAction()}.{$this->_getTemplateFileExtension()}";
 	}
 
 	/**

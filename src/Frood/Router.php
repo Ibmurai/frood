@@ -21,4 +21,11 @@ abstract class FroodRouter {
 	 * @param FroodRequest $request The request to attempt to route.
 	 */
 	abstract public function route(FroodRequest $request);
+	
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		return get_class($this);
+	}
 }

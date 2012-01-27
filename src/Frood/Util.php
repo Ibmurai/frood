@@ -56,6 +56,6 @@ abstract class FroodUtil {
 	 * @return integer The difference of the string lengths.
 	 */
 	public static function cmplen($a, $b) {
-		return strlen($a) - strlen($b);
+		return strlen($b) - strlen($a);
 	}
 }

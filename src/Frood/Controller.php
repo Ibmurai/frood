@@ -56,7 +56,9 @@ abstract class FroodController {
 	 * @throws RuntimeException For undefined output modes.
 	 */
 	final public function render() {
-		header('Content-Type: ' . $this->_renderer->getContentType());
+		if ($this->_renderer->getContentType()) {
+			header('Content-Type: ' . $this->_renderer->getContentType());
+		}
 
 		$this->_renderer->render($this->_values);
 	}
@@ -64,19 +66,28 @@ abstract class FroodController {
 	/**
 	 * Set the output mode to Json.
 	 *
-	 * @return null
+	 * @return FroodRendererJson
 	 */
 	final public function doOutputJson() {
-		$this->_setRenderer('FroodRendererJson');
+		return $this->_setRenderer('FroodRendererJson');
 	}
 
 	/**
 	 * Set the output mode to disabled.
 	 *
-	 * @return null
+	 * @return FroodRendererDisabled
 	 */
 	final public function doOutputDisabled() {
-		$this->_setRenderer('FroodRendererDisabled');
+		return $this->_setRenderer('FroodRendererDisabled');
+	}
+
+	/**
+	 * Set the output mode to disabled.
+	 *
+	 * @return FroodRendererPhp
+	 */
+	final public function doOutputPhp() {
+		return $this->_setRenderer('FroodRendererPhp');
 	}
 
 	/**
@@ -90,7 +101,7 @@ abstract class FroodController {
 	 *
 	 * @return null
 	 */
-	final protected function _forward(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $subModule = null) {
+	final public function forward(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $subModule = null) {
 		if ($parameters === null) {
 			$parameters = new FroodParameters(array());
 		}
@@ -117,35 +128,21 @@ abstract class FroodController {
 	/**
 	 * Forward to another action. This ends all local execution and displays the results of the remote action.
 	 *
-	 * @param FroodParameters $parameters The parameters for the action. Defaults to no parameters.
-	 * @param string          $action     The action to forward to. Defaults to current action.
-	 * @param string          $controller The controller to forward to. Defaults to current controller.
-	 * @param string          $module     The module to forward to. Defaults to current module.
-	 * @param string          $submodule  The submodule to forward to. Defaults to current submodule.
-	 * @param string          $host       The host to forward to. Remember to put the protocol in front (i.e. http://). Defaults to current host.
+	 * @param string          $requestString The request string.
+	 * @param FroodParameters $parameters    The parameters for the action. Defaults to no parameters.
+	 * @param string          $host          The host to forward to. Remember to put the protocol in front (i.e. http://). Defaults to current host.
 	 *
 	 * @return null
 	 *
 	 * @throws RuntimeException If you attempt to redirect with a file parameter, or a multidimensional array.
 	 */
-	final protected function _redirect(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $submodule = null, $host = null) {
+	public function redirect($requestString = '', FroodParameters $parameters = null, $host = null) {
 		if ($parameters === null) {
 			$parameters = new FroodParameters(array());
 		}
-		if ($action === null) {
-			$action = $this->_request->getAction();
-		}
-		if ($controller === null) {
-			$controller = $this->_getBasename();
-		}
-		if ($module === null) {
-			$module = $this->_request->getModule();
-		}
-		if ($submodule === null) {
-			$submodule = $this->_request->getSubModule();
-		}
+		
 		if ($host === null) {
-			$host = XOOPS_URL;
+			$host = "http://{$_SERVER['HTTP_HOST']}";
 		}
 
 		$url = $host;
@@ -153,7 +150,7 @@ abstract class FroodController {
 			$url .= '/';
 		}
 
-		$url .= "$module/$submodule/$controller/$action";
+		$url .= $requestString;
 
 		$getString = $parameters->toGetString();
 
@@ -171,10 +168,10 @@ abstract class FroodController {
 	 *
 	 * @param string $renderer The name of the class to use for rendering output.
 	 *
-	 * @return null
+	 * @return FroodRenderer
 	 */
 	final protected function _setRenderer($renderer) {
-		$this->_renderer = new $renderer($this->_request->getModule(), $this->_request->getSubModule(), $this->_getBasename(), $this->_request->getAction());
+		return $this->_renderer = new $renderer($this->_request);
 	}
 
 	/**
@@ -248,12 +245,12 @@ abstract class FroodController {
 	 * @param string $name      The name of the method being called.
 	 * @param array  $arguments An enumerated array containing the parameters passed to the $name'ed method.
 	 *
-	 * @return null
+	 * @return FroodRenderer
 	 */
 	public function __call($name, array $arguments) {
 		$matches = array();
 		if (preg_match('/^doOutput(.+)$/', $name, $matches)) {
-			$this->_setRenderer("FroodRenderer{$matches[1]}");
+			return $this->_setRenderer("FroodRenderer{$matches[1]}");
 		} else {
 			trigger_error('Call to undefined method ' . get_class($this) . "::$name()", E_USER_ERROR);
 		}

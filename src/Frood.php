@@ -19,7 +19,7 @@ class Frood {
 	private $_moduleAutoloader;
 
 	/** @var FroodAutoloader The Frood autoloader instance. */
-	private $_froodAutoloader;
+	private static $_froodAutoloader;
 
 	/** @var FroodModuleConfiguration The module configuration. */
 	private $_moduleConfiguration;
@@ -51,7 +51,7 @@ class Frood {
 	 * @return FroodConfiguration
 	 */
 	public static function getFroodConfiguration() {
-		return self::$_froodConfiguration ? self::$_froodConfiguration : (self::$_froodConfiguration = new FroodConfiguration());
+		return self::$_froodConfiguration ? self::$_froodConfiguration : self::$_froodConfiguration = new FroodConfiguration();
 	}
 
 	/**
@@ -71,8 +71,7 @@ class Frood {
 				return;
 			}
 		}
-		// TODO: Throw on exception.
-		echo 'No prefix found matching the request:'; var_dump($request); die;
+		throw new FroodExceptionDispatch($request, 'No prefix found matching the request');
 	}
 
 	/**
@@ -84,39 +83,37 @@ class Frood {
 	 *
 	 * @throws FroodExceptionDispatch If Frood cannot dispatch.
 	 */
-	public function dispatch(FroodRequest $request = null, FroodParameters $parameters = null) {
+	public function dispatch(FroodRequest $request = null) {
 		if (!$request) {
 			$request = new FroodRequest(self::getFroodConfiguration()->getRequestUri());
 		}
 
-		$this->_route($request);
+		if (!$request->isComplete()) {
+			$this->_route($request);
+		}
 		$this->_moduleConfiguration = self::getFroodConfiguration()->getModuleConfiguration($request->getModule());
 		$this->_setupModuleAutoloader($request);
 
 		$controller = FroodUtil::convertHtmlNameToPhpName("{$request->getModule()}_{$request->getSubModule()}_controller_{$request->getController()}");
 		$action = FroodUtil::convertHtmlNameToPhpName($request->getAction(), false);
-		$method = $action . 'Action';
-
-		if ($parameters === null) {
-			$parameters = $this->_guessParameters();
-		}
+		$method = "{$action}Action";
 
 		if (!class_exists($controller)) {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, '', 0, "Could not autoload $controller");
+			throw new FroodExceptionDispatch($request, '', 0, "Could not autoload $controller");
 		}
 
 		$controllerInstance = new $controller($request);
 		if (!($controllerInstance instanceof FroodController)) {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, '', 0, "$controller does not extend FroodController");
+			throw new FroodExceptionDispatch($request, '', 0, "$controller does not extend FroodController");
 		}
 
 		if (method_exists($controllerInstance, $method)) {
 			$methodReflection = new FroodReflectionMethod($controllerInstance, $method);
-			$methodReflection->call($parameters);
+			$methodReflection->call($request->getParameters());
 
 			$controllerInstance->render();
 		} else {
-			throw new FroodExceptionDispatch($controller, $method, $parameters, '', 0, "$controller has no $method method");
+			throw new FroodExceptionDispatch($request, '', 0, "$controller has no $method method");
 		}
 	}
 
@@ -140,23 +137,15 @@ class Frood {
 	}
 
 	/**
-	 * Generate a FroodParameters instance, based on the request.
-	 *
-	 * @return FroodParameters Parameters for a controller action.
-	 */
-	private function _guessParameters() {
-		return new FroodParameters();
-	}
-
-	/**
 	 * Set the Frood autoloader up.
 	 */
 	private function _setupFroodAutoloader() {
-		$classPaths = array(
-			self::getFroodPath() . 'Frood/',
-		);
-
-		$this->_froodAutoloader = new FroodAutoloader($classPaths);
+		if (!self::$_froodAutoloader) { 
+			$classPaths = array(
+				self::getFroodPath() . 'Frood/',
+			);
+			self::$_froodAutoloader = new FroodAutoloader($classPaths);
+		}
 	}
 
 	/**

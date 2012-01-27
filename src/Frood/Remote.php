@@ -14,12 +14,9 @@
  * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class FroodRemote {
-	/** @var string The module we're working with. */
-	private $_module;
-
-	/** @var string Which application are we running? */
-	private $_submodule;
-
+	/** @var FroodRequest The remote Frood request. */
+	private $_request;
+	
 	/** @var string The name of the host to connect to. */
 	private $_host;
 
@@ -30,15 +27,19 @@ class FroodRemote {
 	 * Do initialization stuff.
 	 *
 	 * @param string  $module                The dirname of the module to work with.
-	 * @param string  $submodule             Which submodule are we remoting to?
+	 * @param string  $subModule             Which submodule are we remoting to?
 	 * @param string  $host                  The name of the host to connect to. Don't specify this to work locally.
 	 * @param boolean $ignoreModifiedHeaders Set to true to ignore if the remote action modified the headers.
 	 *
 	 * @return null
 	 */
-	public function __construct($module, $submodule = 'public', $host = null, $ignoreModifiedHeaders = false) {
-		$this->_module                = $module;
-		$this->_submodule             = $submodule;
+	public function __construct($module, $subModule = 'public', $host = null, $ignoreModifiedHeaders = false) {
+		$this->_request = new FroodRequest();
+		$this->_request
+			->setModule($module)
+			->setSubModule($subModule)
+		;
+
 		$this->_host                  = $host;
 		$this->_ignoreModifiedHeaders = $ignoreModifiedHeaders;
 	}
@@ -67,9 +68,15 @@ class FroodRemote {
 			ob_start();
 
 			$headers = headers_list();
+			
+			$this->_request
+				->setController($controller)
+				->setAction($action)
+				->setParameters($parameters)
+			;
 
-			$extern = new Frood($this->_module, $this->_submodule, false);
-			$extern->dispatch($controller, $action, $parameters);
+			$extern = new Frood();
+			$extern->dispatch($this->_request);
 			$extern->unregisterAutoloader();
 
 			if (!$this->_ignoreModifiedHeaders) {
@@ -77,12 +84,8 @@ class FroodRemote {
 					if (!preg_match('/^Content-Type:/', $modifiedHeader)) {
 						ob_end_clean();
 						throw new FroodExceptionRemoteDispatch(
+							$request,
 							$this->_host,
-							$this->_module,
-							$controller,
-							$action,
-							$parameters,
-							$this->_submodule,
 							'',
 							0,
 							"The remote action added or modified an illegal header: $modifiedHeader"
@@ -93,63 +96,59 @@ class FroodRemote {
 
 			$result = ob_get_clean();
 		} else {
-			$request = $this->_getRequest($controller, $action, $parameters);
+			$httpRequest = $this->_getHttpRequest($controller, $action, $parameters);
 
 			try {
-				$request->send();
+				$httpRequest->send();
 			} catch (HttpException $e) {
-				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_submodule);
+				throw new FroodExceptionRemoteDispatch($request, $this->_host);
 			}
 
-			if (($code = $request->getResponseCode()) == 200) {
-				$result = $request->getResponseBody();
+			$responseCode = $httpRequest->getResponseCode();
+			
+			if (floor($responseCode / 100) == 2) {
+				$result = $httpRequest->getResponseBody();
 			} else {
 				$information = array();
-				foreach ($request->getResponseHeader() as $name => $value) {
+				foreach ($httpRequest->getResponseHeader() as $name => $value) {
 					$matches = array();
 					if (preg_match('/X-Frood-(.*)$/', $name, $matches)) {
 						$information[] = "{$matches[1]}: $value";
 					}
 				}
-				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_submodule, '', $code, "HTTP code $code received" . ($information ? '. Header information: ' . implode(', ', $information) : ''));
+				throw new FroodExceptionRemoteDispatch($request, $this->_host, '', $responseCode, "HTTP code $responseCode received" . ($information ? '. Header information: ' . implode(', ', $information) : ''));
 			}
 		}
 
 		if ($jsonDecode) {
-			// TODO: Do better than this regex, to determine valid JSON.
-			if (preg_match('/^(?:{|\[)/s', $result)) {
-				return json_decode($result, true);
-			} else {
-				throw new FroodExceptionRemoteDispatch($this->_host, $this->_module, $controller, $action, $parameters, $this->_submodule, '', null, "Invalid JSON received");
+			if (!$json = json_decode($result, true)) {
+				throw new FroodExceptionRemoteDispatch($request, $this->_host, '', null, "Invalid JSON received");
 			}
+			return $json;
 		} else {
 			return $result;
 		}
 	}
 
 	/**
-	 * Create an HTTP post request.
-	 *
-	 * @param string          $controller The controller to call.
-	 * @param string          $action     The action to invoke.
-	 * @param FroodParameters $parameters The parameters for the action.
+	 * Create an HTTP POST request.
 	 *
 	 * @return HttpRequest
 	 */
-	public function _getRequest($controller, $action, FroodParameters $parameters) {
+	private function _getHttpRequest() {
 		$url = $this->_host;
 		if (!preg_match('/\/$/', $url)) {
 			$url .= '/';
 		}
 
-		$url .= "{$this->_module}/{$this->_submodule}/$controller/$action";
+		$url .= "{$this->_request->getModule()}/{$this->_request->getController()}/{$this->_request->getAction()}";
 
-		$request = new HttpRequest($url, HttpRequest::METH_POST);
+		$httpRequest = new HttpRequest($url, HttpRequest::METH_POST);
 
 		$fields = array();
-		foreach ($parameters as $key => $value) {
+		foreach ($this->_request->getParameters() as $key => $value) {
 			if ($value instanceof FroodFileParameter) {
-				$request->addPostFile(
+				$httpRequest->addPostFile(
 					FroodUtil::convertPhpNameToHtmlName($key),
 					$value->getPath(),
 					$value->getType()
@@ -158,8 +157,8 @@ class FroodRemote {
 				$fields[FroodUtil::convertPhpNameToHtmlName($key)] = $value;
 			}
 		}
-		$request->addPostFields($fields);
+		$httpRequest->addPostFields($fields);
 
-		return $request;
+		return $httpRequest;
 	}
 }

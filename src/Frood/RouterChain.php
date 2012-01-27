@@ -41,10 +41,14 @@ class FroodRouterChain {
 		}
 
 		if (!$request->isComplete()) {
-			// TODO: Throw an exception.
-			echo "Could not route the following request:"; var_dump($request);
-			echo "Router chain dump:"; var_dump($this);
-			die;
+			throw new FroodExceptionDispatch($request, "Could not route the request.", 0, "Using routers: $this");
 		}
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		return implode(', ', $this->_routers);
 	}
 }

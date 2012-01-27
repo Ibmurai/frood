@@ -14,12 +14,13 @@
  * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class FroodRendererJson extends FroodRenderer {
+	/** @var string The content type. */
+	protected $_contentType = 'application/json';
+
 	/**
 	 * Render the output as JSON.
 	 *
 	 * @param array $values The values assigned to the controller.
-	 *
-	 * @return null
 	 */
 	public function render(array &$values) {
 		if (empty($values)) {
@@ -27,14 +28,5 @@ class FroodRendererJson extends FroodRenderer {
 		} else {
 			echo json_encode($values);
 		}
-	}
-
-	/**
-	 * The Frood explicitly sets the HTTP header Content-Type to what this returns.
-	 *
-	 * @return string The Content-Type this renderer generates.
-	 */
-	public function getContentType() {
-		return 'application/json';
 	}
 }

@@ -15,9 +15,6 @@
  * @author     Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodConfiguration {
-	/** @var FroodParserUri */
-	private $_uriParser = null;
-
 	/**
 	 * Get the full path to a template.
 	 *

@@ -48,4 +48,11 @@ class FroodModuleRouter extends FroodRouter {
 			;
 		}
 	}
+	
+	/**
+	 * @return string
+	 */
+	public function __toString() {
+		return "{parent::__toString()}({$this->_module})";
+	}
 }
