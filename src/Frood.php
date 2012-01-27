@@ -71,6 +71,8 @@ class Frood {
 				return;
 			}
 		}
+		// TODO: Throw on exception.
+		echo 'No prefix found matching the request:'; var_dump($request); die;
 	}
 
 	/**

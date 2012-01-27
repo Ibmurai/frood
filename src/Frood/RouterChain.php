@@ -41,6 +41,7 @@ class FroodRouterChain {
 		}
 
 		if (!$request->isComplete()) {
+			// TODO: Throw an exception.
 			echo "Could not route the following request:"; var_dump($request);
 			echo "Router chain dump:"; var_dump($this);
 			die;

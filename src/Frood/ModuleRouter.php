@@ -35,16 +35,16 @@ class FroodModuleRouter extends FroodRouter {
 	public function route(FroodRequest $request) {
 		$exp = '/
 			^
-			([a-z][a-z0-9_]*) # 3 : controller
-			\/([a-z][a-z0-9_]*) # 4 : action
+			(?:([a-z][a-z0-9_]*))?   # controller
+			(?:\/([a-z][a-z0-9_]*))? # action
 		/x';
 		$matches = array();
 		if (preg_match($exp, $request->getRequestString(), $matches)) {
 			$request
 				->setModule($this->_module)
 				->setSubModule('public')
-				->setController($matches[1])
-				->setAction($matches[2])
+				->setController(isset($matches[1]) ? $matches[1] : 'index')
+				->setAction(isset($matches[2]) ? $matches[2] : 'index')
 			;
 		}
 	}
