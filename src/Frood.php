@@ -21,13 +21,13 @@ class Frood {
 	/** @var FroodAutoloader The Frood autoloader instance. */
 	private $_froodAutoloader;
 
-	/** @var FroodModuleConfiguration The module configuration */
+	/** @var FroodModuleConfiguration The module configuration. */
 	private $_moduleConfiguration;
 
-	/** @var FroodConfiguration The Frood configuration */
+	/** @var FroodConfiguration The Frood configuration. */
 	private static $_froodConfiguration;
-	
-	/** @var FroodRouterChain The Frood router chain */
+
+	/** @var FroodRouterChain The Frood router chain. */
 	private $_routerChain;
 
 	/**
@@ -46,14 +46,19 @@ class Frood {
 	}
 
 	/**
-	 * Get the Frood configuration
+	 * Get the Frood configuration.
 	 *
 	 * @return FroodConfiguration
 	 */
 	public static function getFroodConfiguration() {
 		return self::$_froodConfiguration ? self::$_froodConfiguration : (self::$_froodConfiguration = new FroodConfiguration());
 	}
-	
+
+	/**
+	 * Route a request, modifying the request.
+	 *
+	 * @param FroodRequest $request The request to route.
+	 */
 	private function _route(FroodRequest $request) {
 		$baseRoutes = self::getFroodConfiguration()->getBaseRoutes();
 		uksort($baseRoutes, array('FroodUtil', 'cmplen'));
@@ -72,8 +77,7 @@ class Frood {
 	 * Dispatch an action to a controller.
 	 * Call with no parameters to determine everything from the request.
 	 *
-	 * @param string          $controller The controller to call.
-	 * @param string          $action     The action to invoke.
+	 * @param FroodRequest    $request    The request to dispatch.
 	 * @param FroodParameters $parameters The parameters for the action.
 	 *
 	 * @throws FroodExceptionDispatch If Frood cannot dispatch.
@@ -82,11 +86,11 @@ class Frood {
 		if (!$request) {
 			$request = new FroodRequest(self::getFroodConfiguration()->getRequestUri());
 		}
-		
+
 		$this->_route($request);
 		$this->_moduleConfiguration = self::getFroodConfiguration()->getModuleConfiguration($request->getModule());
 		$this->_setupModuleAutoloader($request);
-		
+
 		$controller = FroodUtil::convertHtmlNameToPhpName("{$request->getModule()}_{$request->getSubModule()}_controller_{$request->getController()}");
 		$action = FroodUtil::convertHtmlNameToPhpName($request->getAction(), false);
 		$method = $action . 'Action';
@@ -155,6 +159,8 @@ class Frood {
 
 	/**
 	 * Set the module autoloader up.
+	 *
+	 * @param FroodRequest $request The request to determine the module from.
 	 */
 	private function _setupModuleAutoloader(FroodRequest $request) {
 		$modulePath = self::getFroodConfiguration()->getModuleBasePath($request->getModule());

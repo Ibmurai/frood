@@ -1,11 +1,37 @@
 <?php
+/**
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
+ *
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
+ */
+/**
+ * FroodModuleRouter - Routing inside a module.
+ *
+ * @category Frood
+ * @package  Routing
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <both@fynskemedier.dk>
+ */
 class FroodModuleRouter extends FroodRouter {
+	/** @var string The module this router is for. */
 	private $_module;
-	
+
+	/**
+	 * Construct a new module router for the given module.
+	 *
+	 * @param string $module The module to construct a router for.
+	 */
 	public function __construct($module) {
 		$this->_module = $module;
 	}
-	
+
+	/**
+	 * Route a given request, modifying the request.
+	 *
+	 * @param FroodRequest $request The request to route.
+	 */
 	public function route(FroodRequest $request) {
 		$exp = '/
 			^

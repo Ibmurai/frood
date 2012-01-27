@@ -21,16 +21,15 @@ abstract class FroodController {
 
 	/** @var string The output renderer class to use when render is called. */
 	private $_renderer = null;
-	
+
+	/** @var FroodRequest The request that caused this controller to be instantiated. */
 	private $_request;
 
 	/**
 	 * Construct a new controller instance.
 	 * This is automatically called from The Frood.
 	 *
-	 * @param string $module    The module we're working with.
-	 * @param string $subModule Which sub module are we running?
-	 * @param string $action    Which action is Frood invoking?
+	 * @param FroodRequest $request The request the controller will handle.
 	 */
 	public function __construct(FroodRequest $request) {
 		$this->_request = $request;
@@ -153,7 +152,7 @@ abstract class FroodController {
 		if (!preg_match('/\/$/', $url)) {
 			$url .= '/';
 		}
-		
+
 		$url .= "$module/$submodule/$controller/$action";
 
 		$getString = $parameters->toGetString();

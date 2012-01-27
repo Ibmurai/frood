@@ -29,7 +29,12 @@ class FroodConfiguration {
 	public function getTemplateFile($module, $templateFile) {
 		return "{$this->getModuleBasePath($module)}templates/$templateFile";
 	}
-	
+
+	/**
+	 * This function provides the base routes, i.e. relates uri prefixes to modules.
+	 *
+	 * @return array[] The keys are uri prefixes and the values are arrays of module names.
+	 */
 	public function getBaseRoutes() {
 		return array(
 			'/' => array('Lolmodule'),

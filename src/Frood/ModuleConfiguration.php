@@ -15,17 +15,30 @@
  * @author   Bo Thinggaard <both@fynskemedier.dk>
  */
 class FroodModuleConfiguration {
+	/** @var string The module this configuration is for. */
 	private $_module;
-	
+
+	/** @var FroodModuleRouter The router for this module. */
+	private $_router;
+
+	/**
+	 * Construct a new module configuration for the given module.
+	 *
+	 * @param string $module The module to construct a configuration for.
+	 */
 	public function __construct($module) {
 		$this->_module = $module;
 	}
 
+	/**
+	 * Get the module this configuration is for.
+	 *
+	 * @return string
+	 */
 	public function getModule() {
 		return $this->_module;
 	}
 
-		
 	/**
 	 * Get module autoload base paths relative to the module root.
 	 *
@@ -56,8 +69,13 @@ class FroodModuleConfiguration {
 
 		return $paths[$subModule];
 	}
-	
+
+	/**
+	 * Get the module router for the configured module.
+	 *
+	 * @return FroodModuleConfiguration
+	 */
 	public function getRouter() {
-		return new FroodModuleRouter($this->_module);
+		return isset($this->_router) ? $this->_router : $this->_router = new FroodModuleRouter($this->_module);
 	}
 }

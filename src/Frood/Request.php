@@ -8,34 +8,52 @@
  */
 /**
  * FroodRequest - Represents a Frood request.
- * 
- * @category   Frood
- * @author     Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
- * @author     Bo Thinggaard <akimsko@tnactas.dk>
+ *
+ * @category Frood
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodRequest {
 	/** @var string The module name. */
 	private $_module;
-	
+
 	/** @var string The sub module name. */
 	private $_subModule;
-	
+
 	/** @var string The controller name. */
 	private $_controller;
-	
+
 	/** @var string The action name. */
 	private $_action;
-	
+
+	/** @var string The current request string. This will be modified, stripping the base route. */
 	private $_requestString;
-	
+
+	/**
+	 * Construct a new request.
+	 *
+	 * @param string $requestString The request string.
+	 */
 	public function __construct($requestString) {
 		$this->_requestString = $requestString;
 	}
-	
+
+	/**
+	 * Determine if the request has been fully routed.
+	 *
+	 * @return boolean
+	 */
 	public function isComplete() {
 		return (isset($this->_module) && isset($this->_subModule) && isset($this->_controller) && isset($this->_action));
 	}
-	
+
+	/**
+	 * Match the given prefix against the request string, removing the prefix if there is a match.
+	 *
+	 * @param string $prefix The prefix to match.
+	 *
+	 * @return boolean True if the prefix matched.
+	 */
 	public function matchPrefix($prefix) {
 		if (strpos($request->_requestString, $prefix) === 0) {
 			$this->_requestString = substr($this->_requestString, strlen($prefix));
@@ -43,7 +61,7 @@ class FroodRequest {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Get the module name.
 	 *
@@ -55,7 +73,7 @@ class FroodRequest {
 
 	/**
 	 * Set the module name.
-	 * 
+	 *
 	 * @param string $module
 	 *
 	 * @return FroodRequest This.
@@ -76,7 +94,7 @@ class FroodRequest {
 
 	/**
 	 * Set the sub module name.
-	 * 
+	 *
 	 * @param string $subModule
 	 *
 	 * @return FroodRequest This.
@@ -97,7 +115,7 @@ class FroodRequest {
 
 	/**
 	 * Set the controller name.
-	 * 
+	 *
 	 * @param string $controller
 	 *
 	 * @return FroodRequest This.
@@ -118,7 +136,7 @@ class FroodRequest {
 
 	/**
 	 * Set the action name.
-	 * 
+	 *
 	 * @param string $action
 	 *
 	 * @return FroodRequest This.

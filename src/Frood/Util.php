@@ -11,6 +11,7 @@
  *
  * @category Frood
  * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 abstract class FroodUtil {
 	/**
@@ -45,7 +46,15 @@ abstract class FroodUtil {
 		// Second replace _ followed by a letter with capital letters.
 		return preg_replace('/(_[a-z0-9])/e', "substr(strtoupper('\\1'),1)", $name);
 	}
-	
+
+	/**
+	 * Comparison function to usort by string length.
+	 *
+	 * @param string $a The one string to compare.
+	 * @param string $b The other string to compare.
+	 *
+	 * @return integer The difference of the string lengths.
+	 */
 	public static function cmplen($a, $b) {
 		return strlen($a) - strlen($b);
 	}
