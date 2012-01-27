@@ -56,7 +56,9 @@ class FroodRequest {
 	 */
 	public function matchPrefix($prefix) {
 		if (strpos($this->_requestString, $prefix) === 0) {
-			$this->_requestString = substr($this->_requestString, strlen($prefix));
+			if (!$this->_requestString = substr($this->_requestString, strlen($prefix))) {
+				$this->_requestString = '';
+			}
 			return true;
 		}
 		return false;
