@@ -35,17 +35,27 @@ class FroodModuleRouter extends FroodRouter {
 	public function route(FroodRequest $request) {
 		$exp = '/
 			^
-			(?:([a-z][a-z0-9_]*))?   # controller
-			(?:\/([a-z][a-z0-9_]*))? # action
+			(?:([a-z][a-z0-9_]*))?   # subModule or controller
+			(?:\/([a-z][a-z0-9_]*))? # controller or action
+			(?:\/([a-z][a-z0-9_]*))? # action or nothing
 		/x';
 		$matches = array();
 		if (preg_match($exp, $request->getRequestString(), $matches)) {
-			$request
-				->setModule($this->_module)
-				->setSubModule('public')
-				->setController(isset($matches[1]) ? $matches[1] : 'index')
-				->setAction(isset($matches[2]) ? $matches[2] : 'index')
-			;
+			$request->setModule($this->_module);
+			$moduleConfiguration = Frood::getFroodConfiguration()->getModuleConfiguration($this->_module);
+			if (isset($matches[1]) && $moduleConfiguration->hasSubModule($matches[1])) {
+				$request
+					->setSubModule($matches[1])
+					->setController(isset($matches[2]) ? $matches[2] : 'index')
+					->setAction(isset($matches[3]) ? $matches[3] : 'index')
+				;
+			} else {
+				$request
+					->setSubModule('public')
+					->setController(isset($matches[1]) ? $matches[1] : 'index')
+					->setAction(isset($matches[2]) ? $matches[2] : 'index')
+				;
+			}
 		}
 	}
 	
@@ -53,6 +63,6 @@ class FroodModuleRouter extends FroodRouter {
 	 * @return string
 	 */
 	public function __toString() {
-		return "{parent::__toString()}({$this->_module})";
+		return parent::__toString() . "({$this->_module})";
 	}
 }

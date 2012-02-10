@@ -79,13 +79,10 @@ class FroodRequest {
 	 * @return boolean True if the prefix matched.
 	 */
 	public function matchPrefix($prefix) {
-		if (strpos($this->_requestString, $prefix) === 0) {
-			if (!$this->_requestString = substr($this->_requestString, strlen($prefix))) {
-				$this->_requestString = '';
-			}
-			return true;
-		}
-		return false;
+		$count = 0;
+		$this->_requestString = preg_replace('/^' . preg_quote($prefix, '/') . '(?:\/|$)/', '', $this->_requestString, 1, $count);
+
+		return $count == 1 ? true : false;
 	}
 
 	/**
@@ -182,15 +179,20 @@ class FroodRequest {
 	}
 	
 	/**
-	 * @return string
+	 * Get controller class name.
+	 *
+	 * @return string 
 	 */
-	public function __toString() {
-		$string = '';
-		$string .= $this->_module     ? "Module: {$this->_module}"         : '';
-		$string .= $this->_subModule  ? "Sub module: {$this->_subModule}"  : '';
-		$string .= $this->_controller ? "Controller: {$this->_controller}" : '';
-		$string .= $this->_action     ? "Action: {$this->_action}"         : '';
-		
-		return $string;
+	public function getControllerClassName() {
+		return FroodUtil::convertHtmlNameToPhpName("{$this->getModule()}_{$this->getSubModule()}_controller_{$this->getController()}");
+	}
+	
+	/**
+	 * Get the action method name.
+	 *
+	 * @return string 
+	 */
+	public function getActionMethodName() {
+		return FroodUtil::convertHtmlNameToPhpName("{$this->getAction()}_action");
 	}
 }

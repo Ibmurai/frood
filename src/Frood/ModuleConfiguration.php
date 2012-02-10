@@ -69,6 +69,17 @@ class FroodModuleConfiguration {
 
 		return $paths[$subModule];
 	}
+	
+	/**
+	 * Check if sub module exists.
+	 *
+	 * @param string $subModule
+	 * 
+	 * @return boolean
+	 */
+	final public function hasSubModule($subModule) {
+		return array_key_exists($subModule, $this->getAutoloadBasePaths()) ? true : false;
+	}
 
 	/**
 	 * Get the module router for the configured module.

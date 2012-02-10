@@ -33,9 +33,15 @@ class FroodConfiguration {
 	 * @return array[] The keys are uri prefixes and the values are arrays of module names.
 	 */
 	public function getBaseRoutes() {
-		return array(
-			'/' => array('Lolmodule'),
-		);
+		$modules = array();
+		$iterator = new DirectoryIterator($this->getModulesPath());
+		foreach ($iterator as $module) {
+			if ($module->isDir() && !$module->isDot()) {
+				$name = FroodUtil::convertPhpNameToHtmlName($module->getFilename());
+				$modules["/$name"] = array(FroodUtil::convertHtmlNameToPhpName($module->getFilename()));
+			}
+		}
+		return $modules;
 	}
 
 	/**

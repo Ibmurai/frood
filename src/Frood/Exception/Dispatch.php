@@ -30,7 +30,7 @@ class FroodExceptionDispatch extends FroodException {
 	public function __construct(FroodRequest $request, $message = '', $code = 0, $messageExtra = '') {
 		if ($message == '') {
 			$action = FroodUtil::convertHtmlNameToPhpName($request->getAction(), false);
-			$message = "Frood could not call {$request->getController()}::{$action}Action({$request->getParameters()})";
+			$message = "Frood could not call {$request->getControllerClassName()}::{$request->getActionMethodName()}({$request->getParameters()})";
 		}
 		if ($messageExtra != '') {
 			$message .= " ($messageExtra)";

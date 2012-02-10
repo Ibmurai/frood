@@ -94,9 +94,8 @@ class Frood {
 		$this->_moduleConfiguration = self::getFroodConfiguration()->getModuleConfiguration($request->getModule());
 		$this->_setupModuleAutoloader($request);
 
-		$controller = FroodUtil::convertHtmlNameToPhpName("{$request->getModule()}_{$request->getSubModule()}_controller_{$request->getController()}");
-		$action = FroodUtil::convertHtmlNameToPhpName($request->getAction(), false);
-		$method = "{$action}Action";
+		$controller = $request->getControllerClassName();
+		$method     = $request->getActionMethodName();
 
 		if (!class_exists($controller)) {
 			throw new FroodExceptionDispatch($request, '', 0, "Could not autoload $controller");
