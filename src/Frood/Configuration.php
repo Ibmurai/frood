@@ -68,7 +68,10 @@ class FroodConfiguration {
 	 * @return string
 	 */
 	public function getRequestUri() {
-		return $_SERVER['REQUEST_URI'];
+		$matches = array();
+		if (preg_match('/^([^\?]*)/', $_SERVER['REQUEST_URI'], $matches)) {
+			return $matches[1];
+		}
 	}
 
 	/**

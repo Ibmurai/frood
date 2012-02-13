@@ -177,20 +177,20 @@ class FroodRequest {
 	public function getRequestString() {
 		return $this->_requestString;
 	}
-	
+
 	/**
 	 * Get controller class name.
 	 *
-	 * @return string 
+	 * @return string
 	 */
 	public function getControllerClassName() {
 		return FroodUtil::convertHtmlNameToPhpName("{$this->getModule()}_{$this->getSubModule()}_controller_{$this->getController()}");
 	}
-	
+
 	/**
 	 * Get the action method name.
 	 *
-	 * @return string 
+	 * @return string
 	 */
 	public function getActionMethodName() {
 		return FroodUtil::convertHtmlNameToPhpName("{$this->getAction()}_action");
