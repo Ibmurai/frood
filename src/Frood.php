@@ -75,6 +75,25 @@ class Frood {
 	}
 
 	/**
+	 * Route a request and get the routed request.
+	 *
+	 * @param FroodRequest $request The request to route.
+	 *
+	 * TODO: Add @throws
+	 *
+	 * @return FroodRequest A routed request.
+	 */
+	public function route(FroodRequest $request = null) {
+		if (!$request) {
+			$request = new FroodRequest(self::getFroodConfiguration()->getRequestUri());
+		}
+
+		$this->_route($request);
+
+		return $request;
+	}
+
+	/**
 	 * Dispatch an action to a controller.
 	 * Call with no parameters to determine everything from the request.
 	 *
@@ -89,7 +108,7 @@ class Frood {
 		}
 
 		if (!$request->isComplete()) {
-			$this->_route($request);
+			$this->route($request);
 		}
 		$this->_moduleConfiguration = self::getFroodConfiguration()->getModuleConfiguration($request->getModule());
 		$this->_setupModuleAutoloader($request);
@@ -139,7 +158,7 @@ class Frood {
 	 * Set the Frood autoloader up.
 	 */
 	private function _setupFroodAutoloader() {
-		if (!self::$_froodAutoloader) { 
+		if (!self::$_froodAutoloader) {
 			$classPaths = array(
 				self::getFroodPath() . 'Frood/',
 			);
