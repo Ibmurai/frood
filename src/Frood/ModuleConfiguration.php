@@ -78,7 +78,7 @@ class FroodModuleConfiguration {
 	 * @return boolean
 	 */
 	final public function hasSubModule($subModule) {
-		return array_key_exists($subModule, $this->getAutoloadBasePaths()) ? true : false;
+		return $subModule != 'shared' && array_key_exists($subModule, $this->getAutoloadBasePaths()) ? true : false;
 	}
 
 	/**
