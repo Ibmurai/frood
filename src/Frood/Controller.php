@@ -31,8 +31,19 @@ abstract class FroodController {
 	 *
 	 * @param FroodRequest $request The request the controller will handle.
 	 */
-	public function __construct(FroodRequest $request) {
+	final public function __construct(FroodRequest $request) {
 		$this->_request = $request;
+
+		$this->initialize();
+	}
+
+	/**
+	 * Override this to do any initialization you need, such as setting a
+	 * default output method or including external resources.
+	 *
+	 * @return null
+	 */
+	protected function initialize() {
 	}
 
 	/**
@@ -140,7 +151,7 @@ abstract class FroodController {
 		if ($parameters === null) {
 			$parameters = new FroodParameters(array());
 		}
-		
+
 		if ($host === null) {
 			$host = "http://{$_SERVER['HTTP_HOST']}";
 		}
