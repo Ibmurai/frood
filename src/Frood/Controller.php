@@ -79,7 +79,7 @@ abstract class FroodController {
 	 *
 	 * @return FroodRendererJson
 	 */
-	final public function doOutputJson() {
+	public function doOutputJson() {
 		return $this->_setRenderer('FroodRendererJson');
 	}
 
@@ -88,7 +88,7 @@ abstract class FroodController {
 	 *
 	 * @return FroodRendererDisabled
 	 */
-	final public function doOutputDisabled() {
+	public function doOutputDisabled() {
 		return $this->_setRenderer('FroodRendererDisabled');
 	}
 
@@ -97,7 +97,7 @@ abstract class FroodController {
 	 *
 	 * @return FroodRendererPhp
 	 */
-	final public function doOutputPhp() {
+	public function doOutputPhp() {
 		return $this->_setRenderer('FroodRendererPhp');
 	}
 
@@ -112,7 +112,7 @@ abstract class FroodController {
 	 *
 	 * @return null
 	 */
-	final public function forward(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $subModule = null) {
+	public function forward(FroodParameters $parameters = null, $action = null, $controller = null, $module = null, $subModule = null) {
 		if ($parameters === null) {
 			$parameters = new FroodParameters(array());
 		}
