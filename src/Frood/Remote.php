@@ -84,7 +84,7 @@ class FroodRemote {
 					if (!preg_match('/^Content-Type:/', $modifiedHeader)) {
 						ob_end_clean();
 						throw new FroodExceptionRemoteDispatch(
-							$request,
+							$this->_request,
 							$this->_host,
 							'',
 							0,
