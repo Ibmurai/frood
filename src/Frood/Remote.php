@@ -16,7 +16,7 @@
 class FroodRemote {
 	/** @var FroodRequest The remote Frood request. */
 	private $_request;
-	
+
 	/** @var string The name of the host to connect to. */
 	private $_host;
 
@@ -68,7 +68,7 @@ class FroodRemote {
 			ob_start();
 
 			$headers = headers_list();
-			
+
 			$this->_request
 				->setController($controller)
 				->setAction($action)
@@ -101,11 +101,11 @@ class FroodRemote {
 			try {
 				$httpRequest->send();
 			} catch (HttpException $e) {
-				throw new FroodExceptionRemoteDispatch($request, $this->_host);
+				throw new FroodExceptionRemoteDispatch($this->_request, $this->_host);
 			}
 
 			$responseCode = $httpRequest->getResponseCode();
-			
+
 			if (floor($responseCode / 100) == 2) {
 				$result = $httpRequest->getResponseBody();
 			} else {
@@ -116,13 +116,13 @@ class FroodRemote {
 						$information[] = "{$matches[1]}: $value";
 					}
 				}
-				throw new FroodExceptionRemoteDispatch($request, $this->_host, '', $responseCode, "HTTP code $responseCode received" . ($information ? '. Header information: ' . implode(', ', $information) : ''));
+				throw new FroodExceptionRemoteDispatch($this->_request, $this->_host, '', $responseCode, "HTTP code $responseCode received" . ($information ? '. Header information: ' . implode(', ', $information) : ''));
 			}
 		}
 
 		if ($jsonDecode) {
 			if (!$json = json_decode($result, true)) {
-				throw new FroodExceptionRemoteDispatch($request, $this->_host, '', null, "Invalid JSON received");
+				throw new FroodExceptionRemoteDispatch($this->_request, $this->_host, '', null, "Invalid JSON received");
 			}
 			return $json;
 		} else {
