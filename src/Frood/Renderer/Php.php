@@ -34,7 +34,7 @@ class FroodRendererPhp extends FroodRendererTemplate {
 	}
 
 	/**
-	 * Get the template.
+	 * Get the template extension.
 	 *
 	 * @return string The full template. Not a path to a file.
 	 */
