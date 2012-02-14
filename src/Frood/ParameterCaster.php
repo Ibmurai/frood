@@ -43,6 +43,12 @@ abstract class FroodParameterCaster {
 	/** @var string The constant to tell the get function that you want a boolean. */
 	const AS_BOOLEAN = 'boolean';
 
+	/** @var string The constant to tell the get function that you want a string array. */
+	const AS_STRING_ARRAY = 'string[]';
+
+	/** @var string The constant to tell the get function that you want an integer array. */
+	const AS_INTEGER_ARRAY = 'integer[]';
+
 	/**
 	 * Attempt to cast a value as the given type.
 	 *
@@ -76,6 +82,10 @@ abstract class FroodParameterCaster {
 				return self::_castAsFile($value);
 			case self::AS_BOOLEAN:
 				return self::_castAsBoolean($value);
+			case self::AS_STRING_ARRAY:
+				return self::_castAsStringArray($value);
+			case self::AS_INTEGER_ARRAY:
+				return self::_castAsIntegerArray($value);
 			default:
 				throw new RuntimeException('Unknown type, ' . $type . '.');
 		}
@@ -296,6 +306,52 @@ abstract class FroodParameterCaster {
 		}
 
 		throw new FroodExceptionCasting($value, self::AS_BOOLEAN);
+	}
+
+	/**
+	 * Attempt to cast value as an array of integers.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodExceptionCasting If the value could not be cast.
+	 *
+	 * @return integer[]
+	 */
+	public function _castAsIntegerArray($value) {
+		try {
+			$value = self::_castAsArray($value);
+
+			foreach ($value as &$item) {
+				$item = self::_castAsInteger($item);
+			}
+
+			return $value;
+		} catch (FroodExceptionCasting $e) {
+			throw new FroodExceptionCasting($value, self::AS_INTEGER_ARRAY);
+		}
+	}
+
+	/**
+	 * Attempt to cast value as an array of strings.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodExceptionCasting If the value could not be cast.
+	 *
+	 * @return string[]
+	 */
+	public function _castAsStringArray($value) {
+		try {
+			$value = self::_castAsArray($value);
+
+			foreach ($value as &$item) {
+				$item = self::_castAsString($item);
+			}
+
+			return $value;
+		} catch (FroodExceptionCasting $e) {
+			throw new FroodExceptionCasting($value, self::AS_STRING_ARRAY);
+		}
 	}
 
 	/**
