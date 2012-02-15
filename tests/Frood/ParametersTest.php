@@ -505,6 +505,46 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test the integer array type.
+	 *
+	 * @return void
+	 */
+	public function testIntegerArrayConversion() {
+		$params = new FroodParameters(
+			array(
+				'skam'      => array(),
+				'skule'     => array(1),
+				'skratmaas' => array(1, 42, 21, 7),
+			)
+		);
+
+		$this->assertEquals(array(), $params->getSkam(FroodParameters::AS_INTEGER_ARRAY));
+		$this->assertEquals(array(1), $params->getSkule(FroodParameters::AS_INTEGER_ARRAY));
+		$this->assertEquals(array(1, 42, 21, 7), $params->getSkratmaas(FroodParameters::AS_INTEGER_ARRAY));
+	}
+
+	/**
+	 * Test the string array type.
+	 *
+	 * @return void
+	 */
+	public function testStringArrayConversion() {
+		$params = new FroodParameters(
+			array(
+				'skam'        => array(),
+				'skule'       => array(42, 42, 42),
+				'skratmaas'   => array('42', '42', '42'),
+				'skridt_bind' => array('madpakke', 'madpakke', 'madpakke'),
+			)
+		);
+
+		$this->assertEquals(array(), $params->getSkam(FroodParameters::AS_STRING_ARRAY));
+		$this->assertEquals(array('42', '42', '42'), $params->getSkule(FroodParameters::AS_STRING_ARRAY));
+		$this->assertEquals(array('42', '42', '42'), $params->getSkratmaas(FroodParameters::AS_STRING_ARRAY));
+		$this->assertEquals(array('madpakke', 'madpakke', 'madpakke'), $params->getSkridtBind(FroodParameters::AS_STRING_ARRAY));
+	}
+
+	/**
 	 * Provides data for testBooleanConversionException.
 	 *
 	 * @return array
@@ -722,6 +762,168 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$params->getLaks(FroodParameters::AS_FLOAT);
+	}
+
+	/**
+	 * Test integer array conversion exceptions when parameter value cannot be
+	 * interpreted as an integer array. When value is an array of strings.
+	 *
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testIntegerArrayConversionExceptionStringArray() {
+		$params = new FroodParameters(
+			array(
+				'laks' => array('vildt', 'meget', 'laks'),
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_INTEGER_ARRAY);
+	}
+
+	/**
+	 * Test integer array conversion exceptions when parameter value cannot be
+	 * interpreted as an integer array. When value is a string.
+	 *
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testIntegerArrayConversionExceptionString() {
+		$params = new FroodParameters(
+			array(
+				'laks' => 'vildt',
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_INTEGER_ARRAY);
+	}
+
+	/**
+	 * Test integer array conversion exceptions when parameter value cannot be
+	 * interpreted as an integer array. When value is an integer.
+	 *
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testIntegerArrayConversionExceptionInteger() {
+		$params = new FroodParameters(
+			array(
+				'laks' => 42,
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_INTEGER_ARRAY);
+	}
+
+	/**
+	 * Test integer array conversion exceptions when parameter value cannot be
+	 * interpreted as an integer array. When value is an array of strings.
+	 *
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testIntegerArrayConversionExceptionFloat() {
+		$params = new FroodParameters(
+			array(
+				'laks' => 42.0,
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_INTEGER_ARRAY);
+	}
+
+	/**
+	 * Test integer array conversion exceptions when parameter value cannot be
+	 * interpreted as an integer array. When value is a boolean.
+	 *
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testIntegerArrayConversionExceptionBoolean() {
+		$params = new FroodParameters(
+			array(
+				'laks' => true,
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_INTEGER_ARRAY);
+	}
+
+	/**
+	 * Test string array conversion exceptions when parameter value cannot be
+	 * interpreted as string array. When value is a string.
+	 *
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testStringArrayConversionExceptionString() {
+		$params = new FroodParameters(
+			array(
+				'laks' => 'vildt',
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_STRING_ARRAY);
+	}
+
+	/**
+	 * Test string array conversion exceptions when parameter value cannot be
+	 * interpreted as string array. When value is an integer.
+	 *
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testStringArrayConversionExceptionInteger() {
+		$params = new FroodParameters(
+			array(
+				'laks' => 42,
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_STRING_ARRAY);
+	}
+
+	/**
+	 * Test string array conversion exceptions when parameter value cannot be
+	 * interpreted as string array. When value is an array of strings.
+	 *
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testStringArrayConversionExceptionFloat() {
+		$params = new FroodParameters(
+			array(
+				'laks' => 42.0,
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_STRING_ARRAY);
+	}
+
+	/**
+	 * Test string array conversion exceptions when parameter value cannot be
+	 * interpreted as string array. When value is a boolean.
+	 *
+	 * @expectedException FroodExceptionCasting
+	 *
+	 * @return void
+	 */
+	public function testStringArrayConversionExceptionBoolean() {
+		$params = new FroodParameters(
+			array(
+				'laks' => true,
+			)
+		);
+
+		$params->getLaks(FroodParameters::AS_STRING_ARRAY);
 	}
 
 	/**
