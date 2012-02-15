@@ -76,7 +76,7 @@ class FroodRemote {
 			;
 
 			$extern = new Frood();
-			$extern->dispatch($this->_request);
+			$extern->dispatch($this->_request, false);
 			$extern->unregisterAutoloader();
 
 			if (!$this->_ignoreModifiedHeaders) {
@@ -96,7 +96,7 @@ class FroodRemote {
 
 			$result = ob_get_clean();
 		} else {
-			$httpRequest = $this->_getHttpRequest($controller, $action, $parameters);
+			$httpRequest = $this->_getHttpRequest();
 
 			try {
 				$httpRequest->send();

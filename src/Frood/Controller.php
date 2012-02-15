@@ -67,10 +67,6 @@ abstract class FroodController {
 	 * @throws RuntimeException For undefined output modes.
 	 */
 	final public function render() {
-		if ($this->_renderer->getContentType()) {
-			header('Content-Type: ' . $this->_renderer->getContentType());
-		}
-
 		$this->_renderer->render($this->_values);
 	}
 
@@ -227,7 +223,7 @@ abstract class FroodController {
 	 *
 	 * @return FroodRenderer
 	 */
-	final protected function _getRenderer() {
+	final public function getRenderer() {
 		return $this->_renderer;
 	}
 

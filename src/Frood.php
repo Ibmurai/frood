@@ -97,12 +97,12 @@ class Frood {
 	 * Dispatch an action to a controller.
 	 * Call with no parameters to determine everything from the request.
 	 *
-	 * @param FroodRequest    $request    The request to dispatch.
-	 * @param FroodParameters $parameters The parameters for the action.
+	 * @param FroodRequest    $request       The request to dispatch.
+	 * @param boolean         $modifyHeaders Set to false, to disable the header modification by the rendering. (Used by FroodRemote)
 	 *
 	 * @throws FroodExceptionDispatch If Frood cannot dispatch.
 	 */
-	public function dispatch(FroodRequest $request = null) {
+	public function dispatch(FroodRequest $request = null, $modifyHeaders = true) {
 		if (!$request) {
 			$request = new FroodRequest(self::getFroodConfiguration()->getRequestUri());
 		}
@@ -128,6 +128,10 @@ class Frood {
 		if (method_exists($controllerInstance, $method)) {
 			$methodReflection = new FroodReflectionMethod($controllerInstance, $method);
 			$methodReflection->call($request->getParameters());
+
+			if ($modifyHeaders && ($renderer = $controllerInstance->getRenderer()) && $renderer->getContentType()) {
+				header('Content-Type: ' . $renderer->getContentType());
+			}
 
 			$controllerInstance->render();
 		} else {
