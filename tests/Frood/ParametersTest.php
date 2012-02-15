@@ -1,31 +1,24 @@
 <?php
 /**
- * Test the parameters class for The Frood.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Test
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @since    2011-06-09
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodParameters - Testing it!
  *
- * @category   Test
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
- *
- * @SuppressWarnings(PHPMD.TooManyMethods)
+ * @category Frood
+ * @package  Test
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	protected function setUp() {
 	}
@@ -34,7 +27,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * Tears down the fixture, for example, closes a network connection.
 	 * This method is called after a test is executed.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	protected function tearDown() {
 	}
@@ -42,7 +35,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test parameter get's.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testGetParameter() {
 		$params = new FroodParameters(
@@ -67,7 +60,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test parameter has's.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testHasParameter() {
 		$params = new FroodParameters(
@@ -97,7 +90,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test typed parameter has's.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testHasTypedParameter() {
 		$params = new FroodParameters(
@@ -118,7 +111,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test parameter default values.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testDefaultValues() {
 		$params = new FroodParameters(
@@ -139,7 +132,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test parameter values from GET/POST merging.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testGetPostMerging() {
 		$_GET['lam']    = 'hej';
@@ -157,7 +150,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test parameter toString method.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testToString() {
 		$params = new FroodParameters(
@@ -177,7 +170,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException RuntimeException
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testTooManyArgumentsToGet() {
 		$params = new FroodParameters();
@@ -190,7 +183,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException RuntimeException
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testTooManyArgumentsToHas() {
 		$params = new FroodParameters();
@@ -204,7 +197,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException RuntimeException
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testMissingMethod() {
 		$params = new FroodParameters();
@@ -217,7 +210,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException RuntimeException
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testNoDefaultValue() {
 		$params = new FroodParameters();
@@ -283,7 +276,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider providerCount
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testCount(array $values, $expectedCount) {
 		$params = new FroodParameters($values);
@@ -299,9 +292,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider providerCount
 	 *
-	 * @return void
-	 *
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+	 * @return null
 	 */
 	public function testForeach(array $values, $expectedCount) {
 		$params = new FroodParameters($values);
@@ -317,7 +308,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test integer conversion of parameter values.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerConversion() {
 		$params = new FroodParameters(
@@ -336,7 +327,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test string conversion of parameter values.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testStringConversion() {
 		$params = new FroodParameters(
@@ -358,7 +349,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test float conversion of parameter values.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testFloatConversion() {
 		$params = new FroodParameters(
@@ -389,7 +380,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test array conversion of parameter values.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testArrayConversion() {
 		$params = new FroodParameters(
@@ -414,7 +405,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test json conversion of parameter values.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testJsonConversion() {
 		$params = new FroodParameters(
@@ -439,7 +430,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test file "conversion" of parameter values.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testFileConversion() {
 		$params = new FroodParameters(
@@ -456,7 +447,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test boolean conversion of parameter values.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testBooleanConversion() {
 		$params = new FroodParameters(
@@ -507,7 +498,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test the integer array type.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerArrayConversion() {
 		$params = new FroodParameters(
@@ -526,7 +517,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test the string array type.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testStringArrayConversion() {
 		$params = new FroodParameters(
@@ -572,7 +563,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider      providerBooleanConversionException
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testBooleanConversionException($value) {
 		$params = new FroodParameters(
@@ -608,7 +599,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 * @dataProvider      providerFileConversionException
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testFileConversionException($value) {
 		$params = new FroodParameters(
@@ -626,7 +617,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerConversionExceptionString() {
 		$params = new FroodParameters(
@@ -644,7 +635,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerConversionExceptionNull() {
 		$params = new FroodParameters(
@@ -662,7 +653,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerConversionExceptionArray() {
 		$params = new FroodParameters(
@@ -680,7 +671,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testStringConversionExceptionNull() {
 		$params = new FroodParameters(
@@ -698,7 +689,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testStringConversionExceptionArray() {
 		$params = new FroodParameters(
@@ -716,7 +707,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testFloatConversionExceptionString() {
 		$params = new FroodParameters(
@@ -734,7 +725,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testFloatConversionExceptionNull() {
 		$params = new FroodParameters(
@@ -752,7 +743,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testFloatConversionExceptionArray() {
 		$params = new FroodParameters(
@@ -770,7 +761,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerArrayConversionExceptionStringArray() {
 		$params = new FroodParameters(
@@ -788,7 +779,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerArrayConversionExceptionString() {
 		$params = new FroodParameters(
@@ -806,7 +797,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerArrayConversionExceptionInteger() {
 		$params = new FroodParameters(
@@ -824,7 +815,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerArrayConversionExceptionFloat() {
 		$params = new FroodParameters(
@@ -842,7 +833,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testIntegerArrayConversionExceptionBoolean() {
 		$params = new FroodParameters(
@@ -860,7 +851,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testStringArrayConversionExceptionString() {
 		$params = new FroodParameters(
@@ -878,7 +869,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testStringArrayConversionExceptionInteger() {
 		$params = new FroodParameters(
@@ -896,7 +887,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testStringArrayConversionExceptionFloat() {
 		$params = new FroodParameters(
@@ -914,7 +905,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException FroodExceptionCasting
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testStringArrayConversionExceptionBoolean() {
 		$params = new FroodParameters(
@@ -931,7 +922,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException RuntimeException
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testConvertingToUnknownTypeException() {
 		$params = new FroodParameters(

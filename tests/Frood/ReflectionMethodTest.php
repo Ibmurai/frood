@@ -1,29 +1,24 @@
 <?php
 /**
- * Test the magic docblock parameters for action thing.
+ * This file is part of The Frood framework.
+ * @link https://github.com/Ibmurai/frood
  *
- * PHP version 5
- *
- * @category Test
- * @package  Frood
- * @author   Jens Riisom Schultz <jers@fynskemedier.dk>
- * @since    2011-09-20
+ * @copyright Copyright 2011 Jens Riisom Schultz
+ * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
-
 /**
  * FroodReflectionMethod - Testing it!
  *
- * @category   Test
- * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @category Frood
+ * @package  Test
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	protected function setUp() {
 	}
@@ -32,7 +27,7 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	 * Tears down the fixture, for example, closes a network connection.
 	 * This method is called after a test is executed.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	protected function tearDown() {
 	}
@@ -40,7 +35,7 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test it with a real docblocked action.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testDocblocked() {
 		$request = new FroodRequest();
@@ -78,7 +73,7 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test it with an oldschool Frood action.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testOldschool() {
 		$request = new FroodRequest();
@@ -99,7 +94,7 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException RuntimeException
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testWrongDocblockException() {
 		$request = new FroodRequest();
@@ -120,7 +115,7 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @expectedException RuntimeException
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testMissingRequiredException() {
 		$request = new FroodRequest();
@@ -192,7 +187,7 @@ class StupidController extends FroodController {
 	 *
 	 * @param integer $skolemad <42> Bras.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function stupidAction($params) {
 		echo $params;
