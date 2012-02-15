@@ -1,8 +1,6 @@
 The Frood
 =========
 
-*DISCLAIMER: This is an attempt to open source this internally used VC framework. It is not yet usable.*
-
 *Author* [Jens Riisom Schultz](mailto:ibber_of_crew42@hotmail.com)
 *Since*  2011-06-20
 
@@ -14,6 +12,12 @@ It will help you to:
   * Structure your template files, in a consistent way.
   * Create entirely new full fledged (M)VC modules.
   * Communicate with other Froody modules without the overhead and hassle of http requests.
+
+
+Requirements
+------------
+
+  * The `pecl_http` extension must be installed for HTTP remoting to work. You probably won't need this.
 
 
 Documentation

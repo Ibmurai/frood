@@ -22,7 +22,9 @@ class FroodRendererPhp extends FroodRendererTemplate {
 	/**
 	 * The Frood calls this when appropriate.
 	 *
-	 * @param array $values The values assigned to the controller. (By reference)
+	 * @param array &$values The values assigned to the controller.
+	 *
+	 * @return null
 	 */
 	public function render(array &$values) {
 		$templateFile = Frood::getFroodConfiguration()->getTemplateFile($this->_request->getModule(), $this->_getTemplateFile());

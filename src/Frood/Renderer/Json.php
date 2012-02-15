@@ -20,7 +20,9 @@ class FroodRendererJson extends FroodRenderer {
 	/**
 	 * Render the output as JSON.
 	 *
-	 * @param array $values The values assigned to the controller.
+	 * @param array &$values The values assigned to the controller.
+	 *
+	 * @return null
 	 */
 	public function render(array &$values) {
 		if (empty($values)) {

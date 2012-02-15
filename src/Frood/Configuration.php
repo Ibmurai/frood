@@ -101,4 +101,16 @@ class FroodConfiguration {
 
 		return $moduleConfigurations[$module] = new $moduleConfigurationClassName($module);
 	}
+
+	/**
+	 * This should return a string describing the remote uri for the given
+	 * FroodRequest.
+	 *
+	 * @param FroodRequest $request
+	 *
+	 * @return string
+	 */
+	public function getRemoteUri(FroodRequest $request) {
+		return "{$request->getModule()}/{$request->getController()}/{$request->getAction()}";
+	}
 }

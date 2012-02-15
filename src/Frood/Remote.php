@@ -64,16 +64,16 @@ class FroodRemote {
 			$parameters = new FroodParameters(array());
 		}
 
+		$this->_request
+			->setController($controller)
+			->setAction($action)
+			->setParameters($parameters)
+		;
+
 		if ($this->_host === null) {
 			ob_start();
 
 			$headers = headers_list();
-
-			$this->_request
-				->setController($controller)
-				->setAction($action)
-				->setParameters($parameters)
-			;
 
 			$extern = new Frood();
 			$extern->dispatch($this->_request, false);
@@ -141,7 +141,7 @@ class FroodRemote {
 			$url .= '/';
 		}
 
-		$url .= "{$this->_request->getModule()}/{$this->_request->getController()}/{$this->_request->getAction()}";
+		$url .= Frood::getFroodConfiguration()->getRemoteUri($this->_request);
 
 		$httpRequest = new HttpRequest($url, HttpRequest::METH_POST);
 
