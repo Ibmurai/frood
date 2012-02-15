@@ -47,6 +47,8 @@ class FroodConfiguration {
 	/**
 	 * Get the root path of a given module.
 	 *
+	 * @param string $module
+	 *
 	 * @return string
 	 */
 	public function getModuleBasePath($module) {
@@ -93,7 +95,7 @@ class FroodConfiguration {
 
 		$moduleConfigurationClassName = 'FroodModuleConfiguration';
 		if (file_exists($moduleConfigurationPath)) {
-			include_once($moduleConfigurationPath);
+			include_once $moduleConfigurationPath;
 			$moduleConfigurationClassName = FroodUtil::convertHtmlNameToPhpName("{$module}_configuration");
 		}
 
