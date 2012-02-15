@@ -23,7 +23,7 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	protected function setUp() {
 	}
@@ -32,7 +32,7 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 * Tears down the fixture, for example, closes a network connection.
 	 * This method is called after a test is executed.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	protected function tearDown() {
 	}
@@ -60,7 +60,7 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider providerConvertPhpNameToHtmlName
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testConvertPhpNameToHtmlName($input, $output) {
 		$this->assertEquals($output, FroodUtil::convertPhpNameToHtmlName($input));
@@ -74,7 +74,7 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	 *
 	 * @dataProvider providerConvertPhpNameToHtmlName
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testConvertHtmlNameToPhpName($output, $input) {
 		$this->assertEquals($output, FroodUtil::convertHtmlNameToPhpName($input));
@@ -83,24 +83,24 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test request parsing and exceptions.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testRequestParsing() {
-		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/public/buildresults/frood?tab=coverage';
+		$_SERVER['REQUEST_URI'] = '/frood/public/buildresults/frood?tab=coverage';
 
-		$frood = new Frood('cruisecontrol', 'public', false);
+		$frood = new Frood(new FroodTestConfiguration());
 
 		try {
 			$frood->dispatch();
 			$this->fail('Expected an Exception before this!');
 		} catch (FroodExceptionDispatch $e) {
 			$this->assertEquals(
-				'CruisecontrolBuildresultsController',
-				$e->getController()
+				'buildresults',
+				$e->getRequest()->getController()
 			);
 			$this->assertEquals(
-				'froodAction',
-				$e->getAction()
+				'frood',
+				$e->getRequest()->getAction()
 			);
 		}
 	}
@@ -108,24 +108,24 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test request parsing with no specified action.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testRequestParsingNoAction() {
-		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/public/test';
+		$_SERVER['REQUEST_URI'] = '/frood/public/test';
 
-		$frood = new Frood('cruisecontrol', 'public', false);
+		$frood = new Frood(new FroodTestConfiguration());
 
 		try {
 			$frood->dispatch();
 			$this->fail('Expected an Exception before this!');
 		} catch (FroodExceptionDispatch $e) {
 			$this->assertEquals(
-				'CruisecontrolTestController',
-				$e->getController()
+				'test',
+				$e->getRequest()->getController()
 			);
 			$this->assertEquals(
-				'indexAction',
-				$e->getAction()
+				'index',
+				$e->getRequest()->getAction()
 			);
 		}
 	}
@@ -133,25 +133,36 @@ class FroodTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test request parsing with no specified action.
 	 *
-	 * @return void
+	 * @return null
 	 */
 	public function testRequestParsingNoActionTrailingSlash() {
-		$_SERVER['REQUEST_URI'] = '/modules/cruisecontrol/public/test/';
+		$_SERVER['REQUEST_URI'] = '/frood/public/test/';
 
-		$frood = new Frood('cruisecontrol', 'public', false);
+		$frood = new Frood(new FroodTestConfiguration());
 
 		try {
 			$frood->dispatch();
 			$this->fail('Expected an Exception before this!');
 		} catch (FroodExceptionDispatch $e) {
 			$this->assertEquals(
-				'CruisecontrolTestController',
-				$e->getController()
+				'test',
+				$e->getRequest()->getController()
 			);
 			$this->assertEquals(
-				'indexAction',
-				$e->getAction()
+				'index',
+				$e->getRequest()->getAction()
 			);
 		}
+	}
+}
+
+class FroodTestConfiguration extends FroodConfiguration {
+	/**
+	 * Get the path, relative to Frood.php, where modules reside.
+	 *
+	 * @return string
+	 */
+	public function getModulesPath () {
+		return realpath(dirname(__FILE__)) . '/';
 	}
 }

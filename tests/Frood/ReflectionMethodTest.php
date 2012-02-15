@@ -43,13 +43,21 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testDocblocked() {
-		$controllerInstance = new StupidController('stupid', 'public', 'awesome');
+		$request = new FroodRequest();
+		$request
+			->setModule('stupid')
+			->setSubModule('public')
+			->setController('awesome')
+		;
+		$controllerInstance = new StupidController($request);
 		$parameters         = new FroodParameters(
 			array(
 				'int'      => '42',
 				'required' => '42.42',
 				'bool'     => 'true',
 				'string'   => 'bo',
+				'a_int'    => array(1, 2, 3),
+				'a_string' => array('1', '2', '3'),
 			)
 		);
 		$methodReflection   = new FroodReflectionMethod($controllerInstance, 'awesomeAction');
@@ -61,7 +69,8 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 				'bo',
 				42,
 				42.42,
-				null
+				array(1, 2, 3),
+				array('1', '2', '3'),
 			)
 		);
 	}
@@ -72,7 +81,13 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testOldschool() {
-		$controllerInstance = new StupidController('stupid', 'public', 'oldschool');
+		$request = new FroodRequest();
+		$request
+			->setModule('stupid')
+			->setSubModule('public')
+			->setController('awesome')
+		;
+		$controllerInstance = new StupidController($request);
 		$parameters         = new FroodParameters(array('param' => 'omgitworks'));
 		$methodReflection   = new FroodReflectionMethod($controllerInstance, 'oldschoolAction');
 
@@ -87,7 +102,13 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testWrongDocblockException() {
-		$controllerInstance = new StupidController('stupid', 'public', 'stupid');
+		$request = new FroodRequest();
+		$request
+			->setModule('stupid')
+			->setSubModule('public')
+			->setController('awesome')
+		;
+		$controllerInstance = new StupidController($request);
 		$parameters         = new FroodParameters();
 		$methodReflection   = new FroodReflectionMethod($controllerInstance, 'stupidAction');
 
@@ -102,7 +123,13 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	 * @return void
 	 */
 	public function testMissingRequiredException() {
-		$controllerInstance = new StupidController('stupid', 'public', 'awesome');
+		$request = new FroodRequest();
+		$request
+			->setModule('stupid')
+			->setSubModule('public')
+			->setController('awesome')
+		;
+		$controllerInstance = new StupidController($request);
 		$parameters         = new FroodParameters(
 			array(
 				'int'      => '42',
@@ -139,21 +166,23 @@ class StupidController extends FroodController {
 	/**
 	 * A newschool awesome action with docblock params oh yeah.
 	 *
-	 * @param boolean $bool     <true>    Some comment here.
-	 * @param string  $string   <default>
-	 * @param integer $int      <101010>  101010 is 42...
-	 * @param float   $required <>        This param is required.
-	 * @param file    $file     <null>
+	 * @param boolean   $bool     <true>    Some comment here.
+	 * @param string    $string   <default>
+	 * @param integer   $int      <101010>  101010 is 42...
+	 * @param float     $required <>        This param is required.
+	 * @param integer[] $aInt     <>        An array of integers.
+	 * @param string[]  $aString  <>        An array of strings.
 	 *
 	 * @return array Yes it's an action that returns something. It's a test. Relax man.
 	 */
-	public function awesomeAction($bool, $string, $int, $required, $file) {
+	public function awesomeAction($bool, $string, $int, $required, $aInt, $aString) {
 		return array(
 			$bool,
 			$string,
 			$int,
 			$required,
-			$file,
+			$aInt,
+			$aString,
 		);
 	}
 
