@@ -49,10 +49,14 @@ class FroodReflectionMethod {
 
 		foreach ($docs as $key => $doc) {
 			$ucName = ucfirst($key);
-			if ($doc['default'] === '') {
-				$values[$key] = $params->{"get$ucName"}($doc['type']);
-			} else {
-				$values[$key] = $params->{"get$ucName"}($doc['type'], $doc['default'] !== 'null' ? $doc['default'] : null);
+			try {
+				if ($doc['default'] === '') {
+					$values[$key] = $params->{"get$ucName"}($doc['type']);
+				} else {
+					$values[$key] = $params->{"get$ucName"}($doc['type'], $doc['default'] !== 'null' ? $doc['default'] : null);
+				}
+			} catch (FroodExceptionCasting $e) {
+				throw new FroodExceptionCasting($e->getValue(), $e->getType(), $e->getMessage(), $e->getCode(), "Parameter, $ucName, in " . get_class($this->_controllerInstance) . '::' . $this->_reflectionMethod->getName() . '()');
 			}
 		}
 
@@ -60,7 +64,7 @@ class FroodReflectionMethod {
 	}
 
 	/**
-	 * Call the reflecte method with the given parameters.
+	 * Call the reflected method with the given parameters.
 	 * Actions with a single parameter of type FroodParameters are simply called with the instance.
 	 * Actions with real signatures are called as such.
 	 *
