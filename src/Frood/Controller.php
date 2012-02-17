@@ -157,6 +157,10 @@ abstract class FroodController {
 			$url .= '/';
 		}
 
+		if (strpos($requestString, '/') === 0) {
+			$requestString = substr($requestString, 1);
+		}
+
 		$url .= $requestString;
 
 		$getString = $parameters->toGetString();
