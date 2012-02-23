@@ -89,7 +89,7 @@ abstract class FroodController {
 	}
 
 	/**
-	 * Set the output mode to disabled.
+	 * Set the output mode to PHP.
 	 *
 	 * @return FroodRendererPhp
 	 */
