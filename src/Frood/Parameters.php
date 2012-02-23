@@ -197,6 +197,20 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	}
 
 	/**
+	 * Add a parameter.
+	 *
+	 * @param string $name  The lowercased_with_underscores name of the parameter to add.
+	 * @param mixed  $value The value of the parameter to add.
+	 *
+	 * @return FroodParameters This.
+	 */
+	public function addParameter($name, $value) {
+		$this->_values[FroodUtil::convertHtmlNameToPhpName($name)] = $value;
+
+		return $this;
+	}
+
+	/**
 	 * Get these parameters as a string of "key=value" strings which are seperated by &'s.
 	 * Used by FroodController::_redirect().
 	 *

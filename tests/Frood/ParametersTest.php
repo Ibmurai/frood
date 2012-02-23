@@ -33,6 +33,35 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test parameter addition
+	 *
+	 * @return null
+	 */
+	public function testAddParameter() {
+		$params = new FroodParameters(array());
+
+		$keysNValues = array(
+			'on_your_face'   => 'bunched',
+			'on_your_face2'  => 'The munchies',
+			'IAmYourFather'  => 'Luke',
+			'iAmYour_mother' => 'yo YO!',
+			'a'              => 'A',
+			'B'              => 'b',
+		);
+
+		foreach ($keysNValues as $key => $value) {
+			$params->addParameter($key, $value);
+		}
+
+		$this->assertEquals('bunched', $params->getOnYourFace());
+		$this->assertEquals('The munchies', $params->getOnYourFace2());
+		$this->assertEquals('Luke', $params->getIAmYourFather());
+		$this->assertEquals('yo YO!', $params->getIAmYourMother());
+		$this->assertEquals('A', $params->getA());
+		$this->assertEquals('b', $params->getB());
+	}
+
+	/**
 	 * Test parameter get's.
 	 *
 	 * @return null
