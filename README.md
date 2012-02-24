@@ -1,8 +1,8 @@
 The Frood
 =========
 
-*Author* [Jens Riisom Schultz](mailto:ibber_of_crew42@hotmail.com)
-*Since*  2011-06-20
+*Authors* [Jens Riisom Schultz](mailto:ibber_of_crew42@hotmail.com), [Bo Thinggaard](akimsko@tnactas.dk)
+*Since*   2011-06-20
 
 The Frood is a simple VC framework library (The VC from MVC).
 
@@ -17,6 +17,7 @@ It will help you to:
 Requirements
 ------------
 
+  * You need mod_rewrite.
   * The `pecl_http` extension must be installed for HTTP remoting to work. You probably won't need this.
 
 

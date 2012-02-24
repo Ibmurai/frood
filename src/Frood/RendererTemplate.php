@@ -24,6 +24,10 @@ abstract class FroodRendererTemplate extends FroodRenderer {
 		return "{$this->_request->getSubModule()}/{$this->_request->getController()}/{$this->_request->getAction()}.{$this->_getTemplateFileExtension()}";
 	}
 
+	protected function _getTemplate() {
+		return Frood::getFroodConfiguration()->getTemplateFile($this->_request->getModule(), $this->_getTemplateFile());
+	}
+
 	/**
 	 * Get the extension used for templates for the implementing renderer.
 	 *

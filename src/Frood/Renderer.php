@@ -20,7 +20,7 @@ abstract class FroodRenderer {
 
 	/** @var FroodRequest The request we're working with. */
 	protected $_request;
-	
+
 	/**
 	 * The constructor.
 	 *
@@ -34,7 +34,7 @@ abstract class FroodRenderer {
 	 * The Frood calls this when appropriate.
 	 * It should output directly.
 	 *
-	 * @param array $values The values assigned to the controller.
+	 * @param array &$values The values assigned to the controller.
 	 */
 	abstract public function render(array &$values);
 
@@ -46,10 +46,10 @@ abstract class FroodRenderer {
 	public function getContentType() {
 		return $this->_contentType;
 	}
-	
+
 	/**
 	 * Override the default content type set by this renderer.
-	 * 
+	 *
 	 * @param string $contentType
 	 */
 	public function setContentType($contentType) {
