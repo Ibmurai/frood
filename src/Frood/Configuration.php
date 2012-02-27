@@ -24,7 +24,18 @@ class FroodConfiguration {
 	 * @return string
 	 */
 	public function getTemplateFile($module, $templateFile) {
-		return "{$this->getModuleBasePath($module)}templates/$templateFile";
+		return "{$this->getTemplatesPath($module)}$templateFile";
+	}
+
+	/**
+	 * Get the base path for templates for a given module.
+	 *
+	 * @param string $module The module to get the path for.
+	 *
+	 * @return string The path.
+	 */
+	public function getTemplatesPath($module) {
+		return "{$this->getModuleBasePath($module)}templates/";
 	}
 
 	/**

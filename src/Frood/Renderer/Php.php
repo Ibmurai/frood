@@ -27,7 +27,7 @@ class FroodRendererPhp extends FroodRendererTemplate {
 	 * @return null
 	 */
 	public function render(array &$values) {
-		$templateFile = Frood::getFroodConfiguration()->getTemplateFile($this->_request->getModule(), $this->_getTemplateFile());
+		$templateFile = $this->_getTemplate();
 		if (file_exists($templateFile)) {
 			new FroodRendererPhpTemplateScoper($templateFile, $values);
 		} else {
