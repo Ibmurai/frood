@@ -49,6 +49,9 @@ abstract class FroodParameterCaster {
 	/** @var string The constant to tell the get function that you want an integer array. */
 	const AS_INTEGER_ARRAY = 'integer[]';
 
+	/** @var string The constant to tell the get function that you want an array of files. */
+	const AS_FILE_ARRAY = 'file[]';
+
 	/**
 	 * Attempt to cast a value as the given type.
 	 *
@@ -61,6 +64,10 @@ abstract class FroodParameterCaster {
 	 * @throws RuntimeException      If the type is unknown.
 	 */
 	protected static function _cast($type, $value) {
+		if ($value === null) {
+			return $value;
+		}
+
 		switch ($type) {
 			case null:
 				return $value;
@@ -86,6 +93,8 @@ abstract class FroodParameterCaster {
 				return self::_castAsStringArray($value);
 			case self::AS_INTEGER_ARRAY:
 				return self::_castAsIntegerArray($value);
+			case self::AS_FILE_ARRAY:
+				return self::_castAsFileArray($value);
 			default:
 				throw new RuntimeException('Unknown type, ' . $type . '.');
 		}
@@ -161,8 +170,12 @@ abstract class FroodParameterCaster {
 	 * @return array
 	 */
 	private static function _castAsArray($value) {
-		if (!is_object($value) && is_array($value)) {
-			return $value;
+		if (!is_object($value)) {
+			if (is_array($value)) {
+				return $value;
+			} else if (is_string($value) && $value == 'array()') {
+				return array();
+			}
 		}
 
 		throw new FroodExceptionCasting($value, self::AS_ARRAY);
@@ -317,7 +330,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @return integer[]
 	 */
-	public function _castAsIntegerArray($value) {
+	private static function _castAsIntegerArray($value) {
 		try {
 			$value = self::_castAsArray($value);
 
@@ -340,7 +353,7 @@ abstract class FroodParameterCaster {
 	 *
 	 * @return string[]
 	 */
-	public function _castAsStringArray($value) {
+	private static function _castAsStringArray($value) {
 		try {
 			$value = self::_castAsArray($value);
 
@@ -351,6 +364,29 @@ abstract class FroodParameterCaster {
 			return $value;
 		} catch (FroodExceptionCasting $e) {
 			throw new FroodExceptionCasting($value, self::AS_STRING_ARRAY);
+		}
+	}
+
+	/**
+	 * Attempt to cast value as an array of files.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodExceptionCasting If the value could not be cast.
+	 *
+	 * @return FroodFileParameter[]
+	 */
+	private static function _castAsFileArray($value) {
+		try {
+			$value = self::_castAsArray($value);
+
+			foreach ($value as &$item) {
+				$item = self::_castAsFile($item);
+			}
+
+			return $value;
+		} catch (FroodExceptionCasting $e) {
+			throw new FroodExceptionCasting($value, self::AS_FILE_ARRAY);
 		}
 	}
 
