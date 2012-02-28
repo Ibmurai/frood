@@ -344,7 +344,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 			array(
 				'laks'  => 'madpakke',
 				'tal'   => '42',
-				'mecha' => null,
+				'mecha' => '',
 			)
 		);
 
@@ -364,7 +364,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 				'laks'  => 'madpakke',
 				'tal'   => '42',
 				'svar'  => 42,
-				'mecha' => null,
+				'mecha' => new FroodFileParameter(__FILE__),
 			)
 		);
 
@@ -388,7 +388,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 				'tal'   => '22,4',
 				'svar'  => 42,
 				'mecha' => 32.42,
-				'slut'  => null,
+				'slut'  => '',
 				'spam'  => 'orm',
 			)
 		);
@@ -414,12 +414,13 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	public function testArrayConversion() {
 		$params = new FroodParameters(
 			array(
-				'skam'  => array(),
-				'laks'  => array('2'),
-				'tal'   => '22,4',
-				'svar'  => 42,
-				'mecha' => 32.42,
-				'slut'  => null,
+				'skam'       => array(),
+				'laks'       => array('2'),
+				'tal'        => '22,4',
+				'svar'       => 42,
+				'mecha'      => 32.42,
+				'slut'       => '',
+				'sluts_r_us' => 'array()',
 			)
 		);
 
@@ -429,6 +430,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array(''), $params->getSvar(FroodParameters::AS_ARRAY, array('')));
 		$this->assertEquals(array('1'), $params->getMecha(FroodParameters::AS_ARRAY, array('1')));
 		$this->assertEquals(array('1', '2'), $params->getSlut(FroodParameters::AS_ARRAY, array('1', '2')));
+		$this->assertEquals(array(), $params->getSlutsRUs(FroodParameters::AS_ARRAY));
 	}
 
 	/**
@@ -579,7 +581,6 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 			array('TRU'),
 			array('Nay'),
 			array(0.42),
-			array(null),
 		);
 	}
 
@@ -660,24 +661,6 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Test integer conversion exceptions when parameter value cannot be
-	 * interpreted as integer. When value is null.
-	 *
-	 * @expectedException FroodExceptionCasting
-	 *
-	 * @return null
-	 */
-	public function testIntegerConversionExceptionNull() {
-		$params = new FroodParameters(
-			array(
-				'laks'  => null,
-			)
-		);
-
-		$params->getLaks(FroodParameters::AS_INTEGER);
-	}
-
-	/**
-	 * Test integer conversion exceptions when parameter value cannot be
 	 * interpreted as integer. When value is an array.
 	 *
 	 * @expectedException FroodExceptionCasting
@@ -692,24 +675,6 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		);
 
 		$params->getLaks(FroodParameters::AS_INTEGER);
-	}
-
-	/**
-	 * Test string conversion exceptions when parameter value cannot be
-	 * interpreted as string. When value is null.
-	 *
-	 * @expectedException FroodExceptionCasting
-	 *
-	 * @return null
-	 */
-	public function testStringConversionExceptionNull() {
-		$params = new FroodParameters(
-			array(
-				'laks' => null,
-			)
-		);
-
-		$params->getLaks(FroodParameters::AS_STRING);
 	}
 
 	/**
@@ -742,24 +707,6 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 		$params = new FroodParameters(
 			array(
 				'laks'  => 'madpakke',
-			)
-		);
-
-		$params->getLaks(FroodParameters::AS_FLOAT);
-	}
-
-	/**
-	 * Test float conversion exceptions when parameter value cannot be
-	 * interpreted as float. When value is null.
-	 *
-	 * @expectedException FroodExceptionCasting
-	 *
-	 * @return null
-	 */
-	public function testFloatConversionExceptionNull() {
-		$params = new FroodParameters(
-			array(
-				'laks' => null,
 			)
 		);
 
