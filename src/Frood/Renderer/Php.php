@@ -9,11 +9,10 @@
 /**
  * FroodRendererTemplate - A base class for Frood renderers which require templates.
  *
- * @category   Frood
- * @package    Renderer
- * @subPackage Php
- * @author     Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
- * @author     Bo Thinggaard <akimsko@tnactas.dk>
+ * @category Frood
+ * @package  Renderer
+ * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodRendererPhp extends FroodRendererTemplate {
 	/** @var string The content type. */

@@ -143,8 +143,8 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
  *
  * @category   Test
  * @package    Frood
- * @subpackage Class
- * @author     Jens Riisom Schultz <jers@fynskemedier.dk>
+ * @subPackage Class
+ * @author     Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
 class StupidController extends FroodController {
 	/**

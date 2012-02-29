@@ -12,7 +12,7 @@
  * @category Frood
  * @package  Module
  * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
- * @author   Bo Thinggaard <both@fynskemedier.dk>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodModuleConfiguration {
 	/** @var string The module this configuration is for. */
@@ -69,12 +69,12 @@ class FroodModuleConfiguration {
 
 		return $paths[$subModule];
 	}
-	
+
 	/**
 	 * Check if sub module exists.
 	 *
 	 * @param string $subModule
-	 * 
+	 *
 	 * @return boolean
 	 */
 	final public function hasSubModule($subModule) {

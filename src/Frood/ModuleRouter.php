@@ -12,7 +12,7 @@
  * @category Frood
  * @package  Routing
  * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
- * @author   Bo Thinggaard <both@fynskemedier.dk>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodModuleRouter extends FroodRouter {
 	/** @var string The module this router is for. */
@@ -58,7 +58,7 @@ class FroodModuleRouter extends FroodRouter {
 			}
 		}
 	}
-	
+
 	/**
 	 * @return string
 	 */

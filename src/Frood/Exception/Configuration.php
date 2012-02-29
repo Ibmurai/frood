@@ -12,7 +12,7 @@
  * @category Frood
  * @package  Exception
  * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
- * @author   Bo Thinggaard <both@fynskemedier.dk>
+ * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodExceptionConfiguration extends FroodException {
 }
