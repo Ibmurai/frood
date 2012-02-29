@@ -60,6 +60,15 @@ class FroodModuleRouter extends FroodRouter {
 	}
 
 	/**
+	 * Get the module this router is routing.
+	 *
+	 * @return string
+	 */
+	public function getModule() {
+		return $this->_module;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function __toString() {
