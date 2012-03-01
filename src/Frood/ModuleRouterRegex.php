@@ -20,7 +20,7 @@ abstract class FroodModuleRouterRegex extends FroodModuleRouter {
 	 * @param FroodRequest $request The request to route.
 	 */
 	public function route(FroodRequest $request) {
-		if (!$this->_patternRoute($request)) {
+		if (!$this->_regexRoute($request)) {
 			parent::route($request);
 		}
 	}
@@ -31,7 +31,7 @@ abstract class FroodModuleRouterRegex extends FroodModuleRouter {
 	 *
 	 * @param FroodRequest The request to route.
 	 */
-	private function _patternRoute(FroodRequest $request) {
+	private function _regexRoute(FroodRequest $request) {
 		foreach ($this->_getRoutePatterns() as $pattern => $route) {
 			$matches = array();
 			$pattern = str_replace('/', '\/', $pattern);
