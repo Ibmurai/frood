@@ -84,7 +84,7 @@ class FroodModuleConfiguration {
 	/**
 	 * Get the module router for the configured module.
 	 *
-	 * @return FroodModuleConfiguration
+	 * @return FroodModuleRouter
 	 */
 	public function getRouter() {
 		return isset($this->_router) ? $this->_router : $this->_router = new FroodModuleRouter($this->_module);
