@@ -13,7 +13,7 @@
  * @package  Routing
  * @author   Jens Riisom Schultz <ibber_of_crew42@hotmail.com>
  */
-abstract class FroodModuleRouterPattern extends FroodModuleRouter {
+abstract class FroodModuleRouterRegex extends FroodModuleRouter {
 	/**
 	 * Route a given request, modifying the request.
 	 *
