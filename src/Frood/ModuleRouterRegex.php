@@ -7,7 +7,7 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 /**
- * FroodModuleRouterPattern - Routing inside a module... With patterns!
+ * FroodModuleRouterPattern - Routing inside a module... With regex patterns!
  *
  * @category Frood
  * @package  Routing
@@ -32,7 +32,7 @@ abstract class FroodModuleRouterRegex extends FroodModuleRouter {
 	 * @param FroodRequest The request to route.
 	 */
 	private function _regexRoute(FroodRequest $request) {
-		foreach ($this->_getRoutePatterns() as $pattern => $route) {
+		foreach ($this->_getRouteRegexes() as $pattern => $route) {
 			$matches = array();
 			$pattern = str_replace('/', '\/', $pattern);
 			if (preg_match('/^' . $pattern . '(?:$|\?)/', $request->getRequestString(), $matches)) {
@@ -94,9 +94,22 @@ abstract class FroodModuleRouterRegex extends FroodModuleRouter {
 	}
 
 	/**
-	 * This should return the patterns to use for routing.
+	 * This should return the regex patterns to use for routing.
 	 *
-	 * @return string[] The patterns to use for routing.
+	 * Example:
+	 * array(
+	 *     'lol(?:(?:/)(.*))?' => array(
+	 *         'module'     => 'Lolmodule', // Optional
+	 *         'subModule'  => 'public',
+	 *         'controller' => 'index',
+	 *         'action'     => 'index',
+	 *         'parameters' => array(
+	 *             'name' => '$1',
+	 *         ),
+	 *     ),
+	 * )
+	 *
+	 * @return array[] The patterns to use for routing.
 	 */
-	abstract protected function _getRoutePatterns();
+	abstract protected function _getRouteRegexes();
 }
