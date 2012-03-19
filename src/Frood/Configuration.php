@@ -47,7 +47,7 @@ class FroodConfiguration {
 		$modules = array();
 		$iterator = new DirectoryIterator($this->getModulesPath());
 		foreach ($iterator as $module) {
-			if ($module->isDir() && !$module->isDot()) {
+			if ($module->isDir() && !$module->isDot() && substr($module->getFilename(), 0, 1) != '.') {
 				$name = FroodUtil::convertPhpNameToHtmlName($module->getFilename());
 				$modules["/$name"] = array(FroodUtil::convertHtmlNameToPhpName($module->getFilename()));
 			}
