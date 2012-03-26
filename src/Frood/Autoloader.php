@@ -31,6 +31,15 @@ class FroodAutoloader {
 	}
 
 	/**
+	 * Dynamically add a class path to this autoloader.
+	 *
+	 * @param string $classPath
+	 */
+	public function addClassPath($classPath) {
+		$this->_classPaths[] = $classPath;
+	}
+
+	/**
 	 * Attempts to load the given class.
 	 *
 	 * @param string $name The name of the class to load.
