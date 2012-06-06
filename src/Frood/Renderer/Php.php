@@ -37,7 +37,7 @@ class FroodRendererPhp extends FroodRendererTemplate {
 	/**
 	 * Get the template extension.
 	 *
-	 * @return string The full template. Not a path to a file.
+	 * @return string
 	 */
 	protected function _getTemplateFileExtension() {
 		return 'tpl.php';
