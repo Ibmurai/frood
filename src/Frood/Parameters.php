@@ -210,24 +210,21 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 * Get these parameters as a string of "key=value" strings which are seperated by &'s.
 	 * Used by FroodController::_redirect().
 	 *
-	 * @throws RuntimeException If you attempt to encode a file parameter, or a multidimensional array.
+	 * @throws RuntimeException If you attempt to encode a file parameter.
 	 *
 	 * @return string A string of "key=value" strings which are seperated by &'s.
 	 */
 	public function toGetString() {
 		$fields = array();
+		$extras = array();
 		foreach ($this as $key => $value) {
 			if ($value instanceof FroodFileParameter) {
 				throw new RuntimeException("You cannot GET encode file parameters ($key).");
 			} else if (is_array($value)) {
-				foreach ($value as $subKey => $subValue) {
-					if ($subValue instanceof FroodFileParameter) {
-						throw new RuntimeException("You cannot GET encode file parameters ({$key}[{$subKey}]).");
-					} else if (is_array($subValue)) {
-						throw new RuntimeException("You cannot GET encode multidimensional arrays ({$key}[{$subKey}]).");
-					} else {
-						$fields[FroodUtil::convertPhpNameToHtmlName($key) . "[$subKey]"] = $subValue;
-					}
+				if (function_exists('http_build_str')) {
+					$extras[] = http_build_str(array(FroodUtil::convertPhpNameToHtmlName($key) => $value));
+				} else {
+					throw new RuntimeException("You cannot GET encode multidimensional array parameters ($key) without the pecl_http extension.");
 				}
 			} else {
 				$fields[FroodUtil::convertPhpNameToHtmlName($key)] = rawurlencode($value);
@@ -238,6 +235,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 		foreach ($fields as $key => $value) {
 			$getParams[] = "$key=$value";
 		}
+		$getParams = array_merge($getParams, $extras);
 
 		return implode('&', $getParams);
 	}
