@@ -17,10 +17,10 @@
 class FroodAutoloader {
 	/** @var array An array of paths to use as the base of autoloading. */
 	private $_classPaths;
-	
+
 	/** @var string[]|null An array of cached classes. */
 	private static $_classCache = array();
-	
+
 	/** @var string Complete path to cache file. */
 	private static $_cacheFile;
 
@@ -37,7 +37,7 @@ class FroodAutoloader {
 			self::$_cacheFile = $cacheDir . 'classcache';
 			self::$_classCache = self::_loadCache();
 		}
-		
+
 		$this->_register();
 	}
 
@@ -60,24 +60,24 @@ class FroodAutoloader {
 			self::$_classCache[$name] = $this->_classNameToPath($name);
 			self::_persistCache();
 		}
-		
+
 		if (self::$_classCache[$name]) {
 			include_once self::$_classCache[$name];
 		}
 	}
-	
+
 	/**
 	 * Load the class cache.
-	 * 
+	 *
 	 * @return string|null
 	 */
 	private static function _loadCache() {
-		return (self::$_cacheFile && $classCache = @file_get_contents(self::$_cacheFile)) ? unserialize($classCache) : null;
+		return (self::$_cacheFile && $classCache = @file_get_contents(self::$_cacheFile)) ? unserialize($classCache) : array();
 	}
-	
+
 	/**
 	 * Persist the class cache.
-	 * 
+	 *
 	 * @return boolean
 	 */
 	private static function _persistCache() {
