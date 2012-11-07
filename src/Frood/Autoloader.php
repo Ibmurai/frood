@@ -17,6 +17,12 @@
 class FroodAutoloader {
 	/** @var array An array of paths to use as the base of autoloading. */
 	private $_classPaths;
+	
+	/** @var string[]|null An array of cached classes. */
+	private static $_classCache = array();
+	
+	/** @var string Complete path to cache file. */
+	private static $_cacheFile;
 
 	/**
 	 * Construct a new autoloader.
@@ -24,9 +30,14 @@ class FroodAutoloader {
 	 *
 	 * @param array $classPaths An array of paths to use as the base of autoloading.
 	 */
-	public function __construct(array $classPaths) {
+	public function __construct(array $classPaths, $cacheDir = null) {
 		$this->_classPaths = $classPaths;
 
+		if ($cacheDir !== null) {
+			self::$_cacheFile = $cacheDir . 'classcache';
+			self::$_classCache = self::_loadCache();
+		}
+		
 		$this->_register();
 	}
 
@@ -45,9 +56,32 @@ class FroodAutoloader {
 	 * @param string $name The name of the class to load.
 	 */
 	public function autoload($name) {
-		if ($filePath = $this->_classNameToPath($name)) {
-			include_once $filePath;
+		if (!array_key_exists($name, self::$_classCache)) {
+			self::$_classCache[$name] = $this->_classNameToPath($name);
+			self::_persistCache();
 		}
+		
+		if (self::$_classCache[$name]) {
+			include_once self::$_classCache[$name];
+		}
+	}
+	
+	/**
+	 * Load the class cache.
+	 * 
+	 * @return string|null
+	 */
+	private static function _loadCache() {
+		return (self::$_cacheFile && $classCache = @file_get_contents(self::$_cacheFile)) ? unserialize($classCache) : null;
+	}
+	
+	/**
+	 * Persist the class cache.
+	 * 
+	 * @return boolean
+	 */
+	private static function _persistCache() {
+		return self::$_cacheFile ? @file_put_contents(self::$_cacheFile, serialize(self::$_classCache)) : false;
 	}
 
 	/**

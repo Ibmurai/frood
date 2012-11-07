@@ -124,4 +124,13 @@ class FroodConfiguration {
 	public function getRemoteUri(FroodRequest $request) {
 		return "{$request->getModule()}/{$request->getController()}/{$request->getAction()}";
 	}
+
+	/**
+	 * Get the path to froods cache dir.
+	 * 
+	 * @return string
+	 */
+	public function getCacheDir() {
+		return Frood::getFroodPath() . 'cache/';
+	}
 }

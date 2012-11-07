@@ -7,6 +7,7 @@
  * @license   http://www.apache.org/licenses/LICENSE-2.0
  */
 require_once dirname(__FILE__) . '/Frood/Autoloader.php';
+require_once dirname(__FILE__) . '/Frood/Configuration.php';
 /**
  * The Frood!
  *
@@ -38,10 +39,16 @@ class Frood {
 	 * @throws FroodException
 	 */
 	public function __construct(FroodConfiguration $configuration = null) {
-		$this->_setupFroodAutoloader();
 		if ($configuration) {
 			self::$_froodConfiguration = $configuration;
 		}
+		
+		if (!is_dir(self::getFroodConfiguration()->getCacheDir())) {
+			@mkdir(self::getFroodConfiguration()->getCacheDir(), 0777);
+		}
+		
+		$this->_setupFroodAutoloader();
+		
 		$this->_routerChain = new FroodRouterChain();
 	}
 
@@ -166,7 +173,7 @@ class Frood {
 			$classPaths = array(
 				self::getFroodPath() . 'Frood/',
 			);
-			self::$_froodAutoloader = new FroodAutoloader($classPaths);
+			self::$_froodAutoloader = new FroodAutoloader($classPaths, self::getFroodConfiguration()->getCacheDir());
 		}
 	}
 
