@@ -56,7 +56,7 @@ class FroodAutoloader {
 	 * @param string $name The name of the class to load.
 	 */
 	public function autoload($name) {
-		if (!array_key_exists($name, self::$_classCache)) {
+		if (!isset(self::$_classCache[$name])) {
 			self::$_classCache[$name] = $this->_classNameToPath($name);
 			self::_persistCache();
 		}
