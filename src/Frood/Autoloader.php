@@ -18,11 +18,14 @@ class FroodAutoloader {
 	/** @var array An array of paths to use as the base of autoloading. */
 	private $_classPaths;
 
-	/** @var string[]|null An array of cached classes. */
-	private static $_classCache = array();
+	/** @var string[] An array of cached classes. */
+	private $_classCache = array();
 
-	/** @var string Complete path to cache file. */
-	private static $_cacheFile;
+	/** @var string Complete path to cache directory. */
+	private $_cacheDir;
+	
+	/** @var string[] Stores classes that are not found by this autoloader. */
+	private $_fileCache = array();
 
 	/**
 	 * Construct a new autoloader.
@@ -31,11 +34,14 @@ class FroodAutoloader {
 	 * @param array $classPaths An array of paths to use as the base of autoloading.
 	 */
 	public function __construct(array $classPaths, $cacheDir = null) {
-		$this->_classPaths = $classPaths;
-
-		if ($cacheDir !== null) {
-			self::$_cacheFile = $cacheDir . 'classcache';
-			self::$_classCache = self::_loadCache();
+		if ($cacheDir === null) {
+			$cacheDir = dirname(__FILE__) . '/../cache/'; // TODO: cacheDir should not be part of the constructor. Either change to a static setter, or make it part of an injected cache component.
+		}
+		
+		$this->_cacheDir = $cacheDir;
+		
+		foreach ($classPaths as $classPath) {
+			$this->addClassPath($classPath);
 		}
 
 		$this->_register();
@@ -48,6 +54,68 @@ class FroodAutoloader {
 	 */
 	public function addClassPath($classPath) {
 		$this->_classPaths[] = $classPath;
+		
+		$this->_classCache[$classPath] = $this->_loadCache($classPath);
+		$this->_fileCache[$classPath] = $this->_getFiles($classPath);
+		
+		$this->_validateCache($classPath);
+	}
+	
+	/**
+	 * Converts a classpath to a valid filename.
+	 * 
+	 * @param string $classPath The class path.
+	 * 
+	 * @return string The classpath as a valid filename.
+	 */
+	private static function _classPathToFilename($classPath) {
+		static $namespaces = array();
+		
+		if (!isset($namespaces[$classPath])) {
+			$namespaces[$classPath] = preg_replace('/[\/\\\: ]/', '_', $classPath);
+		}
+		
+		return $namespaces[$classPath];
+	}
+	
+	/**
+	 * Check if the classes if the cache can still be found at the cached location.
+	 * Cleares cache if invalid.
+	 * 
+	 * @param string $classPath The class path.
+	 */
+	private function _validateCache($classPath) {
+		foreach ($this->_classCache[$classPath] as $class) {
+			if (!in_array($class, $this->_fileCache[$classPath])) {
+				$this->_classCache[$classPath] = array();
+				@unlink($this->_cacheDir . self::_classPathToFilename($classPath));
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Load the class cache for a class cache.
+	 * 
+	 * @param string $classPath The class path.
+	 *
+	 * @return array Class names => filepaths.
+	 */
+	private function _loadCache($classPath) {
+		$namespace = self::_classPathToFilename($classPath);
+		return ($this->_cacheDir && $classCache = @file_get_contents($this->_cacheDir . $namespace)) ? unserialize($classCache) : array();
+	}
+
+	/**
+	 * Persist the class cache for a class path.
+	 * 
+	 * @param string $classPath The class path.
+	 *
+	 * @return boolean Success.
+	 */
+	private function _persistCache($classPath) {
+		$namespace = self::_classPathToFilename($classPath);
+		return $this->_cacheDir ? @file_put_contents($this->_cacheDir . $namespace, serialize($this->_classCache[$classPath])) : false;
 	}
 
 	/**
@@ -56,32 +124,17 @@ class FroodAutoloader {
 	 * @param string $name The name of the class to load.
 	 */
 	public function autoload($name) {
-		if (!isset(self::$_classCache[$name])) {
-			self::$_classCache[$name] = $this->_classNameToPath($name);
-			self::_persistCache();
+		foreach ($this->_classCache as $classes) {
+			if (isset($classes[$name])) {
+				include_once $classes[$name];
+				return;
+			}
 		}
 
-		if (self::$_classCache[$name]) {
-			include_once self::$_classCache[$name];
+		if ($path = $this->_classNameToPath($name)) {
+			include_once $path;
+			return;
 		}
-	}
-
-	/**
-	 * Load the class cache.
-	 *
-	 * @return string|null
-	 */
-	private static function _loadCache() {
-		return (self::$_cacheFile && $classCache = @file_get_contents(self::$_cacheFile)) ? unserialize($classCache) : array();
-	}
-
-	/**
-	 * Persist the class cache.
-	 *
-	 * @return boolean
-	 */
-	private static function _persistCache() {
-		return self::$_cacheFile ? @file_put_contents(self::$_cacheFile, serialize(self::$_classCache)) : false;
 	}
 
 	/**
@@ -107,7 +160,7 @@ class FroodAutoloader {
 
 		spl_autoload_register(array($this, 'autoload'));
 	}
-
+	
 	/**
 	 * Convert a class name to a path to a file containing the class
 	 * definition.
@@ -123,7 +176,11 @@ class FroodAutoloader {
 			$regex = '/[\/\\\][a-z]+[A-Za-z_-]*[\/\\\]' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '[\/\\\\\\]?\\1', substr($name, 1)) . '\.php$/';
 
 			foreach ($this->_classPaths as $classPath) {
-				if ($path = $this->_recursiveFileSearch($classPath, $regex)) {
+				if ($path = $this->_searchFiles($classPath, $regex)) {
+					
+					$this->_classCache[$classPath][$name] = $path;
+					$this->_persistCache($classPath);
+					
 					return $path;
 				}
 			}
@@ -131,7 +188,7 @@ class FroodAutoloader {
 
 		return null;
 	}
-
+	
 	/**
 	 * Internally used method. Used by _classNameToPath.
 	 *
@@ -140,31 +197,39 @@ class FroodAutoloader {
 	 *
 	 * @return null|string null if no match was found.
 	 */
-	private function _recursiveFileSearch($directory, $regex) {
-		if (!is_dir($directory)) {
-			return null;
+	private function _searchFiles($classpath, $regex) {
+		foreach ($this->_fileCache[$classpath] as $filePath) {
+			if (preg_match($regex, $filePath)) {
+				return $filePath;
+			}
+		}
+	}
+	
+	/**
+	 * Internally used method. Used by addClassPath to cache all files in the newly added class path.
+	 *
+	 * @param string $classPath The directory to search in.
+	 * @param array  &$files    The array to store filepaths in.
+	 *
+	 * @return array The file paths.
+	 */
+	private function _getFiles($classPath, array &$files = array()) {
+		if (!is_dir($classPath)) {
+			return $files;
 		}
 
-		$iterator = new DirectoryIterator($directory);
-
-		$subFolders = array();
+		$iterator = new DirectoryIterator($classPath);
 
 		foreach ($iterator as $finfo) {
 			if (substr($finfo->getBasename(), 0, 1) != '.') {
-				if ($finfo->isFile() && preg_match($regex, $finfo->getPathname())) {
-					return $finfo->getPathname();
+				if ($finfo->isFile()) {
+					$files[] = $finfo->getPathname();
 				} else if ($finfo->isDir()) {
-					$subFolders[] = $finfo->getPathname();
+					$this->_getFiles($finfo->getPathname(), $files);
 				}
 			}
 		}
 
-		foreach ($subFolders as $folder) {
-			if ($sub = $this->_recursiveFileSearch($folder, $regex)) {
-				return $sub;
-			}
-		}
-
-		return null;
+		return $files;
 	}
 }
