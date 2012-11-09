@@ -43,10 +43,6 @@ class Frood {
 			self::$_froodConfiguration = $configuration;
 		}
 
-		if (!is_dir(self::getFroodConfiguration()->getCacheDir())) {
-			@mkdir(self::getFroodConfiguration()->getCacheDir(), 0777);
-		}
-
 		$this->_setupFroodAutoloader();
 
 		$this->_routerChain = new FroodRouterChain();
@@ -173,7 +169,8 @@ class Frood {
 			$classPaths = array(
 				self::getFroodPath() . 'Frood/',
 			);
-			self::$_froodAutoloader = new FroodAutoloader($classPaths, self::getFroodConfiguration()->getCacheDir());
+			FroodAutoloader::setCacheDir(self::getFroodConfiguration()->getCacheDir());
+			self::$_froodAutoloader = new FroodAutoloader($classPaths);
 		}
 	}
 
@@ -190,6 +187,6 @@ class Frood {
 			$modulePath . $this->_moduleConfiguration->getAutoloadBasePath('shared'),
 		);
 
-		$this->_moduleAutoloader = new FroodAutoloader($classPaths, self::getFroodConfiguration()->getCacheDir());
+		$this->_moduleAutoloader = new FroodAutoloader($classPaths);
 	}
 }
