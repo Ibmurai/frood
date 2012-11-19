@@ -54,12 +54,17 @@ class FroodAutoloader {
 	 * @param string $classPath
 	 */
 	public function addClassPath($classPath) {
-		$this->_classPaths[] = $classPath;
-		$this->_fileCache[$classPath] = self::_getFiles($classPath);
-		$this->_missed = array();
+		if (!preg_match('/[\/\\\]$/', $classPath)) {
+			$classPath .= '/';
+		}
+		if (!isset($this->_fileCache[$classPath])) {
+			$this->_classPaths[] = $classPath;
+			$this->_fileCache[$classPath] = self::_getFiles($classPath);
+			$this->_missed = array();
 
-		self::_loadCache($classPath);
-		$this->_validateCache($classPath);
+			self::_loadCache($classPath);
+			$this->_validateCache($classPath);
+		}
 	}
 	
 	/**
