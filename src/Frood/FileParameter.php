@@ -53,7 +53,7 @@ class FroodFileParameter implements Serializable {
 
 		if ($type === null && ($error === 0 || $error === null)) {
 			$matches = array();
-			if (preg_match('/^(\S+)/', exec('file -bi ' . escapeshellarg($path)), $matches)) {
+			if (preg_match('/^(\S+)/', exec('file --brief --mime ' . escapeshellarg($path)), $matches)) {
 				$type = $matches[1];
 			}
 		}
