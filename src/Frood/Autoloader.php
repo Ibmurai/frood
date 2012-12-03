@@ -129,7 +129,7 @@ class FroodAutoloader {
 	 * @return boolean Success.
 	 */
 	private static function _persistCache($classPath) {
-		if (!self::$_classCache[$classPath]) {
+		if (!isset(self::$_classCache[$classPath])) {
 			return;
 		}
 		$filename = self::_classPathToFilename($classPath);
