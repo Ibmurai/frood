@@ -121,7 +121,7 @@ class FroodRemote {
 		}
 
 		if ($jsonDecode) {
-			if (($json = json_decode($result, true)) === false) {
+			if (($json = json_decode($result, true)) === null) {
 				throw new FroodExceptionRemoteDispatch($this->_request, $this->_host, '', null, "Invalid JSON received: $result");
 			}
 			return $json;
