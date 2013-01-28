@@ -1,6 +1,7 @@
 <?php
 /**
  * This file is part of The Frood framework.
+ *
  * @link https://github.com/Ibmurai/frood
  *
  * @copyright Copyright 2011 Jens Riisom Schultz
@@ -23,10 +24,10 @@ class FroodAutoloader {
 
 	/** @var string Complete path to cache directory. */
 	private static $_cacheDir;
-	
+
 	/** @var string[] Store classes that are not found in this autoloader. */
 	private $_missed = array();
-	
+
 	/** @var string[] Store the file paths for all files in a class path. */
 	private $_fileCache = array();
 
@@ -40,7 +41,7 @@ class FroodAutoloader {
 		if (self::$_cacheDir === null) {
 			self::setCacheDir(dirname(__FILE__) . '/autoloader_cache/');
 		}
-		
+
 		foreach ($classPaths as $classPath) {
 			$this->addClassPath($classPath);
 		}
@@ -58,36 +59,36 @@ class FroodAutoloader {
 			$classPath .= '/';
 		}
 		if (!isset($this->_fileCache[$classPath])) {
-			$this->_classPaths[] = $classPath;
+			$this->_classPaths[]          = $classPath;
 			$this->_fileCache[$classPath] = self::_getFiles($classPath);
-			$this->_missed = array();
+			$this->_missed                = array();
 
 			self::_loadCache($classPath);
 			$this->_validateCache($classPath);
 		}
 	}
-	
+
 	/**
 	 * Converts a classpath to a valid filename.
-	 * 
+	 *
 	 * @param string $classPath The class path.
-	 * 
+	 *
 	 * @return string The classpath as a valid filename.
 	 */
 	private static function _classPathToFilename($classPath) {
 		static $filenames = array();
-		
+
 		if (!isset($filenames[$classPath])) {
 			$filenames[$classPath] = preg_replace('/[\/\\\: ]/', '_', $classPath);
 		}
-		
+
 		return $filenames[$classPath];
 	}
-	
+
 	/**
 	 * Set the cache directory for all frood autoloaders.
 	 * Will try to create the directory if it doesnt exist.
-	 * 
+	 *
 	 * @param string $cacheDir Full path to the caching directory.
 	 */
 	public static function setCacheDir($cacheDir) {
@@ -95,11 +96,11 @@ class FroodAutoloader {
 			self::$_cacheDir = $cacheDir;
 		}
 	}
-	
+
 	/**
 	 * Check if the classes in the cache can still be found at the cached location.
 	 * Cleares cache if invalid.
-	 * 
+	 *
 	 * @param string $classPath The class path.
 	 */
 	private function _validateCache($classPath) {
@@ -113,17 +114,17 @@ class FroodAutoloader {
 
 	/**
 	 * Load the class cache for a class path.
-	 * 
+	 *
 	 * @param string $classPath The class path.
 	 */
 	private static function _loadCache($classPath) {
-		$filename = self::_classPathToFilename($classPath);
+		$filename                      = self::_classPathToFilename($classPath);
 		self::$_classCache[$classPath] = (self::$_cacheDir && ($classCache = @file_get_contents(self::$_cacheDir . $filename)) && ($classCache = @unserialize($classCache))) ? $classCache : array();
 	}
 
 	/**
 	 * Persist the class cache for a class path.
-	 * 
+	 *
 	 * @param string $classPath The class path.
 	 *
 	 * @return boolean Success.
@@ -133,27 +134,29 @@ class FroodAutoloader {
 			return;
 		}
 		$filename = self::_classPathToFilename($classPath);
+
 		return self::$_cacheDir ? @file_put_contents(self::$_cacheDir . $filename, @serialize(self::$_classCache[$classPath]), LOCK_EX) : false;
 	}
-	
+
 	/**
 	 * Cleares the file and static memory cache.
-	 * 
+	 *
 	 * @param string $classPath The class path.
-	 * 
+	 *
 	 * @return boolean Success.
 	 */
 	private static function _clearCache($classPath) {
-		$filename = self::_classPathToFilename($classPath);
+		$filename                      = self::_classPathToFilename($classPath);
 		self::$_classCache[$classPath] = array();
+
 		return self::$_cacheDir ? @file_put_contents(self::$_cacheDir . $filename, '', LOCK_EX) : false;
 	}
-	
+
 	/**
 	 * Get a cached path to a class.
-	 * 
+	 *
 	 * @param string $name The class name.
-	 * 
+	 *
 	 * @return string|null The cached path to the class.
 	 */
 	private static function _checkCache($name) {
@@ -176,9 +179,10 @@ class FroodAutoloader {
 
 		if (($path = self::_checkCache($name)) || ($path = $this->_classNameToPath($name))) {
 			include_once $path;
+
 			return;
 		}
-		
+
 		$this->_missed[$name] = true;
 	}
 
@@ -191,7 +195,7 @@ class FroodAutoloader {
 		if (!spl_autoload_unregister(array($this, 'autoload'))) {
 			throw new RumtimeException('Could not unregister.');
 		}
-		
+
 		foreach ($this->_classPaths as $classPath) {
 			self::_persistCache($classPath);
 			unset(self::$_classCache[$classPath]);
@@ -210,7 +214,7 @@ class FroodAutoloader {
 
 		spl_autoload_register(array($this, 'autoload'));
 	}
-	
+
 	/**
 	 * Convert a class name to a path to a file containing the class
 	 * definition.
@@ -228,6 +232,7 @@ class FroodAutoloader {
 			foreach ($this->_classPaths as $classPath) {
 				if ($path = $this->_searchFiles($classPath, $regex)) {
 					self::$_classCache[$classPath][$name] = $path;
+
 					return $path;
 				}
 			}
@@ -235,7 +240,7 @@ class FroodAutoloader {
 
 		return null;
 	}
-	
+
 	/**
 	 * Internally used method. Used by _classNameToPath.
 	 *
@@ -251,7 +256,7 @@ class FroodAutoloader {
 			}
 		}
 	}
-	
+
 	/**
 	 * Internally used method. Used by addClassPath to cache all files in the newly added class path.
 	 *
@@ -279,7 +284,7 @@ class FroodAutoloader {
 
 		return $files;
 	}
-	
+
 	/**
 	 * Persist memory cache for known class paths.
 	 */
