@@ -228,7 +228,7 @@ class FroodAutoloader {
 		if (preg_match('/^((?:\\\\?[A-Z][a-z0-9]*)+)$/', $name)) {
 			// Build a regular expression matching the end of the filepaths to accept...
 			if (strpos($name, '\\') !== false) {
-				$regex = '/' . str_replace('\\', '\\/', $name) . '\\.php$/';
+				$regex = '/' . str_replace('\\', '(?:\\/|\\\\)', $name) . '\\.php$/';
 			} else {
 				$regex = '/[\/\\\][a-z]+[A-Za-z_-]*[\/\\\]' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '[\/\\\\\\]?\\1', substr($name, 1)) . '\.php$/';
 			}
