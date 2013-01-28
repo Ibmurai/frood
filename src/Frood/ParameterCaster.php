@@ -404,7 +404,7 @@ abstract class FroodParameterCaster {
 	}
 
 	/**
-	 * Reencode (if nessesary) the string to our choosen character set.
+	 * Reencode (if necessary) the string to our chosen character set.
 	 *
 	 * @param string $value   The string to encode.
 	 * @param string $charset The charset to encode to.
