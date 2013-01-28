@@ -185,7 +185,7 @@ class FroodRequest {
 	 */
 	public function getControllerClassName() {
 		if (Frood::getFroodConfiguration()->getModuleConfiguration($this->getModule())->useNamespaces()) {
-			return '\\' . FroodUtil::convertHtmlNameToPhpName("{$this->getModule()}\\{$this->getSubModule()}\\controller\\{$this->getController()}");
+			return '\\' . FroodUtil::convertHtmlNameToPhpName("{$this->getModule()}\\_{$this->getSubModule()}\\_controller\\_{$this->getController()}");
 		} else {
 			return FroodUtil::convertHtmlNameToPhpName("{$this->getModule()}_{$this->getSubModule()}_controller_{$this->getController()}");
 		}
