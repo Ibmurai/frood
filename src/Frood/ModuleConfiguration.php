@@ -45,10 +45,17 @@ class FroodModuleConfiguration {
 	 * @return array Paths.
 	 */
 	protected function getAutoloadBasePaths() {
-		return array(
-			'public' => 'Public/',
-			'shared' => 'Shared/',
-		);
+		if ($this->useNamespaces()) {
+			return array(
+				'public' => 'Pub/',
+				'shared' => 'Shared/',
+			);
+		} else {
+			return array(
+				'public' => 'Public/',
+				'shared' => 'Shared/',
+			);
+		}
 	}
 
 	/**

@@ -178,7 +178,7 @@ class FroodAutoloader {
 		}
 
 		if (($path = self::_checkCache($name)) || ($path = $this->_classNameToPath($name))) {
-			include_once $path;
+			require_once $path;
 
 			return;
 		}
@@ -225,19 +225,13 @@ class FroodAutoloader {
 	 * @return null|string A full path or null if no suitable file could be found.
 	 */
 	private function _classNameToPath($name) {
-		if (strpos($name, '\\') !== false) {
-			foreach ($this->_classPaths as $classPath) {
-				if (file_exists($file = $classPath . str_replace('\\', '/', $name) . '.php')) {
-					return $file;
-				}
-			}
-
-			return null;
-		}
-
-		if (preg_match('/^((?:[A-Z][a-z0-9]*)+)$/', $name)) {
+		if (preg_match('/^((?:\\\\?[A-Z][a-z0-9]*)+)$/', $name)) {
 			// Build a regular expression matching the end of the filepaths to accept...
-			$regex = '/[\/\\\][a-z]+[A-Za-z_-]*[\/\\\]' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '[\/\\\\\\]?\\1', substr($name, 1)) . '\.php$/';
+			if (strpos($name, '\\') !== false) {
+				$regex = '/' . str_replace('\\', '\\/', $name) . '\\.php$/';
+			} else {
+				$regex = '/[\/\\\][a-z]+[A-Za-z_-]*[\/\\\]' . substr($name, 0, 1) . preg_replace('/([A-Z])/', '[\/\\\\\\]?\\1', substr($name, 1)) . '\.php$/';
+			}
 
 			foreach ($this->_classPaths as $classPath) {
 				if ($path = $this->_searchFiles($classPath, $regex)) {
@@ -286,8 +280,10 @@ class FroodAutoloader {
 			if (substr($finfo->getBasename(), 0, 1) != '.') {
 				if ($finfo->isFile()) {
 					$files[] = $finfo->getPathname();
-				} else if ($finfo->isDir()) {
-					self::_getFiles($finfo->getPathname(), $files);
+				} else {
+					if ($finfo->isDir()) {
+						self::_getFiles($finfo->getPathname(), $files);
+					}
 				}
 			}
 		}
