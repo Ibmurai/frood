@@ -17,6 +17,7 @@ It will help you to:
 Requirements
 ------------
 
+  * PHP 5.2.7+
   * You need mod_rewrite.
   * The `pecl_http` extension must be installed for HTTP remoting to work. You probably won't need this.
   * `iconv` extension is needed for action parameters with a guaranteed encoding (`string/UTF-8` and `string/ISO-8859-1`).

@@ -26,7 +26,12 @@ abstract class FroodUtil {
 		$name = strtolower(substr($name, 0, 1)) . substr($name, 1);
 
 		// Second replace capital letters with _ followed by the letter, lowercased.
-		return preg_replace('/([A-Z])/e', "'_'.strtolower('\\1')", $name);
+		if (PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 3) {
+			// /e modifier is deprecated in 5.5 and the lambda function is the more elegang approach, so do that if 5.3 or better.
+			return preg_replace_callback('/([A-Z])/', function($matches) { return '_' . strtolower($matches[1]); }, $name);
+		} else {
+			return preg_replace('/([A-Z])/e', "'_'.strtolower('\\1')", $name);
+		}
 	}
 
 	/**
@@ -44,7 +49,12 @@ abstract class FroodUtil {
 		}
 
 		// Second replace _ followed by a letter with capital letters.
-		return preg_replace('/(_[a-z0-9])/e', "substr(strtoupper('\\1'),1)", $name);
+		if (PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 3) {
+			// /e modifier is deprecated in 5.5 and the lambda function is the more elegang approach, so do that if 5.3 or better.
+			return preg_replace_callback('/(_[a-z0-9])/', function($matches) { return substr(strtoupper($matches[1]),1); }, $name);
+		} else {
+			return preg_replace('/(_[a-z0-9])/e', "substr(strtoupper('\\1'),1)", $name);
+		}
 	}
 
 	/**
