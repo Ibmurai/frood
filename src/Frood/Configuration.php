@@ -110,7 +110,7 @@ class FroodConfiguration {
 		if (file_exists($moduleConfigurationPath)) {
 			require_once $moduleConfigurationPath;
 			if (!class_exists($moduleConfigurationClassName = FroodUtil::convertHtmlNameToPhpName("{$module}_configuration"))) {
-				if (!class_exists($moduleConfigurationClassName = FroodUtil::convertHtmlNameToPhpName("{$module}") . '\\Configuration')) {
+				if (!class_exists($moduleConfigurationClassName = '\\' . FroodUtil::convertHtmlNameToPhpName("{$module}") . '\\Configuration')) {
 					throw new FroodExceptionConfiguration("$moduleConfigurationPath was found, but does not define a correctly named configuration class.");
 				}
 			}
