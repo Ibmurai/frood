@@ -89,4 +89,13 @@ class FroodModuleConfiguration {
 	public function getRouter() {
 		return isset($this->_router) ? $this->_router : $this->_router = new FroodModuleRouter($this->_module);
 	}
+
+	/**
+	 * Does this module use namespaces?
+	 *
+	 * @return boolean
+	 */
+	public function useNamespaces() {
+		return true;
+	}
 }

@@ -93,9 +93,11 @@ class FroodConfiguration {
 	 * @param string $module The module to get configuration for.
 	 *
 	 * @return FroodModuleConfiguration
+	 *
+	 * @throws FroodExceptionConfiguration If a Configuration.php is found, but it does not define a valid configuration.
 	 */
 	public function getModuleConfiguration($module) {
-		/** @var FroodModuleConfiguration[] */
+		/* @var FroodModuleConfiguration[] */
 		static $moduleConfigurations = array();
 
 		if (array_key_exists($module, $moduleConfigurations)) {
@@ -106,8 +108,12 @@ class FroodConfiguration {
 
 		$moduleConfigurationClassName = 'FroodModuleConfiguration';
 		if (file_exists($moduleConfigurationPath)) {
-			include_once $moduleConfigurationPath;
-			$moduleConfigurationClassName = FroodUtil::convertHtmlNameToPhpName("{$module}_configuration");
+			require_once $moduleConfigurationPath;
+			if (!class_exists($moduleConfigurationClassName = FroodUtil::convertHtmlNameToPhpName("{$module}_configuration"))) {
+				if (!class_exists($moduleConfigurationClassName = FroodUtil::convertHtmlNameToPhpName("{$module}") . '\\Configuration')) {
+					throw new FroodExceptionConfiguration("$moduleConfigurationPath was found, but does not define a correctly named configuration class.");
+				}
+			}
 		}
 
 		return $moduleConfigurations[$module] = new $moduleConfigurationClassName($module);
