@@ -76,7 +76,16 @@ class FroodRemote {
 			$headers = headers_list();
 
 			$extern = new Frood();
+
+			$this->_errors = array();
+			$previousErrorHandler = set_error_handler(array($this, 'handleError'));
 			$extern->dispatch($this->_request, false);
+			set_error_handler($previousErrorHandler);
+
+			if (count($this->_errors) != 0) {
+				throw $this->_remoteErrorsException();
+			}
+
 			$extern->unregisterAutoloader();
 
 			if (!$this->_ignoreModifiedHeaders) {
@@ -160,5 +169,42 @@ class FroodRemote {
 		$httpRequest->addPostFields($fields);
 
 		return $httpRequest;
+	}
+
+	/** @var array Contains any errors which occured during non-http remoting. This is flushed before dispatching. */
+	private $_errors = array();
+
+	/**
+	 * A temporary error handling function to capture any and all errors occuring when remoting w/o http.
+	 *
+	 * @param integer $errno      Error number
+	 * @param string  $errstr     Error string
+	 * @param string  $errfile    Error file
+	 * @param integer $errline    Error line
+	 *
+	 * @return boolean Always returns true to eat them errors!
+	 */
+	public function handleError($errno, $errstr, $errfile, $errline) {
+		if (error_reporting() === 0) {
+			return false;
+		}
+
+		$this->_errors[] = array(
+			'errno' => $errno,
+			'errstr' => $errstr,
+			'errfile' => $errfile,
+			'errline' => $errline,
+		);
+
+		return true;
+	}
+
+	/**
+	 * Get an exception with the different errors which occured during remoting.
+	 *
+	 * @return FroodExceptionRemoteDispatch
+	 */
+	private function _remoteErrorsException() {
+		return new FroodExceptionRemoteDispatchErrors($this->_request, $this->_host, $this->_errors);
 	}
 }
