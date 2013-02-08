@@ -14,6 +14,12 @@ It will help you to:
   * Communicate with other Froody modules without the overhead and hassle of http requests.
 
 
+Notes
+-----
+
+  * From version 1.2.1 we have switched to [semantic versioning](http://semver.org/) (version 2.0.0-rc.1)
+
+
 Requirements
 ------------
 
