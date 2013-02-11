@@ -52,10 +52,11 @@ abstract class FroodController {
 	 * @param string $key   The key to assign.
 	 * @param mixed  $value The value to assign.
 	 *
-	 * @return null
+	 * @return \FroodController
 	 */
 	final public function assign($key, $value) {
 		$this->_values[$key] = $value;
+		return $this;
 	}
 
 	/**
