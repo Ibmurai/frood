@@ -207,6 +207,19 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	}
 
 	/**
+	 * Unset a parameter. Intended for internal use, but you know, whatever floats your boat.
+	 *
+	 * @param string $name The CamelCased name of the parameter to unset.
+	 *
+	 * @return FroodParameters This.
+	 */
+	public function unsetParameter($name) {
+		unset($this->_values[$name]);
+
+		return $this;
+	}
+
+	/**
 	 * Get these parameters as a string of "key=value" strings which are seperated by &'s.
 	 * Used by FroodController::_redirect().
 	 *
@@ -283,7 +296,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 */
 	public function valid() {
 		$key = key($this->_values);
-		return ($key !== NULL && $key !== FALSE);
+		return ($key !== null && $key !== false);
 	}
 
 	/**

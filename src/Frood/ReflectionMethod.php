@@ -41,6 +41,8 @@ class FroodReflectionMethod {
 	 * @param FroodParameters $params The parameters for the action.
 	 *
 	 * @return array
+	 *
+	 * @throws FroodExceptionCasting When casting problems occur.
 	 */
 	private function getParameters(FroodParameters $params) {
 		$docs = $this->getParameterDocs();
@@ -49,12 +51,15 @@ class FroodReflectionMethod {
 
 		foreach ($docs as $key => $doc) {
 			$ucName = ucfirst($key);
-			try {
+			if ($doc['type'] === 'FroodParameters' || $doc['type'] === '\\FroodParameters') {
+				$values[$key] = $params;
+			} else try {
 				if ($doc['default'] === '') {
 					$values[$key] = $params->{"get$ucName"}($doc['type']);
 				} else {
 					$values[$key] = $params->{"get$ucName"}($doc['type'], $doc['default'] !== 'null' ? $doc['default'] : null);
 				}
+				$params->unsetParameter($ucName);
 			} catch (FroodExceptionCasting $e) {
 				throw new FroodExceptionCasting($e->getValue(), $e->getType(), $e->getMessage(), $e->getCode(), "Parameter, $ucName, in " . get_class($this->_controllerInstance) . '::' . $this->_reflectionMethod->getName() . '()');
 			}
