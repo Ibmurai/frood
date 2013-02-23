@@ -81,7 +81,7 @@ class FroodRemote {
 			}
 			$extern->dispatch($this->_request, false);
 			if ($getErrors) {
-				set_error_handler($previousErrorHandler);
+				if ($previousErrorHandler) set_error_handler($previousErrorHandler);
 
 				if (count($this->_errors) != 0) {
 					ob_end_clean();
