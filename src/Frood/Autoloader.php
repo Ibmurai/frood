@@ -189,11 +189,11 @@ class FroodAutoloader {
 	/**
 	 * Unregister the autoloader. Persist and clean memory cache.
 	 *
-	 * @throws RumtimeException If the autoloader could not be unregistered.
+	 * @throws RuntimeException If the autoloader could not be unregistered.
 	 */
 	public function unregister() {
 		if (!spl_autoload_unregister(array($this, 'autoload'))) {
-			throw new RumtimeException('Could not unregister.');
+			throw new RuntimeException('Could not unregister.');
 		}
 
 		foreach ($this->_classPaths as $classPath) {
