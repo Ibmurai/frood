@@ -74,7 +74,7 @@ class Frood {
 				return;
 			}
 		}
-		throw new FroodExceptionDispatch($request, 'No prefix found matching the request');
+		throw new FroodExceptionDispatch($request, 'No prefix found matching the request: ' . $request->getRequestString());
 	}
 
 	/**
