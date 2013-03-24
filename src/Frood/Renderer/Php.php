@@ -77,6 +77,8 @@ final class FroodRendererPhpTemplateScoper {
 	 * @param string $name The property to get.
 	 *
 	 * @return mixed
+	 *
+	 * @throws FroodExceptionRenderer If you try to access a value which has not been assigned.
 	 */
 	public function __get($name) {
 		if (array_key_exists($name, self::$_values)) {
@@ -84,5 +86,16 @@ final class FroodRendererPhpTemplateScoper {
 		} else {
 			throw new FroodExceptionRenderer("Value, $name, has not been assigned.");
 		}
+	}
+
+	/**
+	 * This facilitates isset checking assigned values from the PHP template, by calling isset($this->[propertyName]).
+	 *
+	 * @param string $name The property to isset check.
+	 *
+	 * @return boolean
+	 */
+	public function __isset($name) {
+		return array_key_exists($name, self::$_values);
 	}
 }
