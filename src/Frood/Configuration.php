@@ -139,4 +139,13 @@ class FroodConfiguration {
 	public function getCacheDir() {
 		return Frood::getFroodPath() . 'cache/';
 	}
+	
+	/**
+	 * Should persistant miss cache be enabled?
+	 * 
+	 * @return boolean Enable/disable.
+	 */
+	public function getAutoloaderMissCacheEnabled() {
+		return true;
+	}
 }

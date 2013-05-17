@@ -18,18 +18,27 @@
 class FroodAutoloader {
 	/** @var array An array of paths to use as the base of autoloading. */
 	private $_classPaths;
-
-	/** @var string[] Stores cached classes, as class name => path to class. */
-	private static $_classCache = array();
+	
+	/** @var boolean Is miss cache enabled. */
+	private static $_missCacheEnabled = true;
 
 	/** @var string Complete path to cache directory. */
 	private static $_cacheDir;
+	
+	/** @var string[] Stores cached classes, as class name => path to class. */
+	private static $_classCache = array();
 
 	/** @var string[] Store classes that are not found in this autoloader. */
-	private $_missed = array();
+	private static $_missCache = array();
 
 	/** @var string[] Store the file paths for all files in a class path. */
 	private $_fileCache = array();
+	
+	/** @var string Filename extension of hit cache file. */
+	const EXT_CACHE_HITS = '.hits';
+	
+	/** @var string Filename extension of miss cache file. */
+	const EXT_CACHE_MISS = '.miss';
 
 	/**
 	 * Construct a new autoloader.
@@ -55,16 +64,10 @@ class FroodAutoloader {
 	 * @param string $classPath
 	 */
 	public function addClassPath($classPath) {
-		if (!preg_match('/[\/\\\]$/', $classPath)) {
-			$classPath .= '/';
-		}
+		$classPath = realpath($classPath);
 		if (!isset($this->_fileCache[$classPath])) {
-			$this->_classPaths[]          = $classPath;
-			$this->_fileCache[$classPath] = self::_getFiles($classPath);
-			$this->_missed                = array();
-
+			$this->_classPaths[] = $classPath;
 			self::_loadCache($classPath);
-			$this->_validateCache($classPath);
 		}
 	}
 
@@ -96,6 +99,17 @@ class FroodAutoloader {
 			self::$_cacheDir = $cacheDir;
 		}
 	}
+	
+	/**
+	 * Enable or disabled persistant miss caching.
+	 * 
+	 * @param boolean $enabled Enable/disable.
+	 */
+	public static function setMissCacheEnabled($enabled = true) {
+		if (!self::$_missCacheEnabled = $enabled) {
+			self::$_missCache = array();
+		}
+	}
 
 	/**
 	 * Check if the classes in the cache can still be found at the cached location.
@@ -111,6 +125,14 @@ class FroodAutoloader {
 			}
 		}
 	}
+	
+	private static function _hitsFile($classPath) {
+		return self::$_cacheDir . self::_classPathToFilename($classPath) . self::EXT_CACHE_HITS;
+	}
+	
+	private static function _missFile($classPath) {
+		return self::$_cacheDir . self::_classPathToFilename($classPath) . self::EXT_CACHE_MISS;
+	}
 
 	/**
 	 * Load the class cache for a class path.
@@ -118,8 +140,12 @@ class FroodAutoloader {
 	 * @param string $classPath The class path.
 	 */
 	private static function _loadCache($classPath) {
-		$filename                      = self::_classPathToFilename($classPath);
-		self::$_classCache[$classPath] = (self::$_cacheDir && ($classCache = @file_get_contents(self::$_cacheDir . $filename)) && ($classCache = @unserialize($classCache))) ? $classCache : array();
+		if (self::$_cacheDir) {
+			self::$_classCache[$classPath] = (($classCache = @file_get_contents(self::_hitsFile($classPath))) && ($classCache = @unserialize($classCache))) ? $classCache : array();
+			if (self::$_missCacheEnabled) {
+				self::$_missCache[$classPath]  = (($missCache  = @file_get_contents(self::_missFile($classPath))) && ($missCache  = @unserialize($missCache)))  ? $missCache  : array();
+			}
+		}
 	}
 
 	/**
@@ -130,12 +156,16 @@ class FroodAutoloader {
 	 * @return boolean Success.
 	 */
 	private static function _persistCache($classPath) {
-		if (!isset(self::$_classCache[$classPath])) {
+		if (!self::$_cacheDir) {
 			return;
 		}
-		$filename = self::_classPathToFilename($classPath);
 
-		return self::$_cacheDir ? @file_put_contents(self::$_cacheDir . $filename, @serialize(self::$_classCache[$classPath]), LOCK_EX) : false;
+		if (isset(self::$_classCache[$classPath])) {
+			@file_put_contents(self::_hitsFile($classPath), @serialize(self::$_classCache[$classPath]), LOCK_EX);
+		}
+		if (self::$_missCacheEnabled && isset(self::$_missCache[$classPath])) {
+			@file_put_contents(self::_missFile($classPath), @serialize(self::$_missCache[$classPath]), LOCK_EX);
+		}
 	}
 
 	/**
@@ -146,10 +176,15 @@ class FroodAutoloader {
 	 * @return boolean Success.
 	 */
 	private static function _clearCache($classPath) {
-		$filename                      = self::_classPathToFilename($classPath);
+		if (!self::$_cacheDir) {
+			return;
+		}
+		
 		self::$_classCache[$classPath] = array();
+		self::$_missCache[$classPath]  = array();
 
-		return self::$_cacheDir ? @file_put_contents(self::$_cacheDir . $filename, '', LOCK_EX) : false;
+		@file_put_contents(self::_hitsFile($classPath), '', LOCK_EX);
+		@file_put_contents(self::_missFile($classPath), '', LOCK_EX);
 	}
 
 	/**
@@ -159,11 +194,42 @@ class FroodAutoloader {
 	 *
 	 * @return string|null The cached path to the class.
 	 */
-	private static function _checkCache($name) {
+	private static function _checkClassCache($name) {
 		foreach (self::$_classCache as $classes) {
 			if (isset($classes[$name])) {
 				return $classes[$name];
 			}
+		}
+	}
+	
+	/**
+	 * Check if this class name is registered as a miss in all known classPaths.
+	 * 
+	 * @param string $name The class name.
+	 * 
+	 * @return boolean Is a miss.
+	 */
+	private static function _checkMissCache($name) {
+		$miss = true;
+		foreach (self::$_missCache as $classes) {
+			if (!isset($classes[$name])) {
+				$miss = false;
+			}
+		}
+		return $miss;
+	}
+	
+	/**
+	 * Register miss for this autoloaders classPaths.
+	 * 
+	 * @param string $name The class name.
+	 */
+	private function _registerMiss($name) {
+		foreach ($this->_classPaths as $classPath) {
+			if (!isset(self::$_missCache[$classPath])) {
+				self::$_missCache[$classPath] = array();
+			}
+			self::$_missCache[$classPath][$name] = true;
 		}
 	}
 
@@ -173,17 +239,16 @@ class FroodAutoloader {
 	 * @param string $name The name of the class to load.
 	 */
 	public function autoload($name) {
-		if (isset($this->_missed[$name])) {
+		if (self::_checkMissCache($name)) {
 			return;
 		}
 
-		if (($path = self::_checkCache($name)) || ($path = $this->_classNameToPath($name))) {
+		if (($path = self::_checkClassCache($name)) || ($path = $this->_classNameToPath($name))) {
 			require_once $path;
-
 			return;
 		}
 
-		$this->_missed[$name] = true;
+		$this->_registerMiss($name);
 	}
 
 	/**
@@ -199,6 +264,7 @@ class FroodAutoloader {
 		foreach ($this->_classPaths as $classPath) {
 			self::_persistCache($classPath);
 			unset(self::$_classCache[$classPath]);
+			unset(self::$_missCache[$classPath]);
 		}
 	}
 
@@ -211,7 +277,6 @@ class FroodAutoloader {
 				spl_autoload_register('__autoload', false);
 			}
 		}
-
 		spl_autoload_register(array($this, 'autoload'));
 	}
 
@@ -250,6 +315,11 @@ class FroodAutoloader {
 	 * @return null|string null if no match was found.
 	 */
 	private function _searchFiles($classPath, $regex) {
+		if (!isset($this->_fileCache[$classPath])) {
+			$this->_fileCache[$classPath] = self::_getFiles($classPath);
+			$this->_validateCache($classPath);
+		}
+		
 		foreach ($this->_fileCache[$classPath] as $filePath) {
 			if (preg_match($regex, $filePath)) {
 				return $filePath;
