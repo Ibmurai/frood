@@ -210,12 +210,18 @@ class FroodAutoloader {
 	 * @return boolean Is a miss.
 	 */
 	private static function _checkMissCache($name) {
+		if (!self::$_missCache) {
+			return false;
+		}
+		
 		$miss = true;
 		foreach (self::$_missCache as $classes) {
 			if (!isset($classes[$name])) {
 				$miss = false;
+				break;
 			}
 		}
+		
 		return $miss;
 	}
 	
