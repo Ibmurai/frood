@@ -145,7 +145,7 @@ class FroodConfiguration {
 	 * 
 	 * @return boolean Enable/disable.
 	 */
-	public function getAutoloaderMissCacheEnabled() {
+	public function isAutoloaderMissCacheEnabled() {
 		return true;
 	}
 }

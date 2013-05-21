@@ -170,7 +170,7 @@ class Frood {
 				self::getFroodPath() . 'Frood/',
 			);
 			FroodAutoloader::setCacheDir(self::getFroodConfiguration()->getCacheDir());
-			FroodAutoloader::setMissCacheEnabled(self::getFroodConfiguration()->getAutoloaderMissCacheEnabled());
+			FroodAutoloader::setMissCacheEnabled(self::getFroodConfiguration()->isAutoloaderMissCacheEnabled());
 			self::$_froodAutoloader = new FroodAutoloader($classPaths);
 		}
 	}
