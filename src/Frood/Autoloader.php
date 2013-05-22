@@ -65,7 +65,7 @@ class FroodAutoloader {
 	 */
 	public function addClassPath($classPath) {
 		$classPath = realpath($classPath);
-		if (!array_key_exists($classPath, self::$_classCache)) {
+		if (!isset(self::$_classCache[$classPath])) {
 			$this->_classPaths[] = $classPath;
 			self::$_classCache[$classPath] = self::$_missCache[$classPath] = array();
 			self::_loadCache($classPath);
