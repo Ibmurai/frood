@@ -25,13 +25,13 @@ class FroodAutoloader {
 	/** @var string Complete path to cache directory. */
 	private static $_cacheDir;
 	
-	/** @var string[] Stores cached classes, as class name => path to class. */
+	/** @var array[] Stores cached classes, as class name => path to class. */
 	private static $_classCache = array();
 
-	/** @var string[] Store classes that are not found in this autoloader. */
+	/** @var array[] Store classes that are not found in this autoloader. */
 	private static $_missCache = array();
 
-	/** @var string[] Store the file paths for all files in a class path. */
+	/** @var array[] Store the file paths for all files in a class path. */
 	private $_fileCache = array();
 	
 	/** @var string Filename extension of hit cache file. */
@@ -126,11 +126,25 @@ class FroodAutoloader {
 			}
 		}
 	}
-	
+
+	/**
+	 * Get path to hits file.
+	 *
+	 * @param string $classPath The classpath.
+	 *
+	 * @return string The path to the hits file.
+	 */
 	private static function _hitsFile($classPath) {
 		return self::$_cacheDir . self::_classPathToFilename($classPath) . self::EXT_CACHE_HITS;
 	}
-	
+
+	/**
+	 * Get path to miss file.
+	 *
+	 * @param string $classPath The classpath.
+	 *
+	 * @return string The path to the miss file.
+	 */
 	private static function _missFile($classPath) {
 		return self::$_cacheDir . self::_classPathToFilename($classPath) . self::EXT_CACHE_MISS;
 	}

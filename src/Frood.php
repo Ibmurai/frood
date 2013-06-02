@@ -61,6 +61,8 @@ class Frood {
 	 * Route a request, modifying the request.
 	 *
 	 * @param FroodRequest $request The request to route.
+	 *
+	 * @throws FroodExceptionDispatch
 	 */
 	private function _route(FroodRequest $request) {
 		$baseRoutes = self::getFroodConfiguration()->getBaseRoutes();
@@ -145,7 +147,7 @@ class Frood {
 	/**
 	 * Unregister the autoloader.
 	 *
-	 * @throws RumtimeException If the autoloader could not be unregistered.
+	 * @throws RuntimeException If the autoloader could not be unregistered.
 	 */
 	public function unregisterAutoloader() {
 		$this->_moduleAutoloader->unregister();
