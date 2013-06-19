@@ -17,7 +17,7 @@
  */
 class FroodAutoloader {
 	/** @var array An array of paths to use as the base of autoloading. */
-	private $_classPaths;
+	private $_classPaths = array();
 	
 	/** @var boolean Is miss cache enabled. */
 	private static $_missCacheEnabled = true;
