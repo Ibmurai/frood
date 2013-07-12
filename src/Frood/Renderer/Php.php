@@ -98,6 +98,6 @@ final class FroodRendererPhpTemplateScoper {
 	 * @return boolean
 	 */
 	public function __isset($name) {
-		return array_key_exists($name, self::$_values);
+		return array_key_exists($name, self::$_values) && self::$_values !== null;
 	}
 }
