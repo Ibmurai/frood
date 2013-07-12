@@ -24,6 +24,8 @@ class FroodRendererPhp extends FroodRendererTemplate {
 	 * @param array &$values The values assigned to the controller.
 	 *
 	 * @return null
+	 *
+	 * @throws FroodExceptionRenderer If the template file is missing.
 	 */
 	public function render(array &$values) {
 		$templateFile = $this->_getTemplate();
