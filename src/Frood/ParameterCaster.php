@@ -37,6 +37,9 @@ abstract class FroodParameterCaster {
 	/** @var string The constant to tell the get function that you want a json decoded string (i.e. an array). */
 	const AS_JSON = 'json';
 
+	/** @var string The constant to tell the get function that you want a json decoded string (i.e. an object). */
+	const AS_JSON_OBJECT = 'json/object';
+
 	/** @var string The constant to tell the get function that you want a file. */
 	const AS_FILE = 'file';
 
@@ -85,6 +88,8 @@ abstract class FroodParameterCaster {
 				return self::_castAsUtf8($value);
 			case self::AS_JSON:
 				return self::_castAsJson($value);
+			case self::AS_JSON_OBJECT:
+				return self::_castAsJsonObject($value);
 			case self::AS_FILE:
 				return self::_castAsFile($value);
 			case self::AS_BOOLEAN:
@@ -262,6 +267,25 @@ abstract class FroodParameterCaster {
 				break;
 		}
 		*/
+	}
+
+	/**
+	 * Attempt to cast a value to a JSON encoded object.
+	 *
+	 * @param mixed $value The value to cast.
+	 *
+	 * @throws FroodExceptionCasting If the value could not be cast.
+	 *
+	 * @return array|stdClass|null
+	 */
+	private static function _castAsJsonObject($value) {
+		try {
+			$result = json_decode(self::_cast(self::AS_UTF8, $value));
+		} catch (FroodExceptionCasting $e) {
+			throw new FroodExceptionCasting($value, self::AS_JSON_OBJECT);
+		}
+
+		return $result;
 	}
 
 	/**
