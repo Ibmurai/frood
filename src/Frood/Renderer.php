@@ -24,7 +24,7 @@ abstract class FroodRenderer {
 	/**
 	 * The constructor.
 	 *
-	 * @param string $request
+	 * @param FroodRequest $request
 	 */
 	public function __construct(FroodRequest $request) {
 		$this->_request = $request;
