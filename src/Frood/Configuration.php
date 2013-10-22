@@ -141,7 +141,7 @@ class FroodConfiguration {
 	}
 	
 	/**
-	 * Should persistant miss cache be enabled?
+	 * Should persistent miss cache be enabled?
 	 * 
 	 * @return boolean Enable/disable.
 	 */

@@ -31,6 +31,8 @@ class FroodRouterChain {
 	 * Route a request using the chain, stopping when a request is complete.
 	 *
 	 * @param FroodRequest $request The request to route.
+	 *
+	 * @throws FroodExceptionDispatch
 	 */
 	public function route(FroodRequest $request) {
 		$routerIterator = new ArrayIterator($this->_routers);

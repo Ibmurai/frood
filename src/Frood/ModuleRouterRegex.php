@@ -30,6 +30,8 @@ abstract class FroodModuleRouterRegex extends FroodModuleRouter {
 	 * defined pattern routes.
 	 *
 	 * @param FroodRequest The request to route.
+	 *
+	 * @return boolean Routing success.
 	 */
 	private function _regexRoute(FroodRequest $request) {
 		foreach ($this->_getRouteRegexes() as $pattern => $route) {
