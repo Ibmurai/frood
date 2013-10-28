@@ -96,7 +96,7 @@ class FroodModuleConfiguration {
 	 * @return FroodModuleRouter
 	 */
 	public function getRouter() {
-		return isset($this->_router) ? $this->_router : $this->_router = new FroodModuleRouterApi($this->_module);
+		return isset($this->_router) ? $this->_router : $this->_router = new FroodModuleRouter($this->_module);
 	}
 
 	/**
