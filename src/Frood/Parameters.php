@@ -25,8 +25,6 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 * Pass an associative array to override this behaviour.
 	 *
 	 * @param array $from An associative array to generate parameters from.
-	 *
-	 * @return null
 	 */
 	public function __construct(array $from = null) {
 		if ($from === null) {
@@ -100,6 +98,35 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 		}
 
 		return implode(', ', $res);
+	}
+
+	/**
+	 * Get the named parameter.
+	 *
+	 * @param string $name    The name of the parameter to get.
+	 * @param string $type    Ensure that the parameter value is of the given type. Use one of the AS_ class constants.
+	 * @param mixed  $default A value to return if the parameter has not been set.
+	 *
+	 * @return mixed It's like a box of chocolates.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getParameter($name, $type = null, $default = null) {
+		return $this->_getParameter($name, $type, $default ? $default : FroodNullParameter::getInstance());
+	}
+
+	/**
+	 * Check if the named parameter is set. Optionally check if it is of a certain type.
+	 *
+	 * @param string $name The name of the parameter to check.
+	 * @param string $type The type to ensure the parameter is of. One of the AS_ constants.
+	 *
+	 * @return boolean True if the named parameter is set.
+	 */
+	public function hasParameter($name, $type = null) {
+		return $this->_hasParameter($name, $type);
 	}
 
 	/**
