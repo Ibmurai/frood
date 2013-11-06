@@ -440,8 +440,7 @@ This enbales a new submodule called Api.
 
 Create the Api submodule and a folder for the first version.
 
-		$ mkdir modules/Lolmodule/Api
-		$ mkdir modules/Lolmodule/Api/V1
+		$ mkdir -p modules/Lolmodule/Api/V1
 
 Following Frood autoloader conventions, create a controller that enxtends FroodControllerRest.
 
@@ -451,10 +450,10 @@ Following Frood autoloader conventions, create a controller that enxtends FroodC
 
         }
 
-Each controller will manage a single resource. (Faces in this case).
+Each controller will manage a single resource in a collection. (a face in this case).
 
-Now we need to override the methods we wish to react to for this resource.
-Here's a quick example of basic CRUD functionality...
+Now we need to override the methods we wish to react to for this resource collection.
+Here's a rough example of a basic CRUD implementation...
 
 		#modules/Lolmodule/Api/V1/Face.php
 		<?php
@@ -570,6 +569,8 @@ Here's a quick example of basic CRUD functionality...
 			}
 
 		}
+		
+Now this resource should be available at http://yoursite.com/lolmodule/api/v1/face/<itemId>
 
 FroodHttpException will be picked up by frameworks like Zaphod and rendered as the response.
 
