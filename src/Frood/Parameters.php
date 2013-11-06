@@ -138,9 +138,9 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *
 	 * @return mixed It's like a box of chocolates.
 	 *
-	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
-	 *                          is given for a missing parameter. Or if no default has been given for
-	 *                          a parameter with a value of the wrong type.
+	 * @throws FroodExceptionMissingParameter For non-existing parameters, failed type conversions or if no default
+	 *                                        is given for a missing parameter. Or if no default has been given for
+	 *                                        a parameter with a value of the wrong type.
 	 */
 	private function _getParameter($name, $type, $default) {
 		if ($this->_hasParameter($name)) {
@@ -157,7 +157,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 			if ($default !== FroodNullParameter::getInstance()) {
 				return self::_cast($type, $default);
 			} else {
-				throw new RuntimeException("Attempting to retrieve parameter, $name, which has not been set and has no default value.");
+				throw new FroodExceptionMissingParameter("Attempting to retrieve parameter, $name, which has not been set and has no default value.");
 			}
 		}
 	}
