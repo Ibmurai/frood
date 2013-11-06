@@ -411,3 +411,166 @@ To make sure all our actions include the header we overwrite [`FroodController::
 
 		}
 		?>
+
+Building a versioned REST api with Frood
+==============================
+
+Frood 1.3.0+ supports versioned RESTful controllers when using the API router.
+
+First you must tell Frood to use the API router in your module configuration.
+
+		#modules/Lolmodule/Configuration.php
+		<?php
+		class LolmoduleConfiguration extends FroodModuleConfiguration {
+
+			// ...
+
+			/**
+			 * Get the module router for the configured module.
+			 *
+			 * @return FroodModuleRouterApi
+			 */
+			public function getRouter() {
+				static $router;
+				return $router ? $router : ($router = new FroodModuleRouterApi($this->getModule()));
+			}
+		}
+
+This enbales a new submodule called Api.
+
+Create the Api submodule and a folder for the first version.
+
+		$ mkdir modules/Lolmodule/Api
+		$ mkdir modules/Lolmodule/Api/V1
+
+Following Frood autoloader conventions, create a controller that enxtends FroodControllerRest.
+
+		#modules/Lolmodule/Api/V1/Face.php
+		<?php
+        class LolmoduleApiControllerV1Face extends FroodControllerRest {
+
+        }
+
+Each controller will manage a single resource. (Faces in this case).
+
+Now we need to override the methods we wish to react to for this resource.
+Here's a quick example of basic CRUD functionality...
+
+		#modules/Lolmodule/Api/V1/Face.php
+		<?php
+		class LolmoduleApiControllerV1Face extends FroodControllerRest {
+
+			/**
+			 * When this resource is requested with the GET method, this action is called.
+			 *
+			 * @param FroodParameters   $params   Additional frood params.
+			 * @param FroodHttpRequest  $request  The client request.
+			 * @param mixed|null        $item     The requested item (if any).
+			 *
+			 * @throws FroodHttpException If something goes wrong.
+			 */
+			protected function _get(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+
+				// fetch item with id $item
+
+				if (!$fetchedItem) {
+					throw new FroodHttpException('Item not found', FroodHttpResponseCode::CODE_NOT_FOUND);
+				}
+
+				$this->assign('item', $fetchedItem);
+			}
+
+			/**
+			 * When this resource is requested with the POST method, this action is called.
+			 *
+			 * @param FroodParameters   $params   Additional frood params.
+			 * @param FroodHttpRequest  $request  The client request.
+			 * @param mixed|null        $item     The requested item (if any).
+			 *
+			 * @throws FroodHttpException If something goes wrong.
+			 */
+			protected function _post(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+
+				$newItem = json_decode($request->getMessage());
+
+				// Validate item.
+
+				if (!$valid) {
+					throw new FroodHttpException('Invalid item', FroodHttpResponseCode::CODE_BAD_REQUEST);
+				}
+
+				// persist item.
+
+				if (!$persisted) {
+					throw new FroodHttpException('Failed to create item', FroodHttpResponseCode::CODE_INTERNAL_SERVER_ERROR);
+				}
+
+				$this->assign('item', $persistedItem);
+				$this->setResponseCode(FroodHttpResponseCode::CODE_CREATED);
+			}
+
+			/**
+			 * When this resource is requested with the PUT method, this action is called.
+			 *
+			 * @param FroodParameters   $params   Additional frood params.
+			 * @param FroodHttpRequest  $request  The client request.
+			 * @param mixed|null        $item     The requested item (if any).
+			 *
+			 * @throws FroodHttpException If something goes wrong.
+			 */
+			protected function _put(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+
+				// Validate item.
+
+				if (!$valid) {
+					throw new FroodHttpException('Invalid item', FroodHttpResponseCode::CODE_BAD_REQUEST);
+				}
+
+				// fetch item with id $item
+
+				if (!$fetchedItem) {
+					throw new FroodHttpException('Item not found', FroodHttpResponseCode::CODE_NOT_FOUND);
+				}
+
+				// update item.
+
+				if (!$updated) {
+					throw new FroodHttpException('Failed to update item', FroodHttpResponseCode::CODE_INTERNAL_SERVER_ERROR);
+				}
+
+				$this->assign('item', $updatedItem);
+                $this->setResponseCode(FroodHttpResponseCode::CODE_CREATED);
+			}
+
+			/**
+			 * When this resource is requested with the DELETE method, this action is called.
+			 *
+			 * @param FroodParameters   $params   Additional frood params.
+			 * @param FroodHttpRequest  $request  The client request.
+			 * @param mixed|null        $item     The requested item (if any).
+			 *
+			 * @throws FroodHttpException If something goes wrong.
+			 */
+			protected function _delete(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+
+				// fetch item with id $item
+
+				if (!$fetchedItem) {
+					throw new FroodHttpException('Item not found', FroodHttpResponseCode::CODE_NOT_FOUND);
+				}
+
+				// delete item
+
+				if (!$deleted) {
+					throw new FroodHttpException('Failed to delete item', FroodHttpResponseCode::CODE_INTERNAL_SERVER_ERROR);
+				}
+
+				$this->assign('item', $deletedItem);
+				$this->setResponseCode(FroodHttpResponseCode::CODE_OK); // Default
+			}
+
+		}
+
+FroodHttpException will be picked up by frameworks like Zaphod and rendered as the response.
+
+You should NOT use FroodHttpException to create successful reponses (like 200 and 201). In these cases instead set the response code via $this->setResponseCode().
