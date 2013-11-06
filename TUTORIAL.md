@@ -1,4 +1,4 @@
-*Authors*: [Jens Riisom Schultz](jers@fynskemedier.dk), [Johannes Skov Frandsen](jsf@fynskemedier.dk)
+*Authors*: [Jens Riisom Schultz](jers@fynskemedier.dk), [Johannes Skov Frandsen](jsf@fynskemedier.dk), [Bo Thinggaard](akimsko@tnactas.dk)
 
 *Since*: 2011-06-21
 
