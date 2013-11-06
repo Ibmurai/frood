@@ -92,44 +92,23 @@ class FroodControllerRest extends FroodController {
 	 *
 	 * @param FroodParameters $params <null> The frood parameters.
 	 *
-	 * @return null
+	 * @throws FroodHttpException A HTTP exception.
 	 */
 	public function apiAction(FroodParameters $params) {
 		$response = $this->getResponse();
 		$request  = new FroodHttpRequest();
 
-		try {
-			if (($method = $request->getMethod()) && isset($this->_methods[$method])) {
-				$this->{$this->_methods[$method]}($params, $request, $this->_getItem($params));
-			} else {
-				throw new FroodHttpException('Method not allowed', FroodHttpResponseCode::CODE_METHOD_NOT_ALLOWED);
-			}
-
-		} catch (FroodHttpException $e) {
-			$response->setMessage($e->getMessage());
-			$response->setResponseCode($e->getCode());
+		if (($method = $request->getMethod()) && isset($this->_methods[$method])) {
+			$this->{$this->_methods[$method]}($params, $request, $this->_getItem($params));
+		} else {
+			throw new FroodHttpException('Method not allowed', FroodHttpResponseCode::CODE_METHOD_NOT_ALLOWED);
 		}
 
-		$this->_handleResponse($response);
-	}
+		$response->sendHeaders();
 
-	/**
-	 * Handle the response object.
-	 *
-	 * @param FroodHttpResponse $response The response object to handle.
-	 *
-	 * @return null
-	 */
-	private function _handleResponse(FroodHttpResponse $response) {
-		header(FroodHttpResponseCode::getHeaderString($response->getResponseCode()), $response->getResponseCode());
-
-		foreach ($response->getHeaders() as $name => $value) {
-			header("$name: $value");
-		}
-
-		if ($message = $response->getMessage()) {
+		if ($response->hasMessage()) {
 			$this->doOutputDisabled();
-			echo $message;
+			$response->sendMessage();
 		}
 	}
 

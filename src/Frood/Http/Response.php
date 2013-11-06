@@ -87,4 +87,51 @@ class FroodHttpResponse {
 	public function getMessage() {
 		return $this->_message;
 	}
+
+	/**
+	 * Has message.
+	 *
+	 * @return boolean True if the response has a message set.
+	 */
+	public function hasMessage() {
+		return $this->_message ? true : false;
+	}
+
+	/**
+	 * Send the headers..
+	 *
+	 * @return FroodHttpResponse This.
+	 */
+	public function sendHeaders() {
+		header(FroodHttpResponseCode::getHeaderString($this->getResponseCode()), $this->getResponseCode());
+
+		foreach ($this->getHeaders() as $name => $value) {
+			header("$name: $value");
+		}
+		return $this;
+	}
+
+	/**
+	 * Send the message.
+	 *
+	 * @return FroodHttpResponse This.
+	 */
+	public function sendMessage() {
+		if ($this->hasMessage()) {
+			echo $this->getMessage();
+		}
+		return $this;
+	}
+
+	/**
+	 * Send headers and message.
+	 *
+	 *  @return FroodHttpResponse This.
+	 */
+	public function send() {
+		return $this
+			->sendHeaders()
+			->sendMessage()
+		;
+	}
 }
