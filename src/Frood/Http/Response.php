@@ -50,11 +50,16 @@ class FroodHttpResponse {
 	 *
 	 * @param string $name   Header name.
 	 * @param string $value Header,
+	 * @param boolean $replace Replace previous added header of the same name.
 	 *
 	 * @return FroodHttpResponse This.
 	 */
-	public function addHeader($name, $value) {
-		$this->_headers[$name] = $value;
+	public function addHeader($name, $value, $replace = true) {
+		$this->_headers[] = array(
+			'name'    => $name,
+			'value'   => $value,
+			'replace' => $replace
+		);
 		return $this;
 	}
 
@@ -103,10 +108,12 @@ class FroodHttpResponse {
 	 * @return FroodHttpResponse This.
 	 */
 	public function sendHeaders() {
-		header(FroodHttpResponseCode::getHeaderString($this->getResponseCode()), $this->getResponseCode());
+		if (!headers_sent()) {
+			header(FroodHttpResponseCode::getHeaderString($this->getResponseCode()), $this->getResponseCode());
 
-		foreach ($this->getHeaders() as $name => $value) {
-			header("$name: $value");
+			foreach ($this->getHeaders() as $header) {
+				header("{$header['name']}: {$header['value']}", $header['replace']);
+			}
 		}
 		return $this;
 	}

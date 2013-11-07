@@ -29,16 +29,15 @@ class FroodHttpException extends Exception {
 	/**
 	 * Create/populate a response object from this exception.
 	 *
-	 * @param boolean $includeMessage     Include message in response, if any.
 	 * @param FroodHttpResponse $response The response object to populate. A new one will be created if not given.
 	 *
 	 * @return FroodHttpResponse The response object.
 	 */
-	public function createResponse($includeMessage = true, FroodHttpResponse $response = null) {
+	public function createResponse(FroodHttpResponse $response = null) {
 		$response = $response ? $response :  new FroodHttpResponse();
 		$response
 			->setResponseCode($this->getCode())
-			->setMessage($includeMessage ? $this->getMessage() : '')
+			->setMessage($this->getMessage())
 		;
 		return $response;
 	}
