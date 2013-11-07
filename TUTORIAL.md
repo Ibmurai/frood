@@ -422,6 +422,9 @@ First you must tell Frood to use the API router in your module configuration.
 		#modules/Lolmodule/Configuration.php
 		<?php
 		class LolmoduleConfiguration extends FroodModuleConfiguration {
+		
+			/** @var FroodModuleRouterApi The router for this module. */
+			private $_router;
 
 			// ...
 
@@ -431,8 +434,10 @@ First you must tell Frood to use the API router in your module configuration.
 			 * @return FroodModuleRouterApi
 			 */
 			public function getRouter() {
-				static $router;
-				return $router ? $router : ($router = new FroodModuleRouterApi($this->getModule()));
+				return $this->_router
+					? $this->_router
+					: $this->_router = new FroodModuleRouterApi($this->getModule())
+				;
 			}
 		}
 
