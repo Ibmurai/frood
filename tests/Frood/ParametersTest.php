@@ -237,7 +237,7 @@ class FroodParametersTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test parameter get with undefined parameter and no default.
 	 *
-	 * @expectedException RuntimeException
+	 * @expectedException FroodExceptionMissingParameter
 	 *
 	 * @return null
 	 */

@@ -113,7 +113,7 @@ class FroodReflectionMethodTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Test it with a real docblocked actiony and missing a required parameter.
 	 *
-	 * @expectedException RuntimeException
+	 * @expectedException FroodExceptionMissingParameter
 	 *
 	 * @return null
 	 */
