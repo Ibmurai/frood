@@ -575,7 +575,7 @@ Here's a rough example of a basic CRUD implementation...
 
 		}
 		
-Now this resource should be available at http://yoursite.com/lolmodule/api/v1/face/<itemId>
+Now this resource should be available at http://yoursite.com/lolmodule/api/v1/face/ &lt;itemId&gt;
 
 FroodHttpException will be picked up by frameworks like Zaphod and rendered as the response.
 
