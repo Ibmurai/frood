@@ -114,7 +114,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          a parameter with a value of the wrong type.
 	 */
 	public function getParameter($name, $type = null, $default = null) {
-		return $this->_getParameter($name, $type, $default ? $default : FroodNullParameter::getInstance());
+		return $this->_getParameter(ucfirst($name), $type, $default ? $default : FroodNullParameter::getInstance());
 	}
 
 	/**
@@ -127,6 +127,214 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 */
 	public function hasParameter($name, $type = null) {
 		return $this->_hasParameter($name, $type);
+	}
+
+	/**
+	 * Get integer parameter.
+	 *
+	 * @param string       $name    Name of the parameter.
+	 * @param null|integer $default Optional default value if not found.
+	 *
+	 * @return integer The value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getInt($name, $default = null) {
+		return $this->getParameter($name, self::AS_INTEGER, $default);
+	}
+
+	/**
+	 * Get float parameter.
+	 *
+	 * @param string     $name    Name of the parameter.
+	 * @param null|float $default Optional default value if not found.
+	 *
+	 * @return float The value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getFloat($name, $default = null) {
+		return $this->getParameter($name, self::AS_FLOAT, $default);
+	}
+
+	/**
+	 * Get array parameter.
+	 *
+	 * @param string     $name    Name of the parameter.
+	 * @param null|array $default Optional default value if not found.
+	 *
+	 * @return array The value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getArray($name, $default = null) {
+		return $this->getParameter($name, self::AS_ARRAY, $default);
+	}
+
+	/**
+	 * Get string parameter.
+	 *
+	 * @param string      $name    Name of the parameter.
+	 * @param null|string $default Optional default value if not found.
+	 *
+	 * @return string The value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getString($name, $default = null) {
+		return $this->getParameter($name, self::AS_STRING, $default);
+	}
+
+	/**
+	 * Get ISO-8859-1 encoded string parameter.
+	 *
+	 * @param string      $name    Name of the parameter.
+	 * @param null|string $default Optional default value if not found.
+	 *
+	 * @return string The ISO-8859-1 encoded value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getStringIso($name, $default = null) {
+		return $this->getParameter($name, self::AS_ISO, $default);
+	}
+
+	/**
+	 * Get UTF-8 encoded string parameter.
+	 *
+	 * @param string      $name    Name of the parameter.
+	 * @param null|string $default Optional default value if not found.
+	 *
+	 * @return string The UTF-8 encoded value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getStringUtf($name, $default = null) {
+		return $this->getParameter($name, self::AS_UTF8, $default);
+	}
+
+	/**
+	 * Get JSON decoded parameter (array).
+	 *
+	 * @param string     $name    Name of the parameter.
+	 * @param null|array $default Optional default value if not found.
+	 *
+	 * @return array The JSON decoded value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getJsonArray($name, $default = null) {
+		return $this->getParameter($name, self::AS_JSON, $default);
+	}
+
+	/**
+	 * Get JSON decoded parameter (object).
+	 *
+	 * @param string        $name    Name of the parameter.
+	 * @param null|stdClass $default Optional default value if not found.
+	 *
+	 * @return stdClass The JSON decoded value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getJsonObject($name, $default = null) {
+		return $this->getParameter($name, self::AS_JSON_OBJECT, $default);
+	}
+
+	/**
+	 * Get file parameter.
+	 *
+	 * @param string                  $name    Name of the parameter.
+	 * @param null|FroodFileParameter $default Optional default value if not found.
+	 *
+	 * @return FroodFileParameter The file object.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getFile($name, $default = null) {
+		return $this->getParameter($name, self::AS_FILE, $default);
+	}
+
+	/**
+	 * Get boolean parameter.
+	 *
+	 * @param string       $name    Name of the parameter.
+	 * @param null|boolean $default Optional default value if not found.
+	 *
+	 * @return boolean The value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getBool($name, $default = null) {
+		return $this->getParameter($name, self::AS_BOOLEAN, $default);
+	}
+
+	/**
+	 * Get string array parameter.
+	 *
+	 * @param string        $name    Name of the parameter.
+	 * @param null|string[] $default Optional default value if not found.
+	 *
+	 * @return string[] The value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getStringArray($name, $default = null) {
+		return $this->getParameter($name, self::AS_STRING_ARRAY, $default);
+	}
+
+	/**
+	 * Get integer array parameter.
+	 *
+	 * @param string        $name    Name of the parameter.
+	 * @param null|integer[] $default Optional default value if not found.
+	 *
+	 * @return integer[] The value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getIntegerArray($name, $default = null) {
+		return $this->getParameter($name, self::AS_INTEGER_ARRAY, $default);
+	}
+
+	/**
+	 * Get file array parameter.
+	 *
+	 * @param string                    $name    Name of the parameter.
+	 * @param null|FroodFileParameter[] $default Optional default value if not found.
+	 *
+	 * @return FroodFileParameter[] The value.
+	 *
+	 * @throws RuntimeException For non-existing parameters, failed type conversions or if no default
+	 *                          is given for a missing parameter. Or if no default has been given for
+	 *                          a parameter with a value of the wrong type.
+	 */
+	public function getFileArray($name, $default = null) {
+		return $this->getParameter($name, self::AS_FILE_ARRAY, $default);
 	}
 
 	/**
