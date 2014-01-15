@@ -185,10 +185,18 @@ class Frood {
 	private function _setupModuleAutoloader(FroodRequest $request) {
 		$modulePath = self::getFroodConfiguration()->getModuleBasePath($request->getModule());
 
-		$classPaths = array(
-			$modulePath . $this->_moduleConfiguration->getAutoloadBasePath($request->getSubModule()),
-			$modulePath . $this->_moduleConfiguration->getAutoloadBasePath('shared'),
+		$modulePaths = $this->_moduleConfiguration->getAutoloadBasePath($request->getSubModule());
+		$sharedPaths = $this->_moduleConfiguration->getAutoloadBasePath('shared');
+
+		$paths = array_merge(
+			is_array($modulePaths) ? $modulePaths : array($modulePaths),
+			is_array($sharedPaths) ? $sharedPaths : array($sharedPaths)
 		);
+
+		$classPaths = array();
+		foreach ($paths as $path) {
+			$classPaths[] = $modulePath . $path;
+		}
 
 		$this->_moduleAutoloader = new FroodAutoloader($classPaths);
 	}
