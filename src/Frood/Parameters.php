@@ -141,7 +141,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getInt($name, $default = null) {
+	public function asInt($name, $default = null) {
 		return $this->getParameter($name, self::AS_INTEGER, $default);
 	}
 
@@ -157,7 +157,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getFloat($name, $default = null) {
+	public function asFloat($name, $default = null) {
 		return $this->getParameter($name, self::AS_FLOAT, $default);
 	}
 
@@ -173,7 +173,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getArray($name, $default = null) {
+	public function asArray($name, $default = null) {
 		return $this->getParameter($name, self::AS_ARRAY, $default);
 	}
 
@@ -189,7 +189,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getString($name, $default = null) {
+	public function asString($name, $default = null) {
 		return $this->getParameter($name, self::AS_STRING, $default);
 	}
 
@@ -205,7 +205,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getStringIso($name, $default = null) {
+	public function asStringIso($name, $default = null) {
 		return $this->getParameter($name, self::AS_ISO, $default);
 	}
 
@@ -221,7 +221,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getStringUtf($name, $default = null) {
+	public function asStringUtf($name, $default = null) {
 		return $this->getParameter($name, self::AS_UTF8, $default);
 	}
 
@@ -237,7 +237,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getJsonArray($name, $default = null) {
+	public function asJsonArray($name, $default = null) {
 		return $this->getParameter($name, self::AS_JSON, $default);
 	}
 
@@ -253,7 +253,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getJsonObject($name, $default = null) {
+	public function asJsonObject($name, $default = null) {
 		return $this->getParameter($name, self::AS_JSON_OBJECT, $default);
 	}
 
@@ -269,7 +269,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getFile($name, $default = null) {
+	public function asFile($name, $default = null) {
 		return $this->getParameter($name, self::AS_FILE, $default);
 	}
 
@@ -285,7 +285,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getBool($name, $default = null) {
+	public function asBool($name, $default = null) {
 		return $this->getParameter($name, self::AS_BOOLEAN, $default);
 	}
 
@@ -301,7 +301,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getStringArray($name, $default = null) {
+	public function asStringArray($name, $default = null) {
 		return $this->getParameter($name, self::AS_STRING_ARRAY, $default);
 	}
 
@@ -317,7 +317,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getIntegerArray($name, $default = null) {
+	public function asIntegerArray($name, $default = null) {
 		return $this->getParameter($name, self::AS_INTEGER_ARRAY, $default);
 	}
 
@@ -333,7 +333,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          is given for a missing parameter. Or if no default has been given for
 	 *                          a parameter with a value of the wrong type.
 	 */
-	public function getFileArray($name, $default = null) {
+	public function asFileArray($name, $default = null) {
 		return $this->getParameter($name, self::AS_FILE_ARRAY, $default);
 	}
 
