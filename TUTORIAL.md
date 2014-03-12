@@ -184,6 +184,25 @@ You can also test whether a given parameter is set, without having to catch an e
 
 There are various `AS_`-constants you can use. Find them on [the documentation page for [`FroodParameterCaster`](Frood/Class/FroodParameterCaster.html).
 
+It's also possible to use the `asXxx(<name>, <default value>)` methods, where Xxx becomes the type, and the name is taken as a paremeter. This makes it somewhat easier to work with.
+
+		<?php
+		// ...
+		public function someAction(FroodParameters $params) {
+			// Attempt to get the value of the get or post parameter, "id".
+			// Will throw an exception if this parameter is not set!
+			$id = $params->getId();
+
+			// Same as above but will throw an exception
+			// if a given value cannot be casted to integer.
+			$id = $params->asInt('id');
+
+			// Same as above, but instead of an exception you get 42.
+			$id = $params->asInt('id', 42);
+		}
+		// ...
+		?>
+
 
 Action parameters
 =================
