@@ -1,0 +1,24 @@
+{
+	"name": "frood/frood",
+	"description": "The Frood VC framework.",
+	"license": "Apache-2.0",
+	"authors": [
+		{
+			"name": "Bo Thinggaard",
+			"email": "bo@unpossiblesystems.dk",
+			"homepage":  "https://github.com/akimsko"
+		},
+		{
+			"name": "Jens Riisom Schultz",
+			"email": "jens@unpossiblesystems.dk",
+			"homepage":  "https://github.com/ibmurai"
+		}
+	],
+	"required": {
+		"php": ">=5.2.7",
+		"ext-http": "*"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "3.7.*"
+	}
+}
