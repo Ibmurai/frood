@@ -14,7 +14,7 @@
 			"homepage":  "https://github.com/ibmurai"
 		}
 	],
-	"required": {
+	"require": {
 		"php": ">=5.2.7",
 		"ext-http": "*"
 	},
