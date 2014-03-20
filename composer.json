@@ -15,10 +15,12 @@
 		}
 	],
 	"require": {
-		"php": ">=5.2.7",
-		"ext-http": "*"
+		"php": ">=5.2.7"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "3.7.*"
-	}
+	},
+    "suggest": {
+        "ext-http": "pecl_http should be installed if you wish to use Frood's remote features."
+    }
 }
