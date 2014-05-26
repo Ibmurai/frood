@@ -29,7 +29,7 @@ class FroodModuleRouterApi extends FroodModuleRouter {
 			api                     # subModule
 			(?:\/([a-z][a-z0-9_]*)) # version
 			(?:\/([a-z][a-z0-9_]*)) # controller
-			(?:\/([a-z0-9_]*))?     # item
+			(?:\/(.*))?             # item
 		/x';
 
 		$matches = array();
