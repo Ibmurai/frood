@@ -14,9 +14,6 @@
  * @author   Bo Thinggaard <akimsko@tnactas.dk>
  */
 class FroodModuleRouterApi extends FroodModuleRouter {
-
-	const ITEM_INDEX = 'FroodItemIndex';
-
 	/**
 	 * Route a given request, modifying the request.
 	 *
@@ -26,10 +23,10 @@ class FroodModuleRouterApi extends FroodModuleRouter {
 
 		$exp = '/
 			^
-			api                     # subModule
-			(?:\/([a-z][a-z0-9_]*)) # version
-			(?:\/([a-z][a-z0-9_]*)) # controller
-			(?:\/(.*))?             # item
+			api                      # subModule
+			(?:\/([a-z][a-z0-9_]*))  # version
+			(?:\/([a-z][a-z0-9_]*))  # controller
+			(?:\/([a-z][a-z0-9_]*))? # action or nothing
 		/x';
 
 		$matches = array();
@@ -42,12 +39,8 @@ class FroodModuleRouterApi extends FroodModuleRouter {
 				$request
 					->setSubModule('api')
 					->setController($matches[1] . '_' . $matches[2])
-					->setAction('api')
+					->setAction(isset($matches[3]) ? $matches[3] : 'api')
 				;
-
-				if (isset($matches[3])) {
-					$request->getParameters()->addParameter(self::ITEM_INDEX, $matches[3]);
-				}
 
 				return;
 			}

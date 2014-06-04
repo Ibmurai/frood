@@ -99,7 +99,7 @@ class FroodControllerRest extends FroodController {
 		$request  = new FroodHttpRequest();
 
 		if (($method = $request->getMethod()) && isset($this->_methods[$method])) {
-			$this->{$this->_methods[$method]}($params, $request, $this->_getItem($params));
+			$this->{$this->_methods[$method]}($params, $request);
 		} else {
 			throw new FroodHttpException('Method not allowed', FroodHttpResponseCode::CODE_METHOD_NOT_ALLOWED);
 		}
@@ -113,31 +113,14 @@ class FroodControllerRest extends FroodController {
 	}
 
 	/**
-	 * Get item.
-	 *
-	 * @param FroodParameters $params The params.
-	 *
-	 * @return mixed|null The item param.
-	 */
-	private function _getItem(FroodParameters $params) {
-		$item = null;
-		if ($params && $params->hasParameter(FroodModuleRouterApi::ITEM_INDEX)) {
-			$item = $params->getParameter(FroodModuleRouterApi::ITEM_INDEX);
-			$params->unsetParameter(FroodModuleRouterApi::ITEM_INDEX);
-		}
-		return $item;
-	}
-
-	/**
 	 * HEAD action.
 	 *
 	 * @param FroodParameters   $params   Additional frood params.
 	 * @param FroodHttpRequest  $request  The client request.
-	 * @param mixed|null        $item     The requested item (if any).
 	 *
 	 * @throws FroodHttpException If something goes wrong.
 	 */
-	protected function _head(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+	protected function _head(FroodParameters $params, FroodHttpRequest $request) {
 		throw new FroodHttpException('Not implemented', FroodHttpResponseCode::CODE_NOT_IMPLEMENTED);
 	}
 
@@ -146,11 +129,10 @@ class FroodControllerRest extends FroodController {
 	 *
 	 * @param FroodParameters   $params   Additional frood params.
 	 * @param FroodHttpRequest  $request  The client request.
-	 * @param mixed|null        $item     The requested item (if any).
 	 *
 	 * @throws FroodHttpException If something goes wrong.
 	 */
-	protected function _get(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+	protected function _get(FroodParameters $params, FroodHttpRequest $request) {
 		throw new FroodHttpException('Not implemented', FroodHttpResponseCode::CODE_NOT_IMPLEMENTED);
 	}
 
@@ -159,11 +141,10 @@ class FroodControllerRest extends FroodController {
 	 *
 	 * @param FroodParameters   $params   Additional frood params.
 	 * @param FroodHttpRequest  $request  The client request.
-	 * @param mixed|null        $item     The requested item (if any).
 	 *
 	 * @throws FroodHttpException If something goes wrong.
 	 */
-	protected function _put(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+	protected function _put(FroodParameters $params, FroodHttpRequest $request) {
 		throw new FroodHttpException('Not implemented', FroodHttpResponseCode::CODE_NOT_IMPLEMENTED);
 	}
 
@@ -172,11 +153,10 @@ class FroodControllerRest extends FroodController {
 	 *
 	 * @param FroodParameters   $params   Additional frood params.
 	 * @param FroodHttpRequest  $request  The client request.
-	 * @param mixed|null        $item     The requested item (if any).
 	 *
 	 * @throws FroodHttpException If something goes wrong.
 	 */
-	protected function _delete(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+	protected function _delete(FroodParameters $params, FroodHttpRequest $request) {
 		throw new FroodHttpException('Not implemented', FroodHttpResponseCode::CODE_NOT_IMPLEMENTED);
 	}
 
@@ -185,11 +165,10 @@ class FroodControllerRest extends FroodController {
 	 *
 	 * @param FroodParameters   $params   Additional frood params.
 	 * @param FroodHttpRequest  $request  The client request.
-	 * @param mixed|null        $item     The requested item (if any).
 	 *
 	 * @throws FroodHttpException If something goes wrong.
 	 */
-	protected function _post(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+	protected function _post(FroodParameters $params, FroodHttpRequest $request) {
 		throw new FroodHttpException('Not implemented', FroodHttpResponseCode::CODE_NOT_IMPLEMENTED);
 	}
 
@@ -198,11 +177,10 @@ class FroodControllerRest extends FroodController {
 	 *
 	 * @param FroodParameters   $params   Additional frood params.
 	 * @param FroodHttpRequest  $request  The client request.
-	 * @param mixed|null        $item     The requested item (if any).
 	 *
 	 * @throws FroodHttpException If something goes wrong.
 	 */
-	protected function _options(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+	protected function _options(FroodParameters $params, FroodHttpRequest $request) {
 		throw new FroodHttpException('Not implemented', FroodHttpResponseCode::CODE_NOT_IMPLEMENTED);
 	}
 
@@ -211,11 +189,10 @@ class FroodControllerRest extends FroodController {
 	 *
 	 * @param FroodParameters   $params   Additional frood params.
 	 * @param FroodHttpRequest  $request  The client request.
-	 * @param mixed|null        $item     The requested item (if any).
 	 *
 	 * @throws FroodHttpException If something goes wrong.
 	 */
-	protected function _trace(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+	protected function _trace(FroodParameters $params, FroodHttpRequest $request) {
 		throw new FroodHttpException('Not implemented', FroodHttpResponseCode::CODE_NOT_IMPLEMENTED);
 	}
 
@@ -224,11 +201,10 @@ class FroodControllerRest extends FroodController {
 	 *
 	 * @param FroodParameters   $params   Additional frood params.
 	 * @param FroodHttpRequest  $request  The client request.
-	 * @param mixed|null        $item     The requested item (if any).
 	 *
 	 * @throws FroodHttpException If something goes wrong.
 	 */
-	protected function _connect(FroodParameters $params, FroodHttpRequest $request, $item = null) {
+	protected function _connect(FroodParameters $params, FroodHttpRequest $request) {
 		throw new FroodHttpException('Not implemented', FroodHttpResponseCode::CODE_NOT_IMPLEMENTED);
 	}
 
