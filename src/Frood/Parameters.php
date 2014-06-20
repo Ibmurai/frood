@@ -114,7 +114,7 @@ class FroodParameters extends FroodParameterCaster implements Iterator, Countabl
 	 *                          a parameter with a value of the wrong type.
 	 */
 	public function getParameter($name, $type = null, $default = null) {
-		return $this->_getParameter(ucfirst($name), $type, $default ? $default : FroodNullParameter::getInstance());
+		return $this->_getParameter(ucfirst($name), $type, $default !== null ? $default : FroodNullParameter::getInstance());
 	}
 
 	/**
