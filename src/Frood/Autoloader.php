@@ -236,8 +236,8 @@ class FroodAutoloader {
 		}
 		
 		self::$_classCache[$classPath] = array();
-		unset(self::$_classCache[$classPath]);
 		self::$_missCache[$classPath]  = array();
+		unset(self::$_classCache[$classPath]);
 		unset(self::$_missCache[$classPath]);
 
 		@unlink(self::_hitsFile($classPath));
