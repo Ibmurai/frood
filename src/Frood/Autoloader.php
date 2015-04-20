@@ -164,6 +164,35 @@ class FroodAutoloader {
 	}
 
 	/**
+	 * Write file atomically
+	 *
+	 * @param string $filename The file to write
+	 * @param string $contens  The contents to write to the file
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
+	private static function _filePutContentsAtomic($filename, $contents) {
+		$tmpdir = dirname($filename);
+		$tmpfile = @tempnam($tmpdir, 'frood');
+		if (!$tmpfile) {
+			throw new Exception("Failed to create temporary file in folder $tmpdir");
+		}
+		if (!@file_put_contents($tmpfile, $contents)) {
+			unlink($tmpfile);
+			throw new Exception("Unable to write to temporary file $tmpfile");
+		}
+		if (!@chmod($tmpfile, 0644)) {
+			unlink($tmpfile);
+			throw new Exception("Unable to make temporary file $tmpfile world readable");
+		}
+		if (!rename($tmpfile, $filename)) {
+			unlink($tmpfile);
+			throw new Exception("Unable to overwrite destination file $filename");
+		}
+	}
+
+	/**
 	 * Persist the class cache for a class path.
 	 *
 	 * @param string $classPath The class path.
@@ -176,10 +205,10 @@ class FroodAutoloader {
 		}
 
 		if (isset(self::$_classCache[$classPath])) {
-			@file_put_contents(self::_hitsFile($classPath), @serialize(self::$_classCache[$classPath]), LOCK_EX);
+			self::_filePutContentsAtomic(self::_hitsFile($classPath), @serialize(self::$_classCache[$classPath]));
 		}
 		if (self::$_missCacheEnabled && isset(self::$_missCache[$classPath])) {
-			@file_put_contents(self::_missFile($classPath), @serialize(self::$_missCache[$classPath]), LOCK_EX);
+			self::_filePutContentsAtomic(self::_missFile($classPath), @serialize(self::$_missCache[$classPath]));
 		}
 	}
 
@@ -198,8 +227,8 @@ class FroodAutoloader {
 		self::$_classCache[$classPath] = array();
 		self::$_missCache[$classPath]  = array();
 
-		@file_put_contents(self::_hitsFile($classPath), '', LOCK_EX);
-		@file_put_contents(self::_missFile($classPath), '', LOCK_EX);
+		@unlink(self::_hitsFile($classPath));
+		@unlink(self::_missFile($classPath));
 	}
 
 	/**
