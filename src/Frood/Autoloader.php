@@ -169,27 +169,32 @@ class FroodAutoloader {
 	 * @param string $filename The file to write
 	 * @param string $contens  The contents to write to the file
 	 *
-	 * @return void
-	 * @throws Exception
+	 * @return boolean Success
 	 */
 	private static function _filePutContentsAtomic($filename, $contents) {
 		$tmpdir = dirname($filename);
 		$tmpfile = @tempnam($tmpdir, 'frood');
 		if (!$tmpfile) {
-			throw new Exception("Failed to create temporary file in folder $tmpdir");
+			trigger_error("Failed to create temporary file in folder $tmpdir", E_USER_WARNING);
+			return false;
 		}
 		if (!@file_put_contents($tmpfile, $contents)) {
 			unlink($tmpfile);
-			throw new Exception("Unable to write to temporary file $tmpfile");
+			trigger_error("Unable to write to temporary file $tmpfile", E_USER_WARNING);
+			return false;
 		}
 		if (!@chmod($tmpfile, 0644)) {
 			unlink($tmpfile);
-			throw new Exception("Unable to make temporary file $tmpfile world readable");
+			trigger_error("Unable to make temporary file $tmpfile world readable", E_USER_WARNING);
+			return false;
 		}
 		if (!rename($tmpfile, $filename)) {
 			unlink($tmpfile);
-			throw new Exception("Unable to overwrite destination file $filename");
+			trigger_error("Unable to overwrite destination file $filename", E_USER_WARNING);
+			return false;
 		}
+
+		return true;
 	}
 
 	/**
