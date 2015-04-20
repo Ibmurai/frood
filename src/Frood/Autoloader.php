@@ -164,6 +164,40 @@ class FroodAutoloader {
 	}
 
 	/**
+	 * Write file atomically
+	 *
+	 * @param string $filename The file to write
+	 * @param string $contens  The contents to write to the file
+	 *
+	 * @return boolean Success
+	 */
+	private static function _filePutContentsAtomic($filename, $contents) {
+		$tmpdir = dirname($filename);
+		$tmpfile = @tempnam($tmpdir, 'frood');
+		if (!$tmpfile) {
+			trigger_error("Failed to create temporary file in folder $tmpdir", E_USER_WARNING);
+			return false;
+		}
+		if (!@file_put_contents($tmpfile, $contents)) {
+			unlink($tmpfile);
+			trigger_error("Unable to write to temporary file $tmpfile", E_USER_WARNING);
+			return false;
+		}
+		if (!@chmod($tmpfile, 0644)) {
+			unlink($tmpfile);
+			trigger_error("Unable to make temporary file $tmpfile world readable", E_USER_WARNING);
+			return false;
+		}
+		if (!rename($tmpfile, $filename)) {
+			unlink($tmpfile);
+			trigger_error("Unable to overwrite destination file $filename", E_USER_WARNING);
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Persist the class cache for a class path.
 	 *
 	 * @param string $classPath The class path.
@@ -176,10 +210,10 @@ class FroodAutoloader {
 		}
 
 		if (isset(self::$_classCache[$classPath])) {
-			@file_put_contents(self::_hitsFile($classPath), @serialize(self::$_classCache[$classPath]), LOCK_EX);
+			self::_filePutContentsAtomic(self::_hitsFile($classPath), @serialize(self::$_classCache[$classPath]));
 		}
 		if (self::$_missCacheEnabled && isset(self::$_missCache[$classPath])) {
-			@file_put_contents(self::_missFile($classPath), @serialize(self::$_missCache[$classPath]), LOCK_EX);
+			self::_filePutContentsAtomic(self::_missFile($classPath), @serialize(self::$_missCache[$classPath]));
 		}
 	}
 
@@ -198,8 +232,8 @@ class FroodAutoloader {
 		self::$_classCache[$classPath] = array();
 		self::$_missCache[$classPath]  = array();
 
-		@file_put_contents(self::_hitsFile($classPath), '', LOCK_EX);
-		@file_put_contents(self::_missFile($classPath), '', LOCK_EX);
+		@unlink(self::_hitsFile($classPath));
+		@unlink(self::_missFile($classPath));
 	}
 
 	/**
