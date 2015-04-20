@@ -31,6 +31,12 @@ class FroodAutoloader {
 	/** @var array[] Store classes that are not found in this autoloader. */
 	private static $_missCache = array();
 
+	/** @var array[] Class cache dirty flags. */
+	private static $_classCacheDirty = array();
+
+	/** @var array[] Miss cache dirty flags. */
+	private static $_missCacheDirty = array();
+
 	/** @var array[] Store the file paths for all files in a class path. */
 	private $_fileCache = array();
 	
@@ -209,10 +215,10 @@ class FroodAutoloader {
 			return;
 		}
 
-		if (isset(self::$_classCache[$classPath])) {
+		if (isset(self::$_classCacheDirty[$classPath]) && isset(self::$_classCache[$classPath])) {
 			self::_filePutContentsAtomic(self::_hitsFile($classPath), @serialize(self::$_classCache[$classPath]));
 		}
-		if (self::$_missCacheEnabled && isset(self::$_missCache[$classPath])) {
+		if (self::$_missCacheEnabled && isset(self::$_missCacheDirty[$classPath]) && isset(self::$_missCache[$classPath])) {
 			self::_filePutContentsAtomic(self::_missFile($classPath), @serialize(self::$_missCache[$classPath]));
 		}
 	}
@@ -231,6 +237,8 @@ class FroodAutoloader {
 		
 		self::$_classCache[$classPath] = array();
 		self::$_missCache[$classPath]  = array();
+		unset(self::$_classCacheDirty[$classPath]);
+		unset(self::$_missCacheDirty[$classPath]);
 
 		@unlink(self::_hitsFile($classPath));
 		@unlink(self::_missFile($classPath));
@@ -285,6 +293,7 @@ class FroodAutoloader {
 				self::$_missCache[$classPath] = array();
 			}
 			self::$_missCache[$classPath][$name] = true;
+			self::$_missCacheDirty[$classPath] = true;
 		}
 	}
 
@@ -320,6 +329,8 @@ class FroodAutoloader {
 			self::_persistCache($classPath);
 			unset(self::$_classCache[$classPath]);
 			unset(self::$_missCache[$classPath]);
+			unset(self::$_classCacheDirty[$classPath]);
+			unset(self::$_missCacheDirty[$classPath]);
 		}
 	}
 
@@ -352,6 +363,7 @@ class FroodAutoloader {
 			foreach ($this->_classPaths as $classPath) {
 				if ($path = $this->_searchFiles($classPath, $regex)) {
 					self::$_classCache[$classPath][$name] = $path;
+					self::$_classCacheDirty[$classPath] = true;
 
 					return $path;
 				}
