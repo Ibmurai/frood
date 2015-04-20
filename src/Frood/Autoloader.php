@@ -215,10 +215,10 @@ class FroodAutoloader {
 			return;
 		}
 
-		if (isset(self::$_classCache[$classPath])) {
+		if (isset(self::$_classCacheDirty[$classPath]) && isset(self::$_classCache[$classPath])) {
 			self::_filePutContentsAtomic(self::_hitsFile($classPath), @serialize(self::$_classCache[$classPath]));
 		}
-		if (self::$_missCacheEnabled && isset(self::$_missCache[$classPath])) {
+		if (self::$_missCacheEnabled && isset(self::$_missCacheDirty[$classPath]) && isset(self::$_missCache[$classPath])) {
 			self::_filePutContentsAtomic(self::_missFile($classPath), @serialize(self::$_missCache[$classPath]));
 		}
 	}
