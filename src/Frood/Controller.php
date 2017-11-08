@@ -150,7 +150,8 @@ abstract class FroodController {
 		}
 
 		if ($host === null) {
-			$host = "http://{$_SERVER['HTTP_HOST']}";
+            $protocol = stripos($_SERVER['SERVER_PROTOCOL'],'https') === true ? 'https://' : 'http://';
+            $host = $protocol . $_SERVER['HTTP_HOST'];
 		}
 
 		$url = $host;
